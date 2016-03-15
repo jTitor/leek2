@@ -1,9 +1,13 @@
 [package]
 
-name = "hello_world"
+name = "leek2"
 version = "0.0.1"
-authors = [ "Your name <you@example.com>" ]
+authors = [ "Me <me@me.me>" ]
+
+[dependencies]
+#The OpenGL wrapper.
+glium = "*"
 
 [[bin]]
 
-name = "hello_world"
+name = "leek2"
