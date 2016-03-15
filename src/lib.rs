@@ -1,30 +1,30 @@
 //Crate root for the engine.
-//Define our base level modules.
+//Define our base level pub modules.
 
 //Mathematics operations.
-mod math;
+pub mod math;
 
 //Graphics functions and interfaces.
-mod graphics;
+pub mod graphics;
 
 //Audio functions and interfaces.
-mod audio;
+pub mod audio;
 
 //Physics functions and interfaces.
-mod physics;
+pub mod physics;
 
 //Input management.
-mod input;
+pub mod input;
 
 //Memory allocator and memory
 //allocation functions.
-mod memory;
+pub mod memory;
 
 //Asset management.
-mod asset;
+pub mod asset;
 
 //Logging operations.
-mod logging;
+pub mod logging;
 
 //Platform-dependent subsystems.
-mod platform_dependent;
+pub mod platform_dependent;
