@@ -13,5 +13,18 @@ mod audio;
 //Physics functions and interfaces.
 mod physics;
 
+//Input management.
+mod input;
+
+//Memory allocator and memory
+//allocation functions.
+mod memory;
+
+//Asset management.
+mod asset;
+
+//Logging operations.
+mod logging;
+
 //Platform-dependent subsystems.
 mod platform_dependent;
