@@ -4,7 +4,7 @@
 extern crate log;
 
 use log::{LogRecord, LogLevel, LogMetadata};
-use log_listener::interface::LogListener;
+use log_listener::interface::LogListen;
 
 ///Handles logging requests.
 struct Logger {
@@ -19,7 +19,7 @@ struct Logger {
 	///The length of the log buffer in characters.
 	bufferSize: usize,
 	///The LogListeners that are listening to this Logger.
-	listeners: Vec<LogListener>
+	listeners: Vec<&LogListen>
 }
 
 //TODO: It's more idiomatic to return a Result struct
@@ -40,7 +40,7 @@ impl Logger {
 	///Returns: Result::Ok if the LogListener was successfully attached,
 	///Result::Err otherwise
 	///(for instance, a listener's output file couldn't be opened).
-	fn attach(&self, listener: &LogListener) {
+	fn attach(&self, listener: &LogListen) {
 		//Is this listener ready for attachment?
 		//	If not, abort and return error.
 		//Add this listener to the attached list.
@@ -48,7 +48,7 @@ impl Logger {
 	}
 	
 	///Unlinks a specific LogListener from this Logger's buffer.
-	fn detach(&self, listener: &LogListener) {
+	fn detach(&self, listener: &LogListen) {
 		//Remove this listener from the attached list
 		//if it was in the list in the first place.
 		unimplemented!();

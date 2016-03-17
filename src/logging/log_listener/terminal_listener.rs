@@ -1,22 +1,35 @@
 ///Log listener that prints to a terminal's output.
 extern crate log;
 
-use logging::log_listener::LogListener;
+use logging::log_listener::interface::ListenerBase;
+use std::io;
 
-struct TerminalListener {
-	///The terminal we're connected to.
-	terminal: u64,
-	///The maximum log level to listen to.
+type TerminalListener = ListenerBase<io::Stdout>;
+
+impl ListenerInit for TerminalListener {
+	fn shutdown(&self) {
+		//Do nothing.
+	}
+}
+
+struct TerminalListenerBuilder {
 	level: LogLevel
 }
 
-impl LogListener for TerminalListener {
-	fn on_log(&self, record: &LogRecord) {
-		//Print this message to standard output.
-		//TODO: we should also keep the time this log was entered.
-		println!("{} {}: {}",
-			record.location().module_path(),
-			record.level(),
-			record.args());
+impl TerminalListenerBuilder {
+	fn new() -> TerminalListenerBuilder {
+		TerminalListenerBuilder {
+			level: LogLevel::Info
+		}
+	}
+	
+	fn level(&mut self, val: LogLevel) -> &mut TerminalListenerBuilder {
+		self.level = val;
+		self
+	}
+	
+	fn build(&self) -> Result<TerminalListener, ()> {
+		//Return the listener.
+		Ok(TerminalListener { output: io::stdout(), level: self.level, output_ready: true })
 	}
 }
