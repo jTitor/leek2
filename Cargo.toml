@@ -8,8 +8,9 @@ authors = [ "Me <me@me.me>" ]
 #uncomment this once we're past making a
 #logger.
 #[dependencies]
-#The OpenGL wrapper.
-#glium = "*"
+#The graphics wrapper.
+#Probably going to use gfx-rs since it provides a higher-level abstraction.
+#gfx = "*"
 
 [[bin]]
 

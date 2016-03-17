@@ -4,6 +4,7 @@
 extern crate log;
 
 use log::{LogRecord, LogLevel, LogMetadata};
+use log_listener::interface::LogListener;
 
 ///Handles logging requests.
 struct Logger {
@@ -36,7 +37,12 @@ impl Logger {
 	///Links a LogListener to this Logger's buffer.
 	///The LogListener will relay any log entries
 	///recorded by the Logger.
+	///Returns: Result::Ok if the LogListener was successfully attached,
+	///Result::Err otherwise
+	///(for instance, a listener's output file couldn't be opened).
 	fn attach(&self, listener: &LogListener) {
+		//Is this listener ready for attachment?
+		//	If not, abort and return error.
 		//Add this listener to the attached list.
 		unimplemented!();
 	}
