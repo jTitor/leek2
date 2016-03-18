@@ -6,7 +6,15 @@ extern crate log;
 use log::{LogRecord, LogLevel, LogMetadata};
 use log_listener::interface::LogListen;
 
+///Possible error codes for failures in log methods.
+#[derive(PartialEq, Eq, Debug)]
+enum LogError {
+	ListenerNotReady,
+	ListenerNotAttached,
+}
+
 ///Handles logging requests.
+#[derive(Debug)]
 struct Logger {
 	///The maximum filter level.
 	///If an entry has a level higher than this,
@@ -40,7 +48,7 @@ impl Logger {
 	///Returns: Result::Ok if the LogListener was successfully attached,
 	///Result::Err otherwise
 	///(for instance, a listener's output file couldn't be opened).
-	fn attach(&self, listener: &LogListen) {
+	fn attach(&self, listener: &LogListen) -> Result<(), LogError> {
 		//Is this listener ready for attachment?
 		//	If not, abort and return error.
 		//Add this listener to the attached list.
@@ -48,7 +56,7 @@ impl Logger {
 	}
 	
 	///Unlinks a specific LogListener from this Logger's buffer.
-	fn detach(&self, listener: &LogListen) {
+	fn detach(&self, listener: &LogListen) -> Result<(), LogError> {
 		//Remove this listener from the attached list
 		//if it was in the list in the first place.
 		unimplemented!();

@@ -12,6 +12,8 @@ impl ListenerInit for TerminalListener {
 	}
 }
 
+///Builder for TerminalListener instances.
+#[derive(Debug)]
 struct TerminalListenerBuilder {
 	level: LogLevel
 }

@@ -14,6 +14,8 @@ impl ListenerInit for FileListener {
 	}
 }
 
+///Builder for FileListener instances.
+#[derive(Debug)]
 struct FileListenerBuilder {
 	file_path: &str,
 	level: LogLevel

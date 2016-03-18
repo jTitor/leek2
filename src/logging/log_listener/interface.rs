@@ -7,6 +7,7 @@ use std::io::Write;
 ///Base class for log listeners.
 ///Has a connection to some output stream
 ///and a maximum acceptable log level for filtering.
+#[derive(Debug)]
 struct ListenerBase<T: Write> {
 	///The output file we're connected to.
 	output: &T,
