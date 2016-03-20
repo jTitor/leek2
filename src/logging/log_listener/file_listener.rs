@@ -5,9 +5,9 @@ use log::LogLevel;
 use logging::log_listener::LogListener;
 use std::fs::{File, OpenOptions};
 
-type FileListener = ListenerBase<File>;
+pub type FileListener = ListenerBase<File>;
 
-impl ListenerInit for FileListener {
+pub impl ListenerInit for FileListener {
 	fn shutdown(&self) {
 		//...The file closes itself???
 		//No need to do anything, apparently.
@@ -16,30 +16,31 @@ impl ListenerInit for FileListener {
 
 ///Builder for FileListener instances.
 #[derive(Debug)]
-struct FileListenerBuilder {
+pub struct FileListenerBuilder {
 	file_path: &str,
 	level: LogLevel
 }
 
 impl FileListenerBuilder {
-	fn new() -> FileListenerBuilder {
+	pub fn new() -> FileListenerBuilder {
 		FileListenerBuilder {
 			file_path:"",
 			level: LogLevel::Info
 		}
 	}
 	
-	fn file_path(&mut self, val: &str) -> &mut FileListenerBuilder {
+	pub fn file_path(&mut self, val: &str) -> &mut FileListenerBuilder {
 		self.file_path = val;
 		self
 	}
 	
-	fn level(&mut self, val: LogLevel) -> &mut FileListenerBuilder {
+	pub fn level(&mut self, val: LogLevel) -> &mut FileListenerBuilder {
 		self.level = val;
 		self
 	}
-	
-	fn build(&self) -> Result<FileListener, ()> {
+
+	///Builds a FileListener instance from the given settings.
+	pub fn build(&self) -> Result<FileListener, ()> {
 		//Open the given file path.
 		let file = try!(OpenOptions::new()
 					.write(true)

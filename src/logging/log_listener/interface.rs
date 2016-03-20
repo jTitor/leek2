@@ -8,9 +8,9 @@ use std::io::Write;
 ///Has a connection to some output stream
 ///and a maximum acceptable log level for filtering.
 #[derive(Debug)]
-struct ListenerBase<T: Write> {
+pub struct ListenerBase<T: Write> {
 	///The output file we're connected to.
-	output: &T,
+	output: &mut T,
 	///The maximum log level to listen to.
 	level: LogLevel,
 	///If true, output is connected and we can write
@@ -21,7 +21,7 @@ struct ListenerBase<T: Write> {
 
 ///Allows implementors to get a Logger's
 ///log entries.
-trait LogListen {
+pub trait LogListen {
 	///Called when a Logger has an entry for this listener to display.
 	///This is only safe to call if output_ready == true.
 	/// # Arguments
@@ -32,7 +32,7 @@ trait LogListen {
 
 ///Allows implementors to initialize and
 ///release logging resources before/after logging activities.
-trait ListenerInit : LogListen {
+pub trait ListenerInit : LogListen {
 	///Called to shut down the listener.
 	fn shutdown(&self);
 }
@@ -40,7 +40,7 @@ trait ListenerInit : LogListen {
 //Most listeners just need to output to something that implements
 //Write; how we get our Write reference is another story, hence the ListenerInit trait.
 impl<T> LogListen for ListenerBase<T> {
-	fn on_log(&self, record: &LogRecord) {
+	pub fn on_log(&self, record: &LogRecord) {
 		//Format the entry into an output string.
 		let outStr = format!("{} {}: {}",
 			record.location().module_path(),
@@ -52,7 +52,7 @@ impl<T> LogListen for ListenerBase<T> {
 }
 
 impl<T> ListenerBase<T> {
-	fn new(output: &T, level: LogLevel) -> ListenerBase<T> {
+	pub fn new(output: &mut T, level: LogLevel) -> ListenerBase<T> {
 		ListenerBase {
 			output: output,
 			level: level,

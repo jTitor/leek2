@@ -1,6 +1,6 @@
 //Defines the LogListener trait.
-mod interface;
+pub mod interface;
 
 //Implementations of LogListener.
-mod file_listener;
-mod terminal_listener;
+pub mod file_listener;
+pub mod terminal_listener;

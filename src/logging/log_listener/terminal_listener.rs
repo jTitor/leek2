@@ -4,33 +4,34 @@ extern crate log;
 use logging::log_listener::interface::ListenerBase;
 use std::io;
 
-type TerminalListener = ListenerBase<io::Stdout>;
+pub type TerminalListener = ListenerBase<io::Stdout>;
 
 impl ListenerInit for TerminalListener {
-	fn shutdown(&self) {
+	pub fn shutdown(&self) {
 		//Do nothing.
 	}
 }
 
 ///Builder for TerminalListener instances.
 #[derive(Debug)]
-struct TerminalListenerBuilder {
+pub struct TerminalListenerBuilder {
 	level: LogLevel
 }
 
 impl TerminalListenerBuilder {
-	fn new() -> TerminalListenerBuilder {
+	pub fn new() -> TerminalListenerBuilder {
 		TerminalListenerBuilder {
 			level: LogLevel::Info
 		}
 	}
-	
-	fn level(&mut self, val: LogLevel) -> &mut TerminalListenerBuilder {
+
+	pub fn level(&mut self, val: LogLevel) -> &mut TerminalListenerBuilder {
 		self.level = val;
 		self
 	}
-	
-	fn build(&self) -> Result<TerminalListener, ()> {
+
+	///Builds a TerminalListener instance from the given settings.
+	pub fn build(&self) -> Result<TerminalListener, ()> {
 		//Return the listener.
 		Ok(TerminalListener { output: io::stdout(), level: self.level, output_ready: true })
 	}
