@@ -1,7 +1,7 @@
 //Trait definitions for vector operations.
 
-extern crate simd;
-use simd::f32x4;
+//extern crate simd;
+//use simd::f32x4;
 
 ///Represents a generic vector.
 trait Vector<T=Self> {
@@ -73,7 +73,7 @@ trait Vec3<T=Self> : Vector<T> {
 ///A struct guaranteed to hold 3 f32s.
 #[derive(Debug, Copy, Clone)]
 struct SIMDVec3 {
-	data: f32x4
+	data: [f32; 3]
 }
 
 impl Vector<SIMDVec3> for SIMDVec3 {

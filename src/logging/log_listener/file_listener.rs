@@ -1,8 +1,8 @@
 ///Log listener that prints to a file.
 extern crate log;
 
-use log::LogLevel;
-use logging::log_listener::LogListener;
+use self::log::LogLevel;
+use ::logging::log_listener::interface::{ListenerBase, ListenerInit};
 use std::fs::{File, OpenOptions};
 
 pub type FileListener = ListenerBase<File>;

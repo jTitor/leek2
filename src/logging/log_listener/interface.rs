@@ -1,7 +1,7 @@
 ///Interface for things that display/respond to log entries.
 extern crate log;
 
-use log::{LogRecord, LogLevel, LogMetadata};
+use self::log::{LogRecord, LogLevel, LogMetadata};
 use std::io::Write;
 
 ///Base class for log listeners.
@@ -25,7 +25,6 @@ pub trait LogListen {
 	///Called when a Logger has an entry for this listener to display.
 	///This is only safe to call if output_ready == true.
 	/// # Arguments
-	///
 	/// * record: The newest log entry sent from the Logger.
 	fn on_log(&self, record: &LogRecord);
 }
@@ -52,6 +51,7 @@ impl<T> LogListen for ListenerBase<T> {
 }
 
 impl<T> ListenerBase<T> {
+	///Constructs the base elemnts of a listener.
 	pub fn new(output: &mut T, level: LogLevel) -> ListenerBase<T> {
 		ListenerBase {
 			output: output,
