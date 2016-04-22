@@ -8,10 +8,13 @@ use ::logging::log_listener::interface::LogListen;
 use std::fs::File;
 use std::fs::OpenOptions;
 use std::fmt;
+use std::sync::Mutex;
+use std::sync::Arc;
 
 ///Possible error codes for failures in log methods.
 #[derive(PartialEq, Eq, Debug)]
 pub enum LogError {
+	LoggerOutputNotReady,
 	ListenerNotReady,
 	ListenerNotAttached,
 }
@@ -21,7 +24,7 @@ pub struct Logger<'a> {
 	///The maximum filter level.
 	///If an entry has a level higher than this,
 	///it won't be logged to the buffer at all.
-	level: LogLevel,
+	pub level: LogLevel,
 	///The output file to write to.
 	out_file: File,
 	///Contains the last few logged strings.
@@ -29,7 +32,7 @@ pub struct Logger<'a> {
 	///The current head of the log buffer.
 	buffer_head: usize,
 	///The length of the log buffer in characters.
-	buffer_size: usize,
+	pub buffer_size: usize,
 	///The LogListeners that are listening to this Logger.
 	listeners: Vec<&'a LogListen>
 }
@@ -67,14 +70,14 @@ impl<'a> Logger<'a> {
 		//	If not, abort and return error.
 		//Add this listener to the attached list.
 		self.listeners.push(listener);
-		Ok(());
+		Ok(())
 	}
 	
 	///Unlinks a specific LogListener from this Logger's buffer.
 	pub fn detach(&mut self, listener: &LogListen) -> Result<(), LogError> {
 		//Remove this listener from the attached list
 		//if it was in the list in the first place.
-		let listener_pos = self.listeners.binary_search(listener);
+		let listener_pos = self.listeners.binary_search_by(|probe| (probe as *const &LogListen).cmp(&(&listener as *const &LogListen)));
 		match listener_pos {
 			Ok(idx) => {
 				self.listeners.remove(idx);
@@ -85,7 +88,7 @@ impl<'a> Logger<'a> {
 			}
 		}
 		unreachable!();
-		Err(LogError::ListenerNotAttached);
+		Err(LogError::ListenerNotAttached)
 	}
 	
 	///Unlinks *all* LogListeners from this Logger's buffer.
@@ -158,20 +161,29 @@ impl LogBuilder {
 	pub fn build(&self, out_file_path: &str) -> Result<Logger, LogError> {
 		//Connect to our output file.
 		//If that failed, abort here.
-		let file = try!(OpenOptions::new()
+		let file = OpenOptions::new()
 					.read(true)
 					.write(true)
 					.append(true)
 					.create(true)
-					.open(out_file_path));
-		//Otherwise, construct our Logger now.
-		Ok(Logger {
-			level: self.level,
-			out_file: file,
-			buffer: vec![0; self.buffer_size].into_boxed_slice(),
-			buffer_head: 0,
-			buffer_size: self.buffer_size,
-			listeners: vec![]
-		})
+					.open(out_file_path);
+		match file {
+			Ok(openedFile) => {
+				//Otherwise, construct our Logger now.
+				return Ok(Logger {
+					level: self.level,
+					out_file: openedFile,
+					buffer: vec![0; self.buffer_size].into_boxed_slice(),
+					buffer_head: 0,
+					buffer_size: self.buffer_size,
+					listeners: vec![]
+				});
+			},
+			_ => {
+				return Err(LogError::LoggerOutputNotReady);
+			}
+		}
+		unreachable!();
+		Err(LogError::LoggerOutputNotReady)
 	}
 }

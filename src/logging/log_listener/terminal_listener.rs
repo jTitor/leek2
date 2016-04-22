@@ -5,11 +5,12 @@ use self::log::LogLevel;
 use ::logging::log_listener::interface::{ListenerBase, ListenerInit};
 use std::io;
 use std::fmt;
+use std::sync::Mutex;
 
-pub type TerminalListener<'a> = ListenerBase<'a, io::Stdout>;
+pub type TerminalListener = ListenerBase<io::Stdout>;
 
-impl<'a> ListenerInit for TerminalListener<'a> {
-	pub fn shutdown(&self) {
+impl ListenerInit for TerminalListener {
+	fn shutdown(&self) {
 		//Do nothing.
 	}
 }
@@ -36,6 +37,6 @@ impl TerminalListenerBuilder {
 	///Builds a TerminalListener instance from the given settings.
 	pub fn build(&self) -> Result<TerminalListener, ()> {
 		//Return the listener.
-		Ok(TerminalListener { output: io::stdout(), level: self.level, output_ready: true })
+		Ok(TerminalListener { output: Mutex::new(io::stdout()), level: self.level, output_ready: true })
 	}
 }

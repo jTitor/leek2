@@ -4,10 +4,11 @@ extern crate log;
 use self::log::LogLevel;
 use ::logging::log_listener::interface::{ListenerBase, ListenerInit};
 use std::fs::{File, OpenOptions};
+use std::sync::Mutex;
 
-pub type FileListener<'a> = ListenerBase<'a, File>;
+pub type FileListener = ListenerBase<File>;
 
-pub impl<'a> ListenerInit for FileListener<'a> {
+impl ListenerInit for FileListener {
 	fn shutdown(&self) {
 		//...The file closes itself???
 		//No need to do anything, apparently.
@@ -24,7 +25,7 @@ pub struct FileListenerBuilder {
 impl FileListenerBuilder {
 	pub fn new() -> FileListenerBuilder {
 		FileListenerBuilder {
-			file_path:"",
+			file_path: String::from(""),
 			level: LogLevel::Info
 		}
 	}
@@ -42,12 +43,21 @@ impl FileListenerBuilder {
 	///Builds a FileListener instance from the given settings.
 	pub fn build(&self) -> Result<FileListener, ()> {
 		//Open the given file path.
-		let file = try!(OpenOptions::new()
+		let file = OpenOptions::new()
 					.write(true)
 					.create(true)
 					.truncate(false)
-					.open(self.file_path));
-		//Return the listener.
-		Ok(FileListener { output: file, level: self.level, output_ready: true })
+					.open(&self.file_path);
+		match file {
+			Ok(openedFile) => {
+				//Return the listener.
+				return Ok(FileListener { output: Mutex::new(openedFile), level: self.level, output_ready: true });
+			},
+			_ => {
+				return Err(());
+			}
+		}
+		unreachable!();
+		Err(())
 	}
 }

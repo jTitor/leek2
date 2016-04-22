@@ -147,7 +147,7 @@ impl Vector<SIMDVec3> for SIMDVec3 {
 	}
 	///Gets the minimum element in this vector.
 	fn min_elem(&self) -> f32 {
-		let result = self.data[0];
+		let mut result = self.data[0];
 		for i in 1..3 {
 			if self.data[i] < result {
 				result = self.data[i];
