@@ -10,7 +10,7 @@ trait Vector<T=Self> {
 	/// * i is out of range [0, num_elems()-1]
 	fn elem_at(&self, i: usize) -> f32;
 	///Gets the number of valid elements this trait implementation contains.
-	fn num_elems() -> u32;
+	fn num_elems(&self) -> u32;
 	
 	///Gets the squared magnitude of this vector.
 	fn sqr_mag(&self) -> f32;
@@ -32,7 +32,7 @@ trait Vector<T=Self> {
 	///Performs a componentwise multiplication.
 	fn component_mul(&self, rhs: &T) -> T;
 	///Performs componentwise division.
-	fn component_div(&self, rhs: &T) -> T { self.component_mul(rhs.as_reciprocal()) }
+	fn component_div(&self, rhs: &T) -> T;
 	
 	///Gets the maximum element in this vector.
 	fn max_elem(&self) -> f32;
@@ -76,13 +76,13 @@ impl Vector<SIMDVec3> for SIMDVec3 {
 		self.data[i]
 	}
 	///Gets the number of valid elements this trait implementation contains.
-	fn num_elems() -> u32 {
+	fn num_elems(&self) -> u32 {
 		3
 	}
 	
 	///Gets the squared magnitude of this vector.
 	fn sqr_mag(&self) -> f32 {
-		let mut result = 0;
+		let mut result: f32 = 0.0;
 		for i in 0..3 {
 			result += self.data[i] * self.data[i];
 		}
@@ -92,8 +92,8 @@ impl Vector<SIMDVec3> for SIMDVec3 {
 	///Performs the dot product between two vectors.
 	///TODO: don't like how this dispatches - can we template on implementing type, or something?
 	///Then we can be sure the underlying type is always the same.
-	fn dot(&self, rhs: &Vector<SIMDVec3>) -> f32 {
-		let mut result = 0;
+	fn dot(&self, rhs: &SIMDVec3) -> f32 {
+		let mut result = 0.0;
 		for i in 0..3 {
 			result += self.data[i] * rhs.data[i];
 		}
@@ -102,12 +102,12 @@ impl Vector<SIMDVec3> for SIMDVec3 {
 	
 	///Returns a normalized version of the vector.
 	///TODO: Again, can we have this return its underlying type?
-	fn as_normalized(&self) -> Vector<SIMDVec3> {
+	fn as_normalized(&self) -> SIMDVec3 {
 		let mut result = self.clone();
-		result.component_div(result.mag())
+		result //result / result.mag()
 	}
 	///Returns this vector with all elements set to their absolute value.
-	fn as_abs(&self) -> Vector<SIMDVec3> {
+	fn as_abs(&self) -> SIMDVec3 {
 		let mut result = self.clone();
 		for i in 0..3 {
 			result.data[i] = result.data[i].abs();
@@ -115,7 +115,7 @@ impl Vector<SIMDVec3> for SIMDVec3 {
 		result
 	}
 	///Returns a vector with all elements set to their respective element's reciprocal.
-	fn as_reciprocal(&self) -> Vector<SIMDVec3> {
+	fn as_reciprocal(&self) -> SIMDVec3 {
 		let mut result = self.clone();
 		for i in 0..3 {
 			result.data[i] = 1.0 / result.data[i];
@@ -124,19 +124,22 @@ impl Vector<SIMDVec3> for SIMDVec3 {
 	}
 	
 	///Performs a componentwise multiplication.
-	fn component_mul(&self, rhs: &Vector<SIMDVec3>) -> Vector<SIMDVec3> {
+	fn component_mul(&self, rhs: &SIMDVec3) -> SIMDVec3 {
 		let mut result = self.clone();
 		for i in 0..3 {
 			result.data[i] *= rhs.data[i];
 		}
 		result
 	}
+	fn component_div(&self, rhs: &SIMDVec3) -> SIMDVec3 {
+		self.component_mul(&rhs.as_reciprocal())
+	}
 	
 	///Gets the maximum element in this vector.
 	fn max_elem(&self) -> f32 {
 		let mut result = self.data[0];
 		for i in 1..3 {
-			if(self.data[i] > result) {
+			if self.data[i] > result {
 				result = self.data[i];
 			}
 		}
@@ -146,23 +149,12 @@ impl Vector<SIMDVec3> for SIMDVec3 {
 	fn min_elem(&self) -> f32 {
 		let result = self.data[0];
 		for i in 1..3 {
-			if(self.data[i] < result) {
+			if self.data[i] < result {
 				result = self.data[i];
 			}
 		}
 		result
 	}
-	
-	///Projects one vector onto another.
-	///Note that neither vector need be normalized;
-	///if you know that a destination is normalized,
-	///use project_normalized().
-	/*fn project(&self, destination: &Vector<SIMDVec3>) -> Vector<SIMDVec3> {
-		projectedLen := self.dot(destination) / destination.sqr_mag();
-		//Need to return destination * projectedLen, which doesn't exist yet.
-	}
-	///Projects one vector onto a normalized vector.
-	fn project_normalized(&self, destination: &Vector<SIMDVec3>) -> Vector<SIMDVec3>;*/
 }
 
 impl Vec2Access<SIMDVec3> for SIMDVec3 {}

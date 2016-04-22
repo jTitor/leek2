@@ -3,11 +3,11 @@ extern crate log;
 
 use self::log::{LogRecord, LogLevel, LogMetadata};
 use std::io::Write;
+use std::fmt;
 
 ///Base class for log listeners.
 ///Has a connection to some output stream
 ///and a maximum acceptable log level for filtering.
-#[derive(Debug)]
 pub struct ListenerBase<'a, T: 'a> where T: Write + Sync {
 	///The output file we're connected to.
 	output: &'a mut T,
@@ -17,6 +17,14 @@ pub struct ListenerBase<'a, T: 'a> where T: Write + Sync {
 	///to it; otherwise the output is not connected
 	///and attempts to write will probably cause a panic.
 	output_ready: bool
+}
+
+impl<'a, T> fmt::Debug for ListenerBase<'a, T> where T: Write + Sync {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f,
+        	"ListenerBase {{ level: {} }}",
+        	self.level)
+    }
 }
 
 ///Allows implementors to get a Logger's

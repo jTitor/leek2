@@ -7,6 +7,7 @@ use self::log::{LogRecord, LogLevel, LogMetadata};
 use ::logging::log_listener::interface::LogListen;
 use std::fs::File;
 use std::fs::OpenOptions;
+use std::fmt;
 
 ///Possible error codes for failures in log methods.
 #[derive(PartialEq, Eq, Debug)]
@@ -16,7 +17,6 @@ pub enum LogError {
 }
 
 ///Handles logging requests.
-#[derive(Debug)]
 pub struct Logger<'a> {
 	///The maximum filter level.
 	///If an entry has a level higher than this,
@@ -32,6 +32,14 @@ pub struct Logger<'a> {
 	buffer_size: usize,
 	///The LogListeners that are listening to this Logger.
 	listeners: Vec<&'a LogListen>
+}
+
+impl<'a> fmt::Debug for Logger<'a> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f,
+        	"Logger {{ level: {}, buffer_size: {} }}",
+        	self.level, self.buffer_size)
+    }
 }
 
 //TODO: It's more idiomatic to return a Result struct
@@ -54,12 +62,12 @@ impl<'a> Logger<'a> {
 	///Returns: Result::Ok if the LogListener was successfully attached,
 	///Result::Err otherwise
 	///(for instance, a listener's output file couldn't be opened).
-	pub fn attach(&mut self, listener: &LogListen) -> Result<(), LogError> {
+	pub fn attach(&mut self, listener: &'a LogListen) -> Result<(), LogError> {
 		//Is this listener ready for attachment?
 		//	If not, abort and return error.
 		//Add this listener to the attached list.
 		self.listeners.push(listener);
-		Ok();
+		Ok(());
 	}
 	
 	///Unlinks a specific LogListener from this Logger's buffer.
@@ -70,7 +78,7 @@ impl<'a> Logger<'a> {
 		match listener_pos {
 			Ok(idx) => {
 				self.listeners.remove(idx);
-				return Ok();
+				return Ok(());
 			},
 			_ => {
 				return Err(LogError::ListenerNotAttached);
@@ -129,7 +137,7 @@ impl LogBuilder {
 	pub fn new() -> LogBuilder {
 		LogBuilder {
 			level: LogLevel::Info,
-			bufferSize: 1024
+			buffer_size: 1024
 		}
 	}
 

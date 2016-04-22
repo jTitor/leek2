@@ -4,6 +4,7 @@ extern crate log;
 use self::log::LogLevel;
 use ::logging::log_listener::interface::{ListenerBase, ListenerInit};
 use std::io;
+use std::fmt;
 
 pub type TerminalListener<'a> = ListenerBase<'a, io::Stdout>;
 
