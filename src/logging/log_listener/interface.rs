@@ -8,9 +8,9 @@ use std::io::Write;
 ///Has a connection to some output stream
 ///and a maximum acceptable log level for filtering.
 #[derive(Debug)]
-pub struct ListenerBase<T: Write> {
+pub struct ListenerBase<'a, T: 'a> where T: Write + Sync {
 	///The output file we're connected to.
-	output: &mut T,
+	output: &'a mut T,
 	///The maximum log level to listen to.
 	level: LogLevel,
 	///If true, output is connected and we can write
@@ -21,7 +21,7 @@ pub struct ListenerBase<T: Write> {
 
 ///Allows implementors to get a Logger's
 ///log entries.
-pub trait LogListen {
+pub trait LogListen : Sync {
 	///Called when a Logger has an entry for this listener to display.
 	///This is only safe to call if output_ready == true.
 	/// # Arguments
@@ -38,7 +38,7 @@ pub trait ListenerInit : LogListen {
 
 //Most listeners just need to output to something that implements
 //Write; how we get our Write reference is another story, hence the ListenerInit trait.
-impl<T> LogListen for ListenerBase<T> {
+impl<'a, T> LogListen for ListenerBase<'a, T> where T: Write + Sync {
 	pub fn on_log(&self, record: &LogRecord) {
 		//Format the entry into an output string.
 		let outStr = format!("{} {}: {}",
@@ -50,7 +50,7 @@ impl<T> LogListen for ListenerBase<T> {
 	}
 }
 
-impl<T> ListenerBase<T> {
+impl<'a, T> ListenerBase<'a, T> where T: Write + Sync {
 	///Constructs the base elemnts of a listener.
 	pub fn new(output: &mut T, level: LogLevel) -> ListenerBase<T> {
 		ListenerBase {

@@ -15,7 +15,7 @@ trait Vector<T=Self> {
 	///Gets the squared magnitude of this vector.
 	fn sqr_mag(&self) -> f32;
 	///Gets the magnitude of this vector.
-	fn mag(&self) -> f32 { sqrt(self.sqr_mag()) }
+	fn mag(&self) -> f32 { (self.sqr_mag() as f64).sqrt() }
 	///Performs the dot product between two vectors.
 	///TODO: don't like how this dispatches - can we template on implementing type, or something?
 	///Then we can be sure the underlying type is always the same.

@@ -5,9 +5,9 @@ use self::log::LogLevel;
 use ::logging::log_listener::interface::{ListenerBase, ListenerInit};
 use std::io;
 
-pub type TerminalListener = ListenerBase<io::Stdout>;
+pub type TerminalListener<'a> = ListenerBase<'a, io::Stdout>;
 
-impl ListenerInit for TerminalListener {
+impl<'a> ListenerInit for TerminalListener<'a> {
 	pub fn shutdown(&self) {
 		//Do nothing.
 	}

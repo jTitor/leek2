@@ -17,7 +17,7 @@ pub enum LogError {
 
 ///Handles logging requests.
 #[derive(Debug)]
-pub struct Logger {
+pub struct Logger<'a> {
 	///The maximum filter level.
 	///If an entry has a level higher than this,
 	///it won't be logged to the buffer at all.
@@ -31,13 +31,13 @@ pub struct Logger {
 	///The length of the log buffer in characters.
 	buffer_size: usize,
 	///The LogListeners that are listening to this Logger.
-	listeners: Vec<&LogListen>
+	listeners: Vec<&'a LogListen>
 }
 
 //TODO: It's more idiomatic to return a Result struct
 //when you're expecting to return error codes;
 //refactor methods to return Results instead.
-impl Logger {
+impl<'a> Logger<'a> {
 	///Sends the given log record to all LogListeners
 	///that are attached to this Logger.
 	fn broadcast(&self, record: &LogRecord) {
@@ -92,7 +92,7 @@ impl Logger {
 	}
 }
 
-impl log::Log for Logger {
+impl<'a> log::Log for Logger<'a> {
 	///Determines if the given log entry should be logged. 
 	fn enabled(&self, metadata: &LogMetadata) -> bool {
 		//Is this entry's level below our maximum filter level?
