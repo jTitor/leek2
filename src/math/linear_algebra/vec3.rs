@@ -10,12 +10,12 @@ trait Vector<T=Self> {
 	/// * i is out of range [0, num_elems()-1]
 	fn elem_at(&self, i: usize) -> f32;
 	///Gets the number of valid elements this trait implementation contains.
-	fn num_elems();
+	fn num_elems() -> u32;
 	
 	///Gets the squared magnitude of this vector.
 	fn sqr_mag(&self) -> f32;
 	///Gets the magnitude of this vector.
-	fn mag(&self) -> f32 { (self.sqr_mag() as f64).sqrt() }
+	fn mag(&self) -> f32 { self.sqr_mag().sqrt() }
 	///Performs the dot product between two vectors.
 	///TODO: don't like how this dispatches - can we template on implementing type, or something?
 	///Then we can be sure the underlying type is always the same.
@@ -38,14 +38,6 @@ trait Vector<T=Self> {
 	fn max_elem(&self) -> f32;
 	///Gets the minimum element in this vector.
 	fn min_elem(&self) -> f32;
-	
-	///Projects one vector onto another.
-	///Note that neither vector need be normalized;
-	///if you know that a destination is normalized,
-	///use project_normalized().
-	fn project(&self, destination: &T) -> T;
-	///Projects one vector onto a normalized vector.
-	fn project_normalized(&self, destination: &T) -> T;
 }
 
 ///Represents access to 2 elements in a vector.
@@ -77,7 +69,100 @@ struct SIMDVec3 {
 }
 
 impl Vector<SIMDVec3> for SIMDVec3 {
-	//TODO
+	///Gets the i'th element of this vector.
+	/// # Panics if:
+	/// * i is out of range [0, num_elems()-1]
+	fn elem_at(&self, i: usize) -> f32 {
+		self.data[i]
+	}
+	///Gets the number of valid elements this trait implementation contains.
+	fn num_elems() -> u32 {
+		3
+	}
+	
+	///Gets the squared magnitude of this vector.
+	fn sqr_mag(&self) -> f32 {
+		let mut result = 0;
+		for i in 0..3 {
+			result += self.data[i] * self.data[i];
+		}
+		result
+	}
+
+	///Performs the dot product between two vectors.
+	///TODO: don't like how this dispatches - can we template on implementing type, or something?
+	///Then we can be sure the underlying type is always the same.
+	fn dot(&self, rhs: &Vector<SIMDVec3>) -> f32 {
+		let mut result = 0;
+		for i in 0..3 {
+			result += self.data[i] * rhs.data[i];
+		}
+		result
+	}
+	
+	///Returns a normalized version of the vector.
+	///TODO: Again, can we have this return its underlying type?
+	fn as_normalized(&self) -> Vector<SIMDVec3> {
+		let mut result = self.clone();
+		result.component_div(result.mag())
+	}
+	///Returns this vector with all elements set to their absolute value.
+	fn as_abs(&self) -> Vector<SIMDVec3> {
+		let mut result = self.clone();
+		for i in 0..3 {
+			result.data[i] = result.data[i].abs();
+		}
+		result
+	}
+	///Returns a vector with all elements set to their respective element's reciprocal.
+	fn as_reciprocal(&self) -> Vector<SIMDVec3> {
+		let mut result = self.clone();
+		for i in 0..3 {
+			result.data[i] = 1.0 / result.data[i];
+		}
+		result
+	}
+	
+	///Performs a componentwise multiplication.
+	fn component_mul(&self, rhs: &Vector<SIMDVec3>) -> Vector<SIMDVec3> {
+		let mut result = self.clone();
+		for i in 0..3 {
+			result.data[i] *= rhs.data[i];
+		}
+		result
+	}
+	
+	///Gets the maximum element in this vector.
+	fn max_elem(&self) -> f32 {
+		let mut result = self.data[0];
+		for i in 1..3 {
+			if(self.data[i] > result) {
+				result = self.data[i];
+			}
+		}
+		result
+	}
+	///Gets the minimum element in this vector.
+	fn min_elem(&self) -> f32 {
+		let result = self.data[0];
+		for i in 1..3 {
+			if(self.data[i] < result) {
+				result = self.data[i];
+			}
+		}
+		result
+	}
+	
+	///Projects one vector onto another.
+	///Note that neither vector need be normalized;
+	///if you know that a destination is normalized,
+	///use project_normalized().
+	/*fn project(&self, destination: &Vector<SIMDVec3>) -> Vector<SIMDVec3> {
+		projectedLen := self.dot(destination) / destination.sqr_mag();
+		//Need to return destination * projectedLen, which doesn't exist yet.
+	}
+	///Projects one vector onto a normalized vector.
+	fn project_normalized(&self, destination: &Vector<SIMDVec3>) -> Vector<SIMDVec3>;*/
 }
 
 impl Vec2Access<SIMDVec3> for SIMDVec3 {}
