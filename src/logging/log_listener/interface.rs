@@ -2,7 +2,6 @@
 extern crate log;
 
 use std::fmt;
-use std::io;
 use std::io::Write;
 use std::sync::Mutex;
 use std::cell::RefCell;
@@ -53,13 +52,13 @@ pub trait ListenerInit : LogListen {
 impl<T> LogListen for ListenerBase<T> where T: Write + Send {
 	fn on_log(&self, record: &LogRecord) -> Result<(), ListenerError> {
 		//Format the entry into an output string.
-		let outStr = format!("{} {}: {}",
+		let out_str = format!("{} {}: {}",
 			record.location().module_path(),
 			record.level(),
 			record.args());
 		//Actually write the log entry.
 		let output = try!(ListenerError::from_lock_result(self.output.lock()));
-		try!(ListenerError::from_io_result(output.borrow_mut().write(outStr.as_bytes())));
+		try!(ListenerError::from_io_result(output.borrow_mut().write(out_str.as_bytes())));
 		Ok(())
 	}
 }

@@ -50,9 +50,9 @@ impl FileListenerBuilder {
 					.truncate(false)
 					.open(&self.file_path);
 		match file {
-			Ok(openedFile) => {
+			Ok(opened_file) => {
 				//Return the listener.
-				return Ok(FileListener { output: Mutex::new(RefCell::new(openedFile)),
+				return Ok(FileListener { output: Mutex::new(RefCell::new(opened_file)),
 					level: self.level,
 					output_ready: true });
 			},

@@ -8,8 +8,6 @@ use ::logging::log_listener::interface::LogListen;
 use std::fs::File;
 use std::fs::OpenOptions;
 use std::fmt;
-use std::sync::Mutex;
-use std::sync::Arc;
 
 ///Possible error codes for failures in log methods.
 #[derive(PartialEq, Eq, Debug)]
@@ -87,8 +85,6 @@ impl<'a> Logger<'a> {
 				return Err(LogError::ListenerNotAttached);
 			}
 		}
-		unreachable!();
-		Err(LogError::ListenerNotAttached)
 	}
 	
 	///Unlinks *all* LogListeners from this Logger's buffer.
@@ -168,11 +164,11 @@ impl LogBuilder {
 					.create(true)
 					.open(out_file_path);
 		match file {
-			Ok(openedFile) => {
+			Ok(opened_file) => {
 				//Otherwise, construct our Logger now.
 				return Ok(Logger {
 					level: self.level,
-					out_file: openedFile,
+					out_file: opened_file,
 					buffer: vec![0; self.buffer_size].into_boxed_slice(),
 					buffer_head: 0,
 					buffer_size: self.buffer_size,
@@ -183,7 +179,5 @@ impl LogBuilder {
 				return Err(LogError::LoggerOutputNotReady);
 			}
 		}
-		unreachable!();
-		Err(LogError::LoggerOutputNotReady)
 	}
 }

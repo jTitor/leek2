@@ -4,7 +4,6 @@ extern crate log;
 use self::log::LogLevel;
 use ::logging::log_listener::interface::{ListenerBase, ListenerInit};
 use std::io;
-use std::fmt;
 use std::sync::Mutex;
 use std::cell::RefCell;
 
