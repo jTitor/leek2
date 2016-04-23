@@ -5,6 +5,7 @@ use std::fmt;
 use std::io;
 use std::io::Write;
 use std::sync::Mutex;
+use std::cell::RefCell;
 use self::log::{LogRecord, LogLevel, LogMetadata};
 use ::logging::log_listener::listener_error::ListenerError;
 
@@ -13,7 +14,7 @@ use ::logging::log_listener::listener_error::ListenerError;
 ///and a maximum acceptable log level for filtering.
 pub struct ListenerBase<T> where T: Write + Send {
 	///The output file we're connected to.
-	pub output: RefCell<T>,
+	pub output: Mutex<RefCell<T>>,
 	///The maximum log level to listen to.
 	pub level: LogLevel,
 	///If true, output is connected and we can write
@@ -57,8 +58,8 @@ impl<T> LogListen for ListenerBase<T> where T: Write + Send {
 			record.level(),
 			record.args());
 		//Actually write the log entry.
-		let output = try!(ListenerError::from_lock_result(self.output.get_mut()));
-		try!(ListenerError::from_io_result(output.write(outStr.as_bytes())));
+		let output = try!(ListenerError::from_lock_result(self.output.lock()));
+		try!(ListenerError::from_io_result(output.borrow_mut().write(outStr.as_bytes())));
 		Ok(())
 	}
 }
@@ -67,7 +68,7 @@ impl<T> ListenerBase<T> where T: Write + Send {
 	///Constructs the base elements of a listener.
 	pub fn new(output: T, level: LogLevel) -> ListenerBase<T> {
 		ListenerBase {
-			output: Mutex::new(output),
+			output: Mutex::new(RefCell::new(output)),
 			level: level,
 			output_ready: false
 		}

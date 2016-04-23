@@ -6,6 +6,7 @@ use ::logging::log_listener::interface::{ListenerBase, ListenerInit};
 use std::io;
 use std::fmt;
 use std::sync::Mutex;
+use std::cell::RefCell;
 
 pub type TerminalListener = ListenerBase<io::Stdout>;
 
@@ -37,6 +38,8 @@ impl TerminalListenerBuilder {
 	///Builds a TerminalListener instance from the given settings.
 	pub fn build(&self) -> Result<TerminalListener, ()> {
 		//Return the listener.
-		Ok(TerminalListener { output: Mutex::new(io::stdout()), level: self.level, output_ready: true })
+		Ok(TerminalListener { output: Mutex::new(RefCell::new(io::stdout())),
+			level: self.level,
+			output_ready: true })
 	}
 }

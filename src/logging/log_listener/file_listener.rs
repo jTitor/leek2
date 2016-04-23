@@ -5,6 +5,7 @@ use self::log::LogLevel;
 use ::logging::log_listener::interface::{ListenerBase, ListenerInit};
 use std::fs::{File, OpenOptions};
 use std::sync::Mutex;
+use std::cell::RefCell;
 
 pub type FileListener = ListenerBase<File>;
 
@@ -51,7 +52,9 @@ impl FileListenerBuilder {
 		match file {
 			Ok(openedFile) => {
 				//Return the listener.
-				return Ok(FileListener { output: Mutex::new(openedFile), level: self.level, output_ready: true });
+				return Ok(FileListener { output: Mutex::new(RefCell::new(openedFile)),
+					level: self.level,
+					output_ready: true });
 			},
 			_ => {
 				return Err(());
