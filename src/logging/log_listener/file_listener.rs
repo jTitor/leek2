@@ -60,7 +60,5 @@ impl FileListenerBuilder {
 				return Err(());
 			}
 		}
-		unreachable!();
-		Err(())
 	}
 }

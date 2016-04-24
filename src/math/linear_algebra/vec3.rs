@@ -10,7 +10,7 @@ trait VecOps<T=Self> {
 	/// # Panics if:
 	/// * i is out of range [0, num_elems()-1]
 	fn elem_at(&self, i: usize) -> f32;
-	fn mut_elem_at(&self, i: usize) -> &mut f32;
+	fn mut_elem_at(&mut self, i: usize) -> &mut f32;
 	///Gets the number of valid elements this trait implementation contains.
 	fn num_elems(&self) -> u32;
 	
@@ -32,7 +32,7 @@ trait VecOps<T=Self> {
 	fn as_reciprocal(&self) -> T;
 	
 	///Performs a componentwise divtiplication.
-	fn component_div(&self, rhs: &T) -> T;
+	fn component_mul(&self, rhs: &T) -> T;
 	///Performs componentwise division.
 	fn component_div(&self, rhs: &T) -> T;
 	
@@ -43,35 +43,35 @@ trait VecOps<T=Self> {
 }
 
 ///Represents access to 2 elements in a vector.
-trait Vec2Access<T=Self> : Vector<T> {
+trait Vec2Access<T=Self> : VecOps<T> {
 	fn x(&self) -> f32 { self.elem_at(0) }
 	fn y(&self) -> f32 { self.elem_at(1) }
-	fn mut_x(&self) -> f32 { self.mut_elem_at(0) }
-	fn mut_y(&self) -> f32 { self.mut_elem_at(1) }
+	fn mut_x(&mut self) -> &mut f32 { self.mut_elem_at(0) }
+	fn mut_y(&mut self) -> &mut f32 { self.mut_elem_at(1) }
 }
 
 ///Represents access to 3 elements in a vector.
 trait Vec3Access<T=Self> : Vec2Access<T> {
 	fn z(&self) -> f32 { self.elem_at(2) }
-	fn mut_z(&self) -> f32 { self.mut_elem_at(2) }
+	fn mut_z(&mut self) -> &mut f32 { self.mut_elem_at(2) }
 }
 
 ///Represents access to 4 elements in a vector.
 trait Vec4Access<T=Self> : Vec3Access<T> {
 	fn w(&self) -> f32 { self.elem_at(3) }
-	fn mut_w(&self) -> f32 { self.mut_elem_at(3) }
+	fn mut_w(&mut self) -> &mut f32 { self.mut_elem_at(3) }
 }
 
 ///Represents a 3-vector.
-trait Vec3Ops<T=Self> : Vector<T> {
+trait Vec3Ops<T=Self> : VecOps<T> {
 	///Performs the cross product between two 3-vectors.
 	fn cross(&self, rhs: &T) -> T;
 }
 
 ///A struct guaranteed to hold 3 f32s.
 #[derive(Debug, Copy, Clone)]
-struct Vec3 {
-	data: [f32; 3]
+pub struct Vec3 {
+	pub data: [f32; 3]
 }
 
 impl VecOps<Vec3> for Vec3 {
@@ -82,8 +82,8 @@ impl VecOps<Vec3> for Vec3 {
 		self.data[i]
 	}
 	
-	fn mut_elem_at(&self, i: usize) -> &mut f32 {
-		&self.data[i]
+	fn mut_elem_at(&mut self, i: usize) -> &mut f32 {
+		&mut self.data[i]
 	}
 
 	///Gets the number of valid elements this trait implementation contains.
@@ -114,7 +114,7 @@ impl VecOps<Vec3> for Vec3 {
 	///Returns a normalized version of the vector.
 	///TODO: Again, can we have this return its underlying type?
 	fn as_normalized(&self) -> Vec3 {
-		let mut result = self.clone();
+		let result = self.clone();
 		result / result.mag()
 	}
 	///Returns this vector with all elements set to their absolute value.
@@ -135,7 +135,7 @@ impl VecOps<Vec3> for Vec3 {
 	}
 	
 	///Performs a componentwise divtiplication.
-	fn component_div(&self, rhs: &Vec3) -> Vec3 {
+	fn component_mul(&self, rhs: &Vec3) -> Vec3 {
 		let mut result = self.clone();
 		for i in 0..3 {
 			result.data[i] *= rhs.data[i];
@@ -143,7 +143,7 @@ impl VecOps<Vec3> for Vec3 {
 		result
 	}
 	fn component_div(&self, rhs: &Vec3) -> Vec3 {
-		self.component_div(&rhs.as_reciprocal())
+		self.component_mul(&rhs.as_reciprocal())
 	}
 	
 	///Gets the maximum element in this vector.

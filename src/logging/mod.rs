@@ -1,5 +1,8 @@
 //Module definition for logging.
 
+//Log error enum.
+pub mod log_error;
+
 //The logging subsystem.
 pub mod logger;
 

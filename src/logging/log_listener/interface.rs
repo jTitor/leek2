@@ -5,7 +5,7 @@ use std::fmt;
 use std::io::Write;
 use std::sync::Mutex;
 use std::cell::RefCell;
-use self::log::{LogRecord, LogLevel, LogMetadata};
+use self::log::{LogRecord, LogLevel};//, LogMetadata};
 use ::logging::log_listener::listener_error::ListenerError;
 
 ///Base class for log listeners.

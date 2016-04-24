@@ -4,18 +4,14 @@
 extern crate log;
 
 use self::log::{LogRecord, LogLevel, LogMetadata};
-use ::logging::log_listener::interface::LogListen;
 use std::fs::File;
+use std::io::Write;
 use std::fs::OpenOptions;
 use std::fmt;
-
-///Possible error codes for failures in log methods.
-#[derive(PartialEq, Eq, Debug)]
-pub enum LogError {
-	LoggerOutputNotReady,
-	ListenerNotReady,
-	ListenerNotAttached,
-}
+use std::sync::Mutex;
+use std::cell::RefCell;
+use ::logging::log_listener::interface::LogListen;
+use ::logging::log_error::LogError;
 
 ///Handles logging requests.
 pub struct Logger<'a> {
@@ -53,7 +49,13 @@ impl<'a> Logger<'a> {
 		//For all listeners:
 		for listener in self.listeners.iter() {
 			//Call the listener's log method.
-			listener.on_log(record);
+			let result = listener.on_log(record);
+			match result {
+				Ok(_) => {},
+				_ => {
+					//An error ocurred, we could notify here in debug mode.
+				}
+			}
 		}
 	}
 
@@ -93,34 +95,87 @@ impl<'a> Logger<'a> {
 		self.listeners.clear();
 	}
 
+	pub fn can_fit(&self, record: &LogRecord) -> bool {
+		//TODO
+		if record.args().to_string().len() >= self.buffer_size {
+			return false;
+		}
+		false
+	}
+
+	///Writes given string buffer to the output file without posting it to the buffer.
+	pub fn dump(&mut self, buffer: &[u8]) {
+		let result = self.out_file.write(buffer);
+		match result {
+			Ok(_) => {},
+			_ => {
+				//Couldn't write to file, report debug error
+			}
+		}
+	}
+
 	///Flushes the buffer to the output file.
 	pub fn flush(&mut self) {
-		//TODO
+		//Dump buffer to output file.
+		//self.dump(self.buffer.as_ref());
+		let result = self.out_file.write(&self.buffer);
+		match result {
+			Ok(_) => {},
+			_ => {
+				//Couldn't write to file, report debug error
+			}
+		}
+
+		//Reset buffer head to the buffer's start.
+		self.buffer_head = 0;
 	}
 }
 
-impl<'a> log::Log for Logger<'a> {
+pub struct LogHolder<'a> {
+	pub logger: Mutex<RefCell<Logger<'a>>>
+}
+
+impl<'a> log::Log for LogHolder<'a> {
 	///Determines if the given log entry should be logged. 
 	fn enabled(&self, metadata: &LogMetadata) -> bool {
-		//Is this entry's level below our maximum filter level?
-		metadata.level() <= self.level
+		let result = self.logger.lock();
+		match result {
+			Ok(cell) => {
+				//Is this entry's level below our maximum filter level?
+				return metadata.level() <= cell.borrow().level;
+			},
+			_ => {
+				//Couldn't get logger, assume we can't log.
+				return false;
+			}
+		}
 	}
 	
 	///Does actual work of printing a log entry.
 	fn log(&self, record: &LogRecord) {
-		//Are we supposed to log this entry?
-		if self.enabled(record.metadata()) {
-			//If so, broadcast it to any readers.
-			for listener in self.listeners.iter() {
-				listener.on_log(record);
+		let result = self.logger.lock();
+		match result {
+			Ok(cell) => {
+				//Are we supposed to log this entry?
+				if self.enabled(record.metadata()) {
+					let mut logger = cell.borrow_mut();
+					//If so, broadcast it to any readers.
+					logger.broadcast(record);
+					//Can the buffer fit this line?
+					if !logger.can_fit(record) {
+						//If NOT, flush the buffer.
+						logger.flush();
+						//Dump line to output file.
+						logger.dump(record.args().to_string().as_bytes());
+					}
+					//Otherwise write this to the buffer, updating the buffer head.
+					unimplemented!();
+				}
+			},
+			_ => {
+				//Couldn't get the logger.
+				return;
 			}
-			//Can the buffer fit this line?
-				//If NOT:
-				//Dump buffer to output file.
-				//Dump line to output file.
-				//Reset buffer head to the buffer's start.
-			//Otherwise write this to the buffer, updating the buffer head.
-			unimplemented!();
 		}
 	}
 
@@ -154,7 +209,7 @@ impl LogBuilder {
 		self
 	}
 
-	pub fn build(&self, out_file_path: &str) -> Result<Logger, LogError> {
+	pub fn build(&self, out_file_path: &str) -> Result<LogHolder, LogError> {
 		//Connect to our output file.
 		//If that failed, abort here.
 		let file = OpenOptions::new()
@@ -166,13 +221,15 @@ impl LogBuilder {
 		match file {
 			Ok(opened_file) => {
 				//Otherwise, construct our Logger now.
-				return Ok(Logger {
-					level: self.level,
-					out_file: opened_file,
-					buffer: vec![0; self.buffer_size].into_boxed_slice(),
-					buffer_head: 0,
-					buffer_size: self.buffer_size,
-					listeners: vec![]
+				return Ok(LogHolder{
+						logger: Mutex::new(RefCell::new(Logger {
+						level: self.level,
+						out_file: opened_file,
+						buffer: vec![0; self.buffer_size].into_boxed_slice(),
+						buffer_head: 0,
+						buffer_size: self.buffer_size,
+						listeners: vec![]
+					}))
 				});
 			},
 			_ => {
