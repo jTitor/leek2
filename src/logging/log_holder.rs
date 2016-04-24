@@ -3,15 +3,19 @@
 //Use standard library's Log crate.
 extern crate log;
 
+use std::sync::{Mutex, Arc};
+use std::cell::RefCell;
+//use std::rc::Rc;
 use self::log::{LogRecord, LogLevel, LogMetadata, LogLevelFilter, MaxLogLevelFilter};
-use ::logging::logger::Logger;
+use ::logging::logger::{Logger, LoggerBuilder};
+use ::logging::log_error::LogError;
 
-pub struct LogHolder<'a> {
-	pub logger: Mutex<RefCell<Logger<'a>>>,
-	log_filter: &'a MaxLogLevelFilter
+pub struct LogHolder {
+	pub logger: Mutex<RefCell<Logger>>,
+	log_filter: Arc<MaxLogLevelFilter>
 }
 
-impl<'a> log::Log for LogHolder<'a> {
+impl log::Log for LogHolder {
 	///Determines if the given log entry should be logged. 
 	fn enabled(&self, metadata: &LogMetadata) -> bool {
 		let result = self.logger.lock();
@@ -58,7 +62,7 @@ impl<'a> log::Log for LogHolder<'a> {
 	//TODO: Add shutdown code that flushes buffer.
 }
 
-impl<'a> LogHolder<'a> {
+impl LogHolder {
 	pub fn get_level(&self) -> Result<LogLevel, LogError> {
 		let lock = try!(LogError::from_lock_result(self.logger.lock()));
 		let logger = lock.borrow();
@@ -68,7 +72,7 @@ impl<'a> LogHolder<'a> {
 	pub fn set_level(&self, level: LogLevel) -> Result<(), LogError> {
 		//First set the logger's level.
 		let lock = try!(LogError::from_lock_result(self.logger.lock()));
-		let logger = lock.borrow();
+		let mut logger = lock.borrow_mut();
 		logger.level = level;
 		//Now set the log filter's level with it.
 		self.log_filter.set(LogHolder::level_to_filter(level));
@@ -82,7 +86,6 @@ impl<'a> LogHolder<'a> {
 			LogLevel::Warn => { return LogLevelFilter::Warn; },
 			LogLevel::Error => { return LogLevelFilter::Error; },
 			LogLevel::Info => { return LogLevelFilter::Info; },
-			_ => { return LogLevelFilter::Off; }
 		}
 	}
 
@@ -96,6 +99,11 @@ impl<'a> LogHolder<'a> {
 		//Now actually attach the logger.
 		log::set_logger(|max_log_level| {
 			max_log_level.set(LogHolder::level_to_filter(level));
+			let holder_instance = Box::new(LogHolder{
+				logger: Mutex::new(RefCell::new(build)),
+				log_filter: Arc::new(max_log_level)
+			});
+			holder_instance
 		});
 		Ok(())
 	}

@@ -7,13 +7,14 @@ use self::log::{LogRecord, LogLevel, LogMetadata};
 use std::fs::{File, OpenOptions};
 use std::io::Write;
 use std::fmt;
-use std::sync::Mutex;
+use std::sync::{Mutex, Arc};
 use std::cell::RefCell;
+use std::collections::HashMap;
 use ::logging::log_listener::interface::LogListen;
 use ::logging::log_error::LogError;
 
 ///Handles logging requests.
-pub struct Logger<'a> {
+pub struct Logger {
 	///The maximum filter level.
 	///If an entry has a level higher than this,
 	///it won't be logged to the buffer at all.
@@ -27,10 +28,11 @@ pub struct Logger<'a> {
 	///The length of the log buffer in characters.
 	pub buffer_size: usize,
 	///The LogListeners that are listening to this Logger.
-	listeners: Vec<&'a LogListen>
+	listeners: HashMap<u32, Arc<LogListen+Sized>>,
+	listener_next_id: u32
 }
 
-impl<'a> fmt::Debug for Logger<'a> {
+impl fmt::Debug for Logger {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f,
         	"Logger {{ level: {}, buffer_size: {} }}",
@@ -41,13 +43,12 @@ impl<'a> fmt::Debug for Logger<'a> {
 //TODO: It's more idiomatic to return a Result struct
 //when you're expecting to return error codes;
 //refactor methods to return Results instead.
-impl<'a> Logger<'a> {
-
+impl Logger {
 	///Sends the given log record to all LogListeners
 	///that are attached to this Logger.
-	fn broadcast(&self, record: &LogRecord) {
+	pub fn broadcast(&self, record: &LogRecord) {
 		//For all listeners:
-		for listener in self.listeners.iter() {
+		for (_, listener) in &self.listeners {
 			//Call the listener's log method.
 			let result = listener.on_log(record);
 			match result {
@@ -62,31 +63,30 @@ impl<'a> Logger<'a> {
 	///Links a LogListener to this Logger's buffer.
 	///The LogListener will relay any log entries
 	///recorded by the Logger.
-	///Returns: Result::Ok if the LogListener was successfully attached,
+	///Returns: The listener's id in the logger if the LogListener was successfully attached,
 	///Result::Err otherwise
 	///(for instance, a listener's output file couldn't be opened).
-	pub fn attach(&mut self, listener: &'a LogListen) -> Result<(), LogError> {
+	pub fn attach(&mut self, listener: Arc<LogListen + Sized>) -> Result<u32, LogError> {
 		//Is this listener ready for attachment?
 		//	If not, abort and return error.
 		//Add this listener to the attached list.
-		self.listeners.push(listener);
-		Ok(())
+		self.listeners.insert(self.listener_next_id, listener);
+		let result = self.listener_next_id;
+		//Update the listener id.
+		self.listener_next_id += 1;		
+		Ok((result))
 	}
 	
 	///Unlinks a specific LogListener from this Logger's buffer.
-	pub fn detach(&mut self, listener: &LogListen) -> Result<(), LogError> {
+	pub fn detach(&mut self, listener_id: u32) -> Result<(), LogError> {
 		//Remove this listener from the attached list
 		//if it was in the list in the first place.
-		let listener_pos = self.listeners.binary_search_by(|probe| (probe as *const &LogListen).cmp(&(&listener as *const &LogListen)));
-		match listener_pos {
-			Ok(idx) => {
-				self.listeners.remove(idx);
-				return Ok(());
-			},
-			_ => {
-				return Err(LogError::ListenerNotAttached);
-			}
+		if !self.listeners.contains_key(&listener_id) {
+			return Err(LogError::ListenerNotAttached);
 		}
+
+		self.listeners.remove(&listener_id);
+		Ok(())
 	}
 	
 	///Unlinks *all* LogListeners from this Logger's buffer.
@@ -177,7 +177,8 @@ impl LoggerBuilder {
 							buffer: vec![0; self.buffer_size].into_boxed_slice(),
 							buffer_head: 0,
 							buffer_size: self.buffer_size,
-							listeners: vec![]
+							listeners: HashMap::new(),
+							listener_next_id: 0
 						}
 					);
 			},
