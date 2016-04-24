@@ -1,12 +1,11 @@
 ///The logging subsystem.
 
-//Use standard library's Log trait.
+//Use standard library's Log crate.
 extern crate log;
 
 use self::log::{LogRecord, LogLevel, LogMetadata};
-use std::fs::File;
+use std::fs::{File, OpenOptions};
 use std::io::Write;
-use std::fs::OpenOptions;
 use std::fmt;
 use std::sync::Mutex;
 use std::cell::RefCell;
@@ -43,6 +42,7 @@ impl<'a> fmt::Debug for Logger<'a> {
 //when you're expecting to return error codes;
 //refactor methods to return Results instead.
 impl<'a> Logger<'a> {
+
 	///Sends the given log record to all LogListeners
 	///that are attached to this Logger.
 	fn broadcast(&self, record: &LogRecord) {
@@ -131,76 +131,25 @@ impl<'a> Logger<'a> {
 	}
 }
 
-pub struct LogHolder<'a> {
-	pub logger: Mutex<RefCell<Logger<'a>>>
-}
-
-impl<'a> log::Log for LogHolder<'a> {
-	///Determines if the given log entry should be logged. 
-	fn enabled(&self, metadata: &LogMetadata) -> bool {
-		let result = self.logger.lock();
-		match result {
-			Ok(cell) => {
-				//Is this entry's level below our maximum filter level?
-				return metadata.level() <= cell.borrow().level;
-			},
-			_ => {
-				//Couldn't get logger, assume we can't log.
-				return false;
-			}
-		}
-	}
-	
-	///Does actual work of printing a log entry.
-	fn log(&self, record: &LogRecord) {
-		let result = self.logger.lock();
-		match result {
-			Ok(cell) => {
-				//Are we supposed to log this entry?
-				if self.enabled(record.metadata()) {
-					let mut logger = cell.borrow_mut();
-					//If so, broadcast it to any readers.
-					logger.broadcast(record);
-					//Can the buffer fit this line?
-					if !logger.can_fit(record) {
-						//If NOT, flush the buffer.
-						logger.flush();
-						//Dump line to output file.
-						logger.dump(record.args().to_string().as_bytes());
-					}
-					//Otherwise write this to the buffer, updating the buffer head.
-					unimplemented!();
-				}
-			},
-			_ => {
-				//Couldn't get the logger.
-				return;
-			}
-		}
-	}
-
-	//TODO: Add shutdown code that flushes buffer.
-}
-
-pub struct LogBuilder {
+pub struct LoggerBuilder {
 	level: LogLevel,
 	buffer_size: usize,
 }
 
-impl LogBuilder {
-	pub fn new() -> LogBuilder {
-		LogBuilder {
+impl LoggerBuilder {
+	pub fn new() -> LoggerBuilder {
+		LoggerBuilder {
 			level: LogLevel::Info,
 			buffer_size: 1024
 		}
 	}
 
-	pub fn level(&mut self, val: LogLevel) -> &mut LogBuilder {
+	pub fn level(&mut self, val: LogLevel) -> &mut LoggerBuilder {
 		self.level = val;
 		self
 	}
 
-	pub fn buffer_size(&mut self, val: usize) -> &mut LogBuilder {
+	pub fn buffer_size(&mut self, val: usize) -> &mut LoggerBuilder {
 		//Buffers can't be zero-sized, but anything else goes.
 		if val <= 0 {
 			return self;
@@ -209,7 +158,7 @@ impl LogBuilder {
 		self
 	}
 
-	pub fn build(&self, out_file_path: &str) -> Result<LogHolder, LogError> {
+	pub fn build(&self, out_file_path: &str) -> Result<Logger, LogError> {
 		//Connect to our output file.
 		//If that failed, abort here.
 		let file = OpenOptions::new()
@@ -221,16 +170,16 @@ impl LogBuilder {
 		match file {
 			Ok(opened_file) => {
 				//Otherwise, construct our Logger now.
-				return Ok(LogHolder{
-						logger: Mutex::new(RefCell::new(Logger {
-						level: self.level,
-						out_file: opened_file,
-						buffer: vec![0; self.buffer_size].into_boxed_slice(),
-						buffer_head: 0,
-						buffer_size: self.buffer_size,
-						listeners: vec![]
-					}))
-				});
+				return Ok(
+					Logger {
+							level: self.level,
+							out_file: opened_file,
+							buffer: vec![0; self.buffer_size].into_boxed_slice(),
+							buffer_head: 0,
+							buffer_size: self.buffer_size,
+							listeners: vec![]
+						}
+					);
 			},
 			_ => {
 				return Err(LogError::LoggerOutputNotReady);
