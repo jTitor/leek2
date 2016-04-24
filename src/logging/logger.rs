@@ -3,12 +3,11 @@
 //Use standard library's Log crate.
 extern crate log;
 
-use self::log::{LogRecord, LogLevel, LogMetadata};
+use self::log::{LogRecord, LogLevel};
 use std::fs::{File, OpenOptions};
 use std::io::Write;
 use std::fmt;
-use std::sync::{Mutex, Arc};
-use std::cell::RefCell;
+use std::sync::Arc;
 use std::collections::HashMap;
 use ::logging::log_listener::interface::LogListen;
 use ::logging::log_error::LogError;

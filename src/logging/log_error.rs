@@ -1,4 +1,6 @@
 ///Possible error codes for failures in log methods.
+extern crate log;
+
 use std::sync;
 use std::io;
 
@@ -6,8 +8,9 @@ use std::io;
 pub enum LogError {
 	LoggerMutexNotReady,
 	LoggerOutputNotReady,
+	LoggerInitFailed,
 	ListenerNotReady,
-	ListenerNotAttached,
+	ListenerNotAttached
 }
 
 impl LogError {
@@ -22,6 +25,13 @@ impl LogError {
 		match result {
 			Ok(value) => { Ok(value) },
 			_ => { Err(LogError::LoggerOutputNotReady) }
+		}	
+	}
+
+	pub fn from_log_result(result: Result<(), log::SetLoggerError>) -> Result<(), LogError> {
+		match result {
+			Ok(()) => { Ok(()) },
+			_ => { Err(LogError::LoggerInitFailed) }
 		}	
 	}
 }

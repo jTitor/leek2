@@ -97,14 +97,18 @@ impl LogHolder {
 				.buffer_size(buffer_size)
 				.build(out_file_path));
 		//Now actually attach the logger.
-		log::set_logger(|max_log_level| {
-			max_log_level.set(LogHolder::level_to_filter(level));
-			let holder_instance = Box::new(LogHolder{
-				logger: Mutex::new(RefCell::new(build)),
-				log_filter: Arc::new(max_log_level)
-			});
-			holder_instance
-		});
+		try!(LogError::from_log_result(
+				log::set_logger(|max_log_level| {
+						max_log_level.set(LogHolder::level_to_filter(level));
+						let holder_instance = Box::new(LogHolder{
+							logger: Mutex::new(RefCell::new(build)),
+							log_filter: Arc::new(max_log_level)
+						});
+						holder_instance
+					}
+				)
+			)
+		);
 		Ok(())
 	}
 
