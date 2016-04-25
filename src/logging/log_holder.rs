@@ -3,7 +3,7 @@
 //Use standard library's Log crate.
 extern crate log;
 
-use std::sync::{Mutex, Arc};
+use std::sync::{Mutex, Arc, Weak};
 use std::cell::RefCell;
 //use std::rc::Rc;
 use self::log::{LogRecord, LogLevel, LogMetadata, LogLevelFilter, MaxLogLevelFilter};
@@ -90,12 +90,13 @@ impl LogHolder {
 	}
 
 	///Creates a global LogHolder instance and attaches it to log::Log.
-	fn init_global(level: LogLevel, buffer_size: usize, out_file_path: &str) -> Result<(), LogError> {
+	fn init_global(level: LogLevel, buffer_size: usize, out_file_path: &str) -> Result<Weak<LogHolder>, LogError> {
 		//First try to build the logger.
 		let build = try!(LoggerBuilder::new()
 				.level(level)
 				.buffer_size(buffer_size)
 				.build(out_file_path));
+		let mut result: Weak<Box<LogHolder>>;
 		//Now actually attach the logger.
 		try!(LogError::from_log_result(
 				log::set_logger(|max_log_level| {
@@ -104,12 +105,13 @@ impl LogHolder {
 							logger: Mutex::new(RefCell::new(build)),
 							log_filter: Arc::new(max_log_level)
 						});
+						result = Weak::mew(holder_instance);
 						holder_instance
 					}
 				)
 			)
 		);
-		Ok(())
+		Ok(result)
 	}
 
 	///Detaches the global instance from log::Log.
