@@ -44,6 +44,7 @@ pub trait LogListen : Send + Sync {
 ///release logging resources before/after logging activities.
 pub trait ListenerInit : LogListen {
 	///Called to shut down the listener.
+	///TODO: Drop handles this!!! Refactor immediately!
 	fn shutdown(&self);
 }
 
