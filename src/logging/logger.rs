@@ -38,9 +38,6 @@ impl fmt::Debug for Logger {
     }
 }
 
-//TODO: It's more idiomatic to return a Result struct
-//when you're expecting to return error codes;
-//refactor methods to return Results instead.
 impl Logger {
 	///Sends the given log record to all LogListeners
 	///that are attached to this Logger.
@@ -110,8 +107,11 @@ impl Logger {
 	///(for instance, a listener's output file couldn't be opened).
 	pub fn attach(&mut self, listener: Arc<LogListen + Sized>) -> Result<u32, LogError> {
 		//Is this listener ready for attachment?
-		//	If not, abort and return error.
-		//Add this listener to the attached list.
+		if !listener.output_ready {
+			return Err(LogError::ListenerNotReady);
+		}
+
+		//Otherwise add this listener to the attached list.
 		self.listeners.insert(self.listener_next_id, listener);
 		let result = self.listener_next_id;
 		//Update the listener id.

@@ -3,9 +3,10 @@ extern crate leek2;
 #[macro_use]
 extern crate log;
 
+use std::fs;
+use std::sync::Arc;
 use leek2::logging::logger::{Logger, LoggerBuilder};
 use leek2::logging::log_element::LogSeverity;
-use std::fs;
 
 #[test]
 fn test_logging() {
@@ -22,11 +23,11 @@ fn test_logging() {
 		//Attach a terminal listener.
 		let term_listener = try!(TerminalListenerBuilder.new()
 			.build());
-		log.attach(term_listener);
+		log.attach(Arc::new(term_listener));
 		//Attach a file listener.
 		let file_listener = try!(FileListenerBuilder.new()
 			.build(file_listener_path));
-		log.attach(file_listener);
+		log.attach(Arc::new(file_listener));
 
 		//Post all different log messages.
 		let log_tag = "Test";
