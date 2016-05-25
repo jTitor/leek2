@@ -1,7 +1,7 @@
 ///Log listener that prints to a file.
 extern crate log;
 
-use self::log::LogLevel;
+use ::logging::log_element::LogSeverity;
 use ::logging::log_listener::interface::{ListenerBase, ListenerInit};
 use std::fs::{File, OpenOptions};
 use std::sync::Mutex;
@@ -19,17 +19,17 @@ impl ListenerInit for FileListener {
 ///Builder for FileListener instances.
 #[derive(Debug)]
 pub struct FileListenerBuilder {
-	level: LogLevel
+	level: LogSeverity
 }
 
 impl FileListenerBuilder {
 	pub fn new() -> FileListenerBuilder {
 		FileListenerBuilder {
-			level: LogLevel::Info
+			level: LogSeverity::Info
 		}
 	}
 	
-	pub fn level(&mut self, val: LogLevel) -> &mut FileListenerBuilder {
+	pub fn level(&mut self, val: LogSeverity) -> &mut FileListenerBuilder {
 		self.level = val;
 		self
 	}

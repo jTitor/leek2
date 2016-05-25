@@ -5,7 +5,7 @@ use std::fmt;
 use std::io::Write;
 use std::sync::Mutex;
 use std::cell::RefCell;
-use self::log::{LogRecord, LogLevel};//, LogMetadata};
+use ::logging::log_element::{LogSeverity, LogElement};
 use ::logging::log_listener::listener_error::ListenerError;
 
 ///Base class for log listeners.
@@ -15,7 +15,7 @@ pub struct ListenerBase<T> where T: Write + Send {
 	///The output file we're connected to.
 	pub output: Mutex<RefCell<T>>,
 	///The maximum log level to listen to.
-	pub level: LogLevel,
+	pub level: LogSeverity,
 	///If true, output is connected and we can write
 	///to it; otherwise the output is not connected
 	///and attempts to write will probably cause a panic.
@@ -37,7 +37,7 @@ pub trait LogListen : Send + Sync {
 	///This is only safe to call if output_ready == true.
 	/// # Arguments
 	/// * record: The newest log entry sent from the Logger.
-	fn on_log(&self, record: &LogRecord) -> Result<(), ListenerError>;
+	fn on_log(&self, record: &LogElement) -> Result<(), ListenerError>;
 }
 
 ///Allows implementors to initialize and
@@ -51,12 +51,12 @@ pub trait ListenerInit : LogListen {
 //Most listeners just need to output to something that implements
 //Write; how we get our Write reference is another story, hence the ListenerInit trait.
 impl<T> LogListen for ListenerBase<T> where T: Write + Send {
-	fn on_log(&self, record: &LogRecord) -> Result<(), ListenerError> {
+	fn on_log(&self, record: &LogElement) -> Result<(), ListenerError> {
 		//Format the entry into an output string.
 		let out_str = format!("{} {}: {}",
-			record.location().module_path(),
-			record.level(),
-			record.args());
+			record.tag,
+			record.severity,
+			record.text);
 		//Actually write the log entry.
 		let output = try!(ListenerError::from_lock_result(self.output.lock()));
 		try!(ListenerError::from_io_result(output.borrow_mut().write(out_str.as_bytes())));
@@ -66,7 +66,7 @@ impl<T> LogListen for ListenerBase<T> where T: Write + Send {
 
 impl<T> ListenerBase<T> where T: Write + Send {
 	///Constructs the base elements of a listener.
-	pub fn new(output: T, level: LogLevel) -> ListenerBase<T> {
+	pub fn new(output: T, level: LogSeverity) -> ListenerBase<T> {
 		ListenerBase {
 			output: Mutex::new(RefCell::new(output)),
 			level: level,
