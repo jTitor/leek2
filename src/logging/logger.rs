@@ -56,7 +56,7 @@ impl Logger {
 	}
 
 	///Does actual work of printing a log entry.
-	pub fn log(&self, text: String, tag: String, severity: LogSeverity) {
+	pub fn log(&mut self, text: String, tag: String, severity: LogSeverity) {
 		//Don't bother if this is under our severity.
 		if severity > self.level {
 			return;
@@ -64,39 +64,39 @@ impl Logger {
 
 		//Otherwise, broadcast it to any readers.
 		let record = LogElement{text: text, tag: tag, severity: severity};
-		broadcast(record);
+		self.broadcast(&record);
 		//Can the buffer fit this line?
-		if !can_fit(record) {
+		if !self.can_fit(&record) {
 			//If NOT, flush the buffer.
-			flush();
+			self.flush();
 			//Dump line to output file.
-			dump(record.text.to_string().as_bytes());
+			self.dump(record.text.to_string().as_bytes());
 		}
 	}
 
 	///Logs a verbose message.
-	pub fn log_v(&self, text: String, tag: String) {
-		log(text, tag, LogSeverity::Verbose);
+	pub fn log_v(&mut self, text: String, tag: String) {
+		self.log(text, tag, LogSeverity::Verbose);
 	}
 
 	///Logs a debug message.
-	pub fn log_d(&self, text: String, tag: String) {
-		log(text, tag, LogSeverity::Debug);
+	pub fn log_d(&mut self, text: String, tag: String) {
+		self.log(text, tag, LogSeverity::Debug);
 	}
 
 	///Logs a information message.
-	pub fn log_i(&self, text: String, tag: String) {
-		log(text, tag, LogSeverity::Info);
+	pub fn log_i(&mut self, text: String, tag: String) {
+		self.log(text, tag, LogSeverity::Info);
 	}
 
 	///Logs a warning message.
-	pub fn log_w(&self, text: String, tag: String) {
-		log(text, tag, LogSeverity::Warning);
+	pub fn log_w(&mut self, text: String, tag: String) {
+		self.log(text, tag, LogSeverity::Warning);
 	}
 
 	///Logs an error message.
-	pub fn log_e(&self, text: String, tag: String) {
-		log(text, tag, LogSeverity::Error);
+	pub fn log_e(&mut self, text: String, tag: String) {
+		self.log(text, tag, LogSeverity::Error);
 	}
 
 	///Links a LogListener to this Logger's buffer.
@@ -107,9 +107,9 @@ impl Logger {
 	///(for instance, a listener's output file couldn't be opened).
 	pub fn attach(&mut self, listener: Arc<LogListen + Sized>) -> Result<u32, LogError> {
 		//Is this listener ready for attachment?
-		if !listener.output_ready {
-			return Err(LogError::ListenerNotReady);
-		}
+		//if !listener.output_ready {
+		//	return Err(LogError::ListenerNotReady);
+		//}
 
 		//Otherwise add this listener to the attached list.
 		self.listeners.insert(self.listener_next_id, listener);
@@ -141,11 +141,11 @@ impl Logger {
 	///Releases all resources used by this logger.
 	pub fn shutdown(&mut self) {
 		//Detach listeners, since we're going down.
-		detach_all();
+		self.detach_all();
 		//Can print a message that logger is closing...
 
 		//Flush anything remaining in the buffer.
-		flush();
+		self.flush();
 
 		//...and once again we don't explicitly close files,
 		//so we're done.
@@ -153,7 +153,7 @@ impl Logger {
 
 	pub fn can_fit(&self, record: &LogElement) -> bool {
 		//TODO
-		if record.args().to_string().len() >= self.buffer_size {
+		if record.text.to_string().len() >= self.buffer_size {
 			return false;
 		}
 		false
@@ -189,7 +189,7 @@ impl Logger {
 
 impl Drop for Logger {
 	fn drop(&mut self) {
-		shutdown();
+		self.shutdown();
 	}
 }
 
