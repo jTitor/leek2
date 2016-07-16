@@ -27,14 +27,14 @@ impl fmt::Display for LogSeverity {
 }
 
 #[derive(Debug)]
-pub struct LogElement {
+pub struct LogElement<'a> {
 	pub severity : LogSeverity,
 	//Actual log message.
-	pub text : String,
-	pub tag : String
+	pub text : &'a str,
+	pub tag : &'a str
 }
 
-impl fmt::Display for LogElement {
+impl<'a> fmt::Display for LogElement<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "({}, {}, {})", self.severity, self.tag, self.text)
     }

@@ -35,7 +35,7 @@ impl FileListenerBuilder {
 	}
 
 	///Builds a FileListener instance from the given settings.
-	pub fn build(&self, path: String) -> Result<FileListener, ()> {
+	pub fn build(&self, path: &str) -> Result<FileListener, ()> {
 		//Open the given file path.
 		let file = OpenOptions::new()
 					.write(true)

@@ -56,7 +56,7 @@ impl Logger {
 	}
 
 	///Does actual work of printing a log entry.
-	pub fn log(&mut self, text: String, tag: String, severity: LogSeverity) {
+	pub fn log(&mut self, text: &str, tag: &str, severity: LogSeverity) {
 		//Don't bother if this is under our severity.
 		if severity > self.level {
 			return;
@@ -75,27 +75,27 @@ impl Logger {
 	}
 
 	///Logs a verbose message.
-	pub fn log_v(&mut self, text: String, tag: String) {
+	pub fn log_v(&mut self, text: &str, tag: &str) {
 		self.log(text, tag, LogSeverity::Verbose);
 	}
 
 	///Logs a debug message.
-	pub fn log_d(&mut self, text: String, tag: String) {
+	pub fn log_d(&mut self, text: &str, tag: &str) {
 		self.log(text, tag, LogSeverity::Debug);
 	}
 
 	///Logs a information message.
-	pub fn log_i(&mut self, text: String, tag: String) {
+	pub fn log_i(&mut self, text: &str, tag: &str) {
 		self.log(text, tag, LogSeverity::Info);
 	}
 
 	///Logs a warning message.
-	pub fn log_w(&mut self, text: String, tag: String) {
+	pub fn log_w(&mut self, text: &str, tag: &str) {
 		self.log(text, tag, LogSeverity::Warning);
 	}
 
 	///Logs an error message.
-	pub fn log_e(&mut self, text: String, tag: String) {
+	pub fn log_e(&mut self, text: &str, tag: &str) {
 		self.log(text, tag, LogSeverity::Error);
 	}
 
