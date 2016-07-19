@@ -33,7 +33,7 @@ fn test_logging() {
 
 		//Post all different log messages.
 		let log_tag = "Test";
-		log.log_v("Trace message; should not be visible", log_tag);
+		log.log_v("Trace message; should not be visible.", log_tag);
 		log.log_d("Debug message.", log_tag);
 		log.log_i("Info message.", log_tag);
 		log.log_w("Warning message!", log_tag);

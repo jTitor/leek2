@@ -72,6 +72,8 @@ impl Logger {
 			//Dump line to output file.
 			self.dump(record.text.to_string().as_bytes());
 		}
+		//Otherwise we update the buffer.
+		assert!(false, "log() needs implementing: copy string to buffer and update buffer head");
 	}
 
 	///Logs a verbose message.
@@ -173,7 +175,8 @@ impl Logger {
 	///Flushes the buffer to the output file.
 	pub fn flush(&mut self) {
 		//Dump buffer to output file.
-		//self.dump(self.buffer.as_ref());
+		//TODO: Remember - only write from the head to the end!
+		assert!(false, "flush() needs implementing: only write from head to end of buffer");
 		let result = self.out_file.write(&self.buffer);
 		match result {
 			Ok(_) => {},

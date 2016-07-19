@@ -37,6 +37,7 @@ pub trait LogListen : Send + Sync {
 	///This is only safe to call if output_ready == true.
 	/// # Arguments
 	/// * record: The newest log entry sent from the Logger.
+	///Operates like println!() - the string should have a newline appended.
 	fn on_log(&self, record: &LogElement) -> Result<(), ListenerError>;
 }
 
@@ -53,7 +54,7 @@ pub trait ListenerInit : LogListen {
 impl<T> LogListen for ListenerBase<T> where T: Write + Send {
 	fn on_log(&self, record: &LogElement) -> Result<(), ListenerError> {
 		//Format the entry into an output string.
-		let out_str = format!("{} {}: {}",
+		let out_str = format!("{} {}: {}\n",
 			record.tag,
 			record.severity,
 			record.text);
