@@ -26,7 +26,7 @@ pub struct Logger {
 	///The length of the log buffer in characters.
 	pub buffer_size: usize,
 	///The LogListeners that are listening to this Logger.
-	listeners: HashMap<u32, Arc<LogListen+Sized>>,
+	listeners: HashMap<u32, Arc<LogListen>>,
 	listener_next_id: u32
 }
 
@@ -107,7 +107,7 @@ impl Logger {
 	///Returns: The listener's id in the logger if the LogListener was successfully attached,
 	///Result::Err otherwise
 	///(for instance, a listener's output file couldn't be opened).
-	pub fn attach(&mut self, listener: Arc<LogListen + Sized>) -> Result<u32, LogError> {
+	pub fn attach(&mut self, listener: Arc<LogListen>) -> Result<u32, LogError> {
 		//Is this listener ready for attachment?
 		//if !listener.output_ready {
 		//	return Err(LogError::ListenerNotReady);
