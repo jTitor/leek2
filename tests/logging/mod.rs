@@ -18,7 +18,7 @@ fn test_logging() {
 		let mut log = LoggerBuilder::new()
 			.level(LogSeverity::Debug)
 			.buffer_size(1024)
-			.build(log_path).unwrap();//LogHolder::init_global(LogLevel::Debug, 1024, "test.log");	
+			.build(log_path).unwrap();
 
 		//Attach a terminal listener.
 		let term_listener = Arc::new(TerminalListenerBuilder::new()

@@ -158,8 +158,7 @@ impl Logger {
 	}
 
 	pub fn can_fit(&self, record: &LogElement) -> bool {
-		//TODO
-		if record.text.to_string().len() >= self.buffer_size {
+		if self.buffer_head + record.text.to_string().len() > self.buffer_size {
 			return false;
 		}
 		false
