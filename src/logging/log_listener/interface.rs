@@ -41,14 +41,6 @@ pub trait LogListen : Send + Sync {
 	fn on_log(&self, record: &LogElement) -> Result<(), ListenerError>;
 }
 
-///Allows implementors to initialize and
-///release logging resources before/after logging activities.
-pub trait ListenerInit : LogListen {
-	///Called to shut down the listener.
-	///TODO: Drop handles this!!! Refactor immediately!
-	fn shutdown(&self);
-}
-
 //Most listeners just need to output to something that implements
 //Write; how we get our Write reference is another story, hence the ListenerInit trait.
 impl<T> LogListen for ListenerBase<T> where T: Write + Send {

@@ -2,18 +2,12 @@
 extern crate log;
 
 use ::logging::log_element::LogSeverity;
-use ::logging::log_listener::interface::{ListenerBase, ListenerInit};
+use ::logging::log_listener::interface::ListenerBase;
 use std::io;
 use std::sync::Mutex;
 use std::cell::RefCell;
 
 pub type TerminalListener = ListenerBase<io::Stdout>;
-
-impl ListenerInit for TerminalListener {
-	fn shutdown(&self) {
-		//Do nothing.
-	}
-}
 
 ///Builder for TerminalListener instances.
 #[derive(Debug)]

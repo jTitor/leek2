@@ -2,19 +2,12 @@
 extern crate log;
 
 use ::logging::log_element::LogSeverity;
-use ::logging::log_listener::interface::{ListenerBase, ListenerInit};
+use ::logging::log_listener::interface::ListenerBase;
 use std::fs::{File, OpenOptions};
 use std::sync::Mutex;
 use std::cell::RefCell;
 
 pub type FileListener = ListenerBase<File>;
-
-impl ListenerInit for FileListener {
-	fn shutdown(&self) {
-		//...The file closes itself???
-		//No need to do anything, apparently.
-	}
-}
 
 ///Builder for FileListener instances.
 #[derive(Debug)]
