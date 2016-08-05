@@ -58,7 +58,7 @@ impl Logger {
 	///Does actual work of printing a log entry.
 	pub fn log(&mut self, text: &str, tag: &str, severity: LogSeverity) {
 		//Don't bother if this is under our severity.
-		if severity > self.level {
+		if severity < self.level {
 			return;
 		}
 
@@ -70,10 +70,14 @@ impl Logger {
 			//If NOT, flush the buffer.
 			self.flush();
 			//Dump line to output file.
-			self.dump(record.text.to_string().as_bytes());
+			self.dump(record.text.as_bytes());
 		}
 		//Otherwise we update the buffer.
-		assert!(false, "log() needs implementing: copy string to buffer and update buffer head");
+		else {
+			let record_len = record.text.len();
+			self.buffer[self.buffer_head..record_len].clone_from_slice(&record.text.as_bytes());
+			self.buffer_head += record_len;
+		}
 	}
 
 	///Logs a verbose message.
@@ -175,9 +179,8 @@ impl Logger {
 	///Flushes the buffer to the output file.
 	pub fn flush(&mut self) {
 		//Dump buffer to output file.
-		//TODO: Remember - only write from the head to the end!
-		assert!(false, "flush() needs implementing: only write from head to end of buffer");
-		let result = self.out_file.write(&self.buffer);
+		//Remember - only write from the head to the end!
+		let result = self.out_file.write(&self.buffer[..self.buffer_head]);
 		match result {
 			Ok(_) => {},
 			_ => {
