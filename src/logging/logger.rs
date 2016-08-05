@@ -157,6 +157,8 @@ impl Logger {
 		//so we're done.
 	}
 
+	///Determines if a given record's string data can fit
+	///entirely within the logger's buffer.
 	pub fn can_fit(&self, record: &LogElement) -> bool {
 		if self.buffer_head + record.text.to_string().len() > self.buffer_size {
 			return false;
@@ -164,7 +166,8 @@ impl Logger {
 		false
 	}
 
-	///Writes given string buffer to the output file without posting it to the buffer.
+	///Writes given string buffer to the output file without
+	///posting it to the logger's buffer.
 	pub fn dump(&mut self, buffer: &[u8]) {
 		let result = self.out_file.write(buffer);
 		match result {
