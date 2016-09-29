@@ -29,3 +29,12 @@ _ReSharper*/
 
 **~$*
 **~*
+
+#Ignore certificate files and encrypted stores.
+#Code signing certs.
+*.cer
+*.pfx
+#SSH public keys.
+*.pub
+#Truecrypt containers.
+*.tc
