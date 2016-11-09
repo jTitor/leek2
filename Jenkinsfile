@@ -11,8 +11,10 @@ node {
 	checkout scm
 
 	#Perform the build.
-	#Build the engine...
-	sh 'cargo build --manifest-path src/open-source/engine/modules/Cargo.toml'
+	#Setup Cmake...
+	sh 'cmake'
+	#Now perform the build.
+	sh 'make'
 	#Build any tools here.
 
 	stage 'Test'
