@@ -32,10 +32,10 @@ pub struct Logger {
 
 impl fmt::Debug for Logger {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f,
-        	"Logger {{ level: {}, buffer_size: {} }}",
-        	self.level, self.buffer_size)
-    }
+		write!(f,
+			"Logger {{ level: {}, buffer_size: {} }}",
+			self.level, self.buffer_size)
+	}
 }
 
 impl Logger {
