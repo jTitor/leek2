@@ -121,7 +121,7 @@ impl Logger {
 		self.listeners.insert(self.listener_next_id, listener);
 		let result = self.listener_next_id;
 		//Update the listener id.
-		self.listener_next_id += 1;		
+		self.listener_next_id += 1;
 		Ok((result))
 	}
 	
@@ -163,7 +163,7 @@ impl Logger {
 		if self.buffer_head + record.text.to_string().len() > self.buffer_size {
 			return false;
 		}
-		false
+		true
 	}
 
 	///Writes given string buffer to the output file without
