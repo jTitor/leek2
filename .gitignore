@@ -38,3 +38,4 @@ _ReSharper*/
 *.pub
 #Truecrypt containers.
 *.tc
+**/.gradle/*
