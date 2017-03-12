@@ -1,0 +1,9 @@
+//We'll need the following tasks:
+//	*	build: Builds the game server.
+//		Should be able to specify debug/release.
+//	*	test: Tests the game server.
+//		Again, debug/release distinction matters.
+//	*	package: Packs game server into an archive/installer.
+//		This is different from build because the result *will*
+//		be one artifact that can ideally be installed without
+//		interaction.

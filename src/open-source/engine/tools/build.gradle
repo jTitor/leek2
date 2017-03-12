@@ -1,0 +1,5 @@
+//For now this is empty. As we make tools,
+//we'll eventually want a package step:
+//	*	package: Packs tool artifacts into an archive/installer.
+//		Result must be one artifact that can
+//		ideally be installed without interaction.

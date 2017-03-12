@@ -1,2 +1,3 @@
 //Root settings for build of entire package.
 //This specifies what projects to include.
+include 'open-source', 'closed-source'
