@@ -1,9 +1,25 @@
 //We'll need the following tasks:
-//	*	build: Builds the game client.
-//		Should be able to specify debug/release.
-//	*	test: Tests the game client.
-//		Again, debug/release distinction matters.
-//	*	package: Packs game client into an archive/installer.
-//		This is different from build because the result *will*
-//		be one artifact that can ideally be installed without
-//		interaction.
+//	*	doBuild:	Builds client.
+//		Remember to distinguish debug/release!
+task doBuild() {
+	doLast {
+		//TODO
+	}
+}
+
+//	*	doTest:	Tests client.
+//		Remember to distinguish debug/release!
+task doTest() {
+	doLast {
+		//TODO
+	}
+}
+
+//	*	doPackage: Packs client into an archive/installer.
+//		Result must be one artifact that can
+//		ideally be installed without interaction.
+task doPackage() {
+	doLast {
+		//TODO
+	}
+}

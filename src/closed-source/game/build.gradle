@@ -1,3 +1,25 @@
-//Needs the following task:
-//	*	package: Packs executables into
-//		a archive/installer as needed.
+//Needs the following tasks:
+//	*	doBuild:	Builds all artifacts.
+//		Remember to distinguish debug/release!
+task doBuild() {
+	doLast {
+		//TODO
+	}
+}
+
+//	*	doTest:	Tests all artifacts.
+//		Remember to distinguish debug/release!
+task doTest() {
+	doLast {
+		//TODO
+	}
+}
+
+//	*	doPackage: Packs all artifacts into an archive/installer.
+//		Result must be one artifact that can
+//		ideally be installed without interaction.
+task doPackage() {
+	doLast {
+		//TODO
+	}
+}

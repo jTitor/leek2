@@ -1,3 +1,25 @@
 //Needs the following tasks:
-//	*	package: Packs modules and tools into
-//		a archive/installer as needed.
+//	*	doBuild:	Builds all artifacts.
+//		Remember to distinguish debug/release!
+task doBuild(dependsOn: ":engine:doBuild") {
+	doLast {
+		//TODO
+	}
+}
+
+//	*	doTest:	Tests all artifacts.
+//		Remember to distinguish debug/release!
+task doTest(dependsOn: ":engine:doTest") {
+	doLast {
+		//TODO
+	}
+}
+
+//	*	doPackage: Packs all artifacts into an archive/installer.
+//		Result must be one artifact that can
+//		ideally be installed without interaction.
+task doPackage(dependsOn: ":engine:doPackage") {
+	doLast {
+		//TODO
+	}
+}
