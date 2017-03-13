@@ -56,26 +56,32 @@ task dependencyDemo(dependsOn:'printDemo') {
 //---BEGIN ACTUAL WORK HERE---
 //This project will eventually want a package step for the
 //subprojects.
-//	*	doBuild:	Builds all artifacts.
-//		Remember to distinguish debug/release!
 task doBuild(dependsOn:[":open-source:doBuild",":closed-source:doBuild"]) {
+	//		Remember to distinguish debug/release!
+	description "Builds all artifacts."
+	group "project-global"
+
 	doLast {
 		//TODO
 	}
 }
 
-//	*	doTest:	Tests all artifacts.
-//		Remember to distinguish debug/release!
 task doTest(dependsOn:[":open-source:doTest",":closed-source:doTest"]) {
+	//		Remember to distinguish debug/release!
+	description "Tests all artifacts."
+	group "project-global"
+
 	doLast {
 		//TODO
 	}
 }
 
-//	*	doPackage: Packs all artifacts into an archive/installer.
-//		Result must be one artifact that can
-//		ideally be installed without interaction.
 task doPackage(dependsOn:[":open-source:doPackage",":closed-source:doPackage"]) {
+	description "Packs all artifacts into an archive/installer."
+	//Result must be one artifact that can
+	//ideally be installed without interaction.
+	group "project-global"
+
 	doLast {
 		//TODO
 	}

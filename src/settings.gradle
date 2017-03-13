@@ -1,3 +1,9 @@
 //Root settings for build of entire package.
 //This specifies what projects to include.
-include 'open-source', 'closed-source'
+//Note: you can only have one settings.gradle in
+//the whole project!
+include 'open-source'
+include 'open-source:engine'
+include 'open-source:engine:modules', 'open-source:engine:tools'
+include 'closed-source', 'closed-source:game'
+include 'closed-source:game:client', 'closed-source:game:server'

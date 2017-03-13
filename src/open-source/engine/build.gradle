@@ -1,6 +1,6 @@
 //	*	doBuild:	Builds all artifacts.
 //		Remember to distinguish debug/release!
-task doBuild(dependsOn:[":modules:doBuild",":tools:doBuild"]) {
+task doBuild(dependsOn:[":open-source:engine:modules:doBuild",":open-source:engine:tools:doBuild"]) {
 	doLast {
 		//TODO
 	}
@@ -8,7 +8,7 @@ task doBuild(dependsOn:[":modules:doBuild",":tools:doBuild"]) {
 
 //	*	doTest:	Tests all artifacts.
 //		Remember to distinguish debug/release!
-task doTest(dependsOn:[":modules:doTest",":tools:doTest"]) {
+task doTest(dependsOn:[":open-source:engine:modules:doTest",":open-source:engine:tools:doTest"]) {
 	doLast {
 		//TODO
 	}
@@ -17,7 +17,7 @@ task doTest(dependsOn:[":modules:doTest",":tools:doTest"]) {
 //	*	doPackage: Packs all artifacts into an archive/installer.
 //		Result must be one artifact that can
 //		ideally be installed without interaction.
-task doPackage(dependsOn:[":modules:doPackage",":tools:doPackage"]) {
+task doPackage(dependsOn:[":open-source:engine:modules:doPackage",":open-source:engine:tools:doPackage"]) {
 	doLast {
 		//TODO
 	}
