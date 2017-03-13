@@ -1,24 +1,24 @@
 //We'll need the following tasks:
-//	*	doBuild:	Builds client.
+//	*	doBuild:	Builds game client.
 //		Remember to distinguish debug/release!
-task doBuild() {
+task doBuild {
 	doLast {
 		//TODO
 	}
 }
 
-//	*	doTest:	Tests client.
+//	*	doTest:	Tests game client.
 //		Remember to distinguish debug/release!
-task doTest() {
+task doTest {
 	doLast {
 		//TODO
 	}
 }
 
-//	*	doPackage: Packs client into an archive/installer.
+//	*	doPackage: Packs game client into an archive/installer.
 //		Result must be one artifact that can
 //		ideally be installed without interaction.
-task doPackage() {
+task doPackage {
 	doLast {
 		//TODO
 	}

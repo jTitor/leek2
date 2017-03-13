@@ -1,7 +1,7 @@
 //Needs the following tasks:
 //	*	doBuild:	Builds all artifacts.
 //		Remember to distinguish debug/release!
-task doBuild() {
+task doBuild {
 	doLast {
 		//TODO
 	}
@@ -9,7 +9,7 @@ task doBuild() {
 
 //	*	doTest:	Tests all artifacts.
 //		Remember to distinguish debug/release!
-task doTest() {
+task doTest {
 	doLast {
 		//TODO
 	}
@@ -18,7 +18,7 @@ task doTest() {
 //	*	doPackage: Packs all artifacts into an archive/installer.
 //		Result must be one artifact that can
 //		ideally be installed without interaction.
-task doPackage() {
+task doPackage {
 	doLast {
 		//TODO
 	}
