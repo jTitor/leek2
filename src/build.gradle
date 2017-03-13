@@ -58,7 +58,7 @@ task dependencyDemo(dependsOn:'printDemo') {
 //subprojects.
 //	*	doBuild:	Builds all artifacts.
 //		Remember to distinguish debug/release!
-task doBuild(dependsOn: ":open-source:doBuild", ":closed-source:doBuild") {
+task doBuild(dependsOn:[":open-source:doBuild",":closed-source:doBuild"]) {
 	doLast {
 		//TODO
 	}
@@ -66,7 +66,7 @@ task doBuild(dependsOn: ":open-source:doBuild", ":closed-source:doBuild") {
 
 //	*	doTest:	Tests all artifacts.
 //		Remember to distinguish debug/release!
-task doTest(dependsOn: ":open-source:doTest", ":closed-source:doTest") {
+task doTest(dependsOn:[":open-source:doTest",":closed-source:doTest"]) {
 	doLast {
 		//TODO
 	}
@@ -75,7 +75,7 @@ task doTest(dependsOn: ":open-source:doTest", ":closed-source:doTest") {
 //	*	doPackage: Packs all artifacts into an archive/installer.
 //		Result must be one artifact that can
 //		ideally be installed without interaction.
-task doPackage(dependsOn: ":open-source:doPackage", ":closed-source:doPackage") {
+task doPackage(dependsOn:[":open-source:doPackage",":closed-source:doPackage"]) {
 	doLast {
 		//TODO
 	}

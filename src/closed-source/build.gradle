@@ -1,7 +1,7 @@
 //Needs the following task:
 //	*	doBuild:	Builds all artifacts.
 //		Remember to distinguish debug/release!
-task doBuild(dependsOn: ":client:doBuild", ":server:doBuild") {
+task doBuild(dependsOn:[":client:doBuild",":server:doBuild"]) {
 	doLast {
 		//TODO
 	}
@@ -9,7 +9,7 @@ task doBuild(dependsOn: ":client:doBuild", ":server:doBuild") {
 
 //	*	doTest:	Tests all artifacts.
 //		Remember to distinguish debug/release!
-task doTest(dependsOn: ":client:doTest", ":server:doTest") {
+task doTest(dependsOn:[":client:doTest",":server:doTest"]) {
 	doLast {
 		//TODO
 	}
@@ -18,7 +18,7 @@ task doTest(dependsOn: ":client:doTest", ":server:doTest") {
 //	*	doPackage: Packs all artifacts into an archive/installer.
 //		Result must be one artifact that can
 //		ideally be installed without interaction.
-task doPackage(dependsOn: ":client:doPackage", ":server:doPackage") {
+task doPackage(dependsOn:[":client:doPackage",":server:doPackage"]) {
 	doLast {
 		//TODO
 	}
