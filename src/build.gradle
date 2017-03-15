@@ -9,16 +9,13 @@ buildscript {
 
 	//Try to use the Rust plugin.
 	dependencies {
-		classpath "gradle.plugin.com.arielcabib:rust-gradle-plugin:0.1-SNAPSHOT"
+		//We might need to publish the plugin to a public repo first.
+		classpath "gradle.plugin.com.jtitor:rust-gradle-plugin:0.1-SNAPSHOT"
 	}
 }
 
-//This adds a rustBuild and rustRun task...
-//Seems really out of date though (and it'll break with Gradle 5.0.).
-//Couldn't we add something that
-//allows Cargo test and the various linting systems?
-//In any case, activate the plugin.
-apply plugin: "com.arielcabib.rust"
+//Add our Rust plugin.
+apply plugin: "com.jtitor.rust"
 
 //--- First try code! ---
 //Delete this once you're used to Gradle.

@@ -9,7 +9,7 @@
 //		interaction.
 //	*	doBuild:	Builds the engine modules with Cargo.
 //		Remember to distinguish debug/release!
-task doBuild {
+task doBuild(type:RustBuild) {
 	doLast {
 		//TODO
 	}
@@ -17,7 +17,7 @@ task doBuild {
 
 //	*	doTest:	Tests the engine modules with Cargo.
 //		Remember to distinguish debug/release!
-task doTest {
+task doTest(type:RustTest) {
 	doLast {
 		//TODO
 	}
