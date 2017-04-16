@@ -9,19 +9,11 @@
 //		interaction.
 //	*	doBuild:	Builds the engine modules with Cargo.
 //		Remember to distinguish debug/release!
-task doBuild(type:RustBuild) {
-	doLast {
-		//TODO
-	}
-}
+task doBuild(type:RustBuild) {}
 
 //	*	doTest:	Tests the engine modules with Cargo.
 //		Remember to distinguish debug/release!
-task doTest(type:RustTest) {
-	doLast {
-		//TODO
-	}
-}
+task doTest(type:RustTest) {}
 
 //	*	doPackage: Packs modules into an archive/installer.
 //		Result must be one artifact that can
