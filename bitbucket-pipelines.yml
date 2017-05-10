@@ -1,0 +1,21 @@
+image: zantan/general
+pipelines:
+  #Runs on all branches that don't have any specific pipeline assigned in 'branches'.
+  default:
+    - step:
+        script:
+          #Build the artifacts here.
+          - cd $BITBUCKET_CLONE_DIR/src
+          - gradle doBuild
+  branches:
+    #Runs only on commit to the master branch.
+    master:
+      - step:
+          script:
+            - cd $BITBUCKET_CLONE_DIR/src
+            - gradle doTest
+#    feature/*:
+#      - step:
+#          image: java:openjdk-9 # This step uses its own image
+#          script:
+#            - echo "This script runs only on commit to branches with names that match the feature/* pattern."
