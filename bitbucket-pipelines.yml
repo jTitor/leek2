@@ -1,0 +1,16 @@
+image: zantan/general
+pipelines:
+  default:
+    - step:
+        script:
+          - echo "This script runs on all branches that don't have any specific pipeline assigned in 'branches'."
+  branches:
+    master:
+      - step:
+          script:
+            - echo "This script runs only on commit to the master branch."
+    feature/*:
+      - step:
+          image: java:openjdk-9 # This step uses its own image
+          script:
+            - echo "This script runs only on commit to branches with names that match the feature/* pattern."
