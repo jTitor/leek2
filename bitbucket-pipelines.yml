@@ -13,6 +13,8 @@ pipelines:
       - step:
           script:
             - cd $BITBUCKET_CLONE_DIR/src
+            #...do the build *before* doing a test.
+            - gradle doBuild
             - gradle doTest
 #    feature/*:
 #      - step:
