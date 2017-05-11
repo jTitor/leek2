@@ -6,7 +6,7 @@ RUN curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain stable
 
 #Sometimes rustup doesn't update the PATH?
 #May need to manually add the new install path.
-#ENV PATH $PATH:$HOME/.cargo/bin
+ENV PATH $PATH:/root/.cargo/bin
 
 #By default this runs a shell.
 ENTRYPOINT ["/bin/sh", "-c"]
