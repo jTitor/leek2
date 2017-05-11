@@ -2,7 +2,8 @@
 FROM niaquinto/gradle
 
 #Install the most recent version of Rust as well.
-RUN curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain stable
+#Odd, seems openjdk image doesn't have build tools by default?
+RUN apt-get -y update; apt-get install -y build-essential; curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain stable
 
 #Sometimes rustup doesn't update the PATH?
 #May need to manually add the new install path.
