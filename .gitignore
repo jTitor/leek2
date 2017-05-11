@@ -39,3 +39,5 @@ _ReSharper*/
 #Truecrypt containers.
 *.tc
 **/.gradle/*
+#Rust Cargo lock files.
+*.lock
