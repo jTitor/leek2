@@ -5,13 +5,15 @@ FROM alpine:edge
 ENV GRADLE_VERSION 3.5
 WORKDIR /usr/local
 
+#Add the experimental repository.
+RUN echo '@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories && \
 #Install the most recent version of Rust.
-RUN apk update && \
+apk update && \
 apk add \
     g++ \
     openjdk8 \
-    rust \
-    cargo && \
+    rust@testing \
+    cargo@testing && \
 #Install Gradle.
 curl -L -O https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip && \
     unzip gradle-$GRADLE_VERSION-bin.zip && \
