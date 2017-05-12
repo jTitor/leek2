@@ -10,6 +10,7 @@ RUN echo '@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/ap
 #Install the most recent version of Rust.
 apk update && \
 apk add \
+    curl \
     g++ \
     openjdk8 \
     rust@testing \
