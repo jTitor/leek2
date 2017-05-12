@@ -1,12 +1,15 @@
-#Use Alpine OpenJDK as a base.
-FROM openjdk:alpine
+#Use Alpine Edge as a base
+#since the Rust packages are only available on Edge.
+FROM alpine:edge
 
 ENV GRADLE_VERSION 3.5
 WORKDIR /usr/local
 
 #Install the most recent version of Rust.
-RUN apk add \
+RUN apk update && \
+apk add \
     g++ \
+    openjdk8 \
     rust \
     cargo && \
 #Install Gradle.
