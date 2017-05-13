@@ -1,4 +1,4 @@
-image: zantan/general
+image: zantan/general:alpine
 pipelines:
   #Runs on all branches that don't have any specific pipeline assigned in 'branches'.
   default:

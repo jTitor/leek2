@@ -10,6 +10,18 @@ RUN echo '@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/ap
 #Install the most recent version of Rust.
 apk update && \
 apk add \
+#Add the shell we're used to...
+    bash \
+#    bash-doc \
+#    bash-completion \
+#and the shell builtins.
+#    util-linux \
+#    pciutils \
+#    usbutils \
+#    coreutils \
+#    binutils \
+#    findutils \
+    grep \
     curl \
     g++ \
     openjdk8 \
@@ -28,4 +40,5 @@ ENV GRADLE_HOME /usr/local/gradle
 ENV PATH ${PATH}:${HOME}/.cargo/bin:${GRADLE_HOME}/bin
 
 #By default this runs a shell.
+ENTRYPOINT ["/bin/sh", "-c"]
 CMD ["/bin/bash"]
