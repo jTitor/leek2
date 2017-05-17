@@ -1,8 +1,8 @@
 ///Log listener that prints to a terminal's output.
 extern crate log;
 
-use ::logging::log_element::LogSeverity;
-use ::logging::log_listener::interface::ListenerBase;
+use super::super::log_element::LogSeverity;
+use super::interface::ListenerBase;
 use std::io;
 use std::sync::Mutex;
 use std::cell::RefCell;

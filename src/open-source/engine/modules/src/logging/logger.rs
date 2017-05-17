@@ -7,9 +7,9 @@ use std::io::Write;
 use std::fmt;
 use std::sync::Arc;
 use std::collections::HashMap;
-use ::logging::log_element::{LogSeverity, LogElement};
-use ::logging::log_listener::interface::LogListen;
-use ::logging::log_error::LogError;
+use super::log_element::{LogSeverity, LogElement};
+use super::log_listener::interface::LogListen;
+use super::log_error::LogError;
 
 ///Handles logging requests.
 pub struct Logger {

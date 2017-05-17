@@ -5,8 +5,8 @@ use std::fmt;
 use std::io::Write;
 use std::sync::Mutex;
 use std::cell::RefCell;
-use ::logging::log_element::{LogSeverity, LogElement};
-use ::logging::log_listener::listener_error::ListenerError;
+use super::super::log_element::{LogSeverity, LogElement};
+use super::listener_error::ListenerError;
 
 ///Base class for log listeners.
 ///Has a connection to some output stream
@@ -24,10 +24,10 @@ pub struct ListenerBase<T> where T: Write + Send {
 
 impl<T> fmt::Debug for ListenerBase<T> where T: Write + Send {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f,
-        	"ListenerBase {{ level: {} }}",
-        	self.level)
-    }
+		write!(f,
+			"ListenerBase {{ level: {} }}",
+			self.level)
+	}
 }
 
 ///Allows implementors to get a Logger's
@@ -52,7 +52,7 @@ impl<T> LogListen for ListenerBase<T> where T: Write + Send {
 			record.text);
 		//Actually write the log entry.
 		let output = try!(ListenerError::from_lock_result(self.output.lock()));
-		try!(ListenerError::from_io_result(output.borrow_mut().write(out_str.as_bytes())));
+		ListenerError::from_io_result(output.borrow_mut().write(out_str.as_bytes()))?;
 		Ok(())
 	}
 }

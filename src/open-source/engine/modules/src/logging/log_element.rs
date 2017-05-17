@@ -22,8 +22,8 @@ impl fmt::Display for LogSeverity {
 			LogSeverity::Warning => { disp_text = "W"; }
 			LogSeverity::Error => { disp_text = "E"; }
 		}
-        write!(f, "{}", disp_text)
-    }
+		write!(f, "{}", disp_text)
+	}
 }
 
 #[derive(Debug)]
@@ -36,6 +36,6 @@ pub struct LogElement<'a> {
 
 impl<'a> fmt::Display for LogElement<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "({}, {}, {})", self.severity, self.tag, self.text)
-    }
+		write!(f, "({}, {}, {})", self.severity, self.tag, self.text)
+	}
 }
