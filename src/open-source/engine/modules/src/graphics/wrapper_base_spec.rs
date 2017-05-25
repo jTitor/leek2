@@ -1,1 +1,3 @@
-//The generic specification for a graphics wrapper.
+/*!
+	The generic specification for a graphics wrapper.
+*/

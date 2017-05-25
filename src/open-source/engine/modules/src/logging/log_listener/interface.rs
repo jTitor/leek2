@@ -1,20 +1,24 @@
-///Interface for things that display/respond to log entries.
+/*!
+	Interface for things that display/respond to log entries.
+*/
 extern crate log;
 
+use std::cell::RefCell;
 use std::fmt;
 use std::io::Write;
 use std::sync::Mutex;
-use std::cell::RefCell;
-use super::super::log_element::{LogSeverity, LogElement};
 use super::listener_error::ListenerError;
+use super::super::log_element::{LogSeverity, LogElement};
 
-///Base class for log listeners.
-///Has a connection to some output stream
-///and a maximum acceptable log level for filtering.
+/**
+Base class for log listeners.
+Has a connection to some output stream
+and a maximum acceptable log level for filtering.
+*/
 pub struct ListenerBase<T> where T: Write + Send {
-	///The output file we're connected to.
+	///The output file this listener is connected to.
 	pub output: Mutex<RefCell<T>>,
-	///The maximum log level to listen to.
+	///The minimum log level to record.
 	pub level: LogSeverity,
 	///If true, output is connected and we can write
 	///to it; otherwise the output is not connected
@@ -30,14 +34,19 @@ impl<T> fmt::Debug for ListenerBase<T> where T: Write + Send {
 	}
 }
 
-///Allows implementors to get a Logger's
-///log entries.
+/**
+Allows implementors to get a Logger's
+log entries.
+*/
 pub trait LogListen : Send + Sync {
-	///Called when a Logger has an entry for this listener to display.
-	///This is only safe to call if output_ready == true.
-	/// # Arguments
-	/// * record: The newest log entry sent from the Logger.
-	///Operates like println!() - the string should have a newline appended.
+	/**
+	Called when a Logger has an entry for this listener to display.
+	This is only safe to call if output_ready == true.
+	Operates like println!() - the string should have a newline appended.
+
+	# Arguments
+		* record: The newest log entry sent from the Logger.
+	*/
 	fn on_log(&self, record: &LogElement) -> Result<(), ListenerError>;
 }
 
@@ -58,7 +67,9 @@ impl<T> LogListen for ListenerBase<T> where T: Write + Send {
 }
 
 impl<T> ListenerBase<T> where T: Write + Send {
-	///Constructs the base elements of a listener.
+	/**
+	Constructs the base elements of a listener.
+	*/
 	pub fn new(output: T, level: LogSeverity) -> ListenerBase<T> {
 		ListenerBase {
 			output: Mutex::new(RefCell::new(output)),

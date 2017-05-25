@@ -1,1 +1,4 @@
-//Module definition for windows.
+/*!
+	Module definition for Windows-specific
+	fields and operations.
+*/

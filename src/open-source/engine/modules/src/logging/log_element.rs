@@ -1,4 +1,6 @@
-///Represents a single log entry.
+/*!
+	Represents a single log entry.
+*/
 use std::fmt;
 
 //TODO: PartialOrd derive implementation is apparently

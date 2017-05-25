@@ -1,5 +1,7 @@
-//Represents a 4x4 matrix
-//and common matrix operations.
+/*!
+	Represents a 4x4 matrix
+	and common matrix operations.
+*/
 use std::ops;
 
 trait MatOps {

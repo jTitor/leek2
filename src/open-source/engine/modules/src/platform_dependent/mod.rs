@@ -1,4 +1,7 @@
-//Module definition for platform_dependent.
+/*!
+	Module definition for platform-dependent
+	fields and operations.
+*/
 
 //Windows-only operations and wrappers.
 mod windows;

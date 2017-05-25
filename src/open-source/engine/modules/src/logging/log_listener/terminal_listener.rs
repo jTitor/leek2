@@ -1,15 +1,19 @@
-///Log listener that prints to a terminal's output.
+/*!
+	Log listener that prints to a terminal's output.
+*/
 extern crate log;
 
-use super::super::log_element::LogSeverity;
-use super::interface::ListenerBase;
+use std::cell::RefCell;
 use std::io;
 use std::sync::Mutex;
-use std::cell::RefCell;
+use super::interface::ListenerBase;
+use super::super::log_element::LogSeverity;
 
 pub type TerminalListener = ListenerBase<io::Stdout>;
 
-///Builder for TerminalListener instances.
+/**
+Builder for TerminalListener instances.
+*/
 #[derive(Debug)]
 pub struct TerminalListenerBuilder {
 	level: LogSeverity
@@ -22,7 +26,7 @@ impl TerminalListenerBuilder {
 		}
 	}
 
-	//Sets verbosity level.
+	///Sets verbosity level.
 	pub fn level(&mut self, val: LogSeverity) -> &mut TerminalListenerBuilder {
 		self.level = val;
 		self

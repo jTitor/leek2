@@ -1,4 +1,6 @@
-//Module definition for input.
+/*!
+	Module definition for input methods.
+*/
 
 //Defines elements of an input device.
 mod device_components;

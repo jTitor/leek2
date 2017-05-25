@@ -1,4 +1,6 @@
-///Definition of errors during listener usage.
+/*!
+	Definition of errors during listener usage.
+*/
 use std::sync;
 use std::io;
 

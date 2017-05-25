@@ -1,4 +1,7 @@
-//Trait definitions for vector operations.
+/*!
+	Trait definitions for vector operations.
+	This module represents 3-vectors.
+*/
 
 //extern crate simd;
 //use simd::f32x4;

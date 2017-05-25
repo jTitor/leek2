@@ -1,5 +1,7 @@
-///Base traits for vector operations.
-///Represents a generic vector.
+/*!
+	Base traits for vector operations.
+	Represents a generic vector.
+*/
 pub trait VecOps<T=Self> {
 	///Gets the i'th element of this vector.
 	/// # Panics if:

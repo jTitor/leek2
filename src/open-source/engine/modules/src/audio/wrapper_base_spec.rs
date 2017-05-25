@@ -1,1 +1,3 @@
-//The generic specification for an audio wrapper.
+/*!
+	The generic specification for an audio wrapper.
+*/

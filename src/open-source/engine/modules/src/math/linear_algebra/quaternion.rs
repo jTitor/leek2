@@ -1,2 +1,4 @@
-//Represents a quaternion
-//and common quaternion operations.
+/*!
+	Represents a quaternion
+	and common quaternion operations.
+*/

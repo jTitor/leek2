@@ -1,17 +1,19 @@
-///The logging subsystem.
+/*!
+	The logging subsystem.
+*/
 
-//Use standard library's Log crate.
-
+use std::collections::HashMap;
+use std::fmt;
 use std::fs::{File, OpenOptions};
 use std::io::Write;
-use std::fmt;
 use std::sync::Arc;
-use std::collections::HashMap;
 use super::log_element::{LogSeverity, LogElement};
-use super::log_listener::interface::LogListen;
 use super::log_error::LogError;
+use super::log_listener::interface::LogListen;
 
-///Handles logging requests.
+/**
+Handles logging requests.
+*/
 pub struct Logger {
 	///The maximum filter level.
 	///If an entry has a level higher than this,
@@ -39,8 +41,10 @@ impl fmt::Debug for Logger {
 }
 
 impl Logger {
-	///Sends the given log record to all LogListeners
-	///that are attached to this Logger.
+	/**
+	Sends the given log record to all LogListeners
+	that are attached to this Logger.
+	*/
 	pub fn broadcast(&self, record: &LogElement) {
 		//For all listeners:
 		for (_, listener) in &self.listeners {
@@ -55,7 +59,9 @@ impl Logger {
 		}
 	}
 
-	///Does actual work of printing a log entry.
+	/**
+	Does actual work of printing a log entry.
+	*/
 	pub fn log(&mut self, text: &str, tag: &str, severity: LogSeverity) {
 		//Don't bother if this is under our severity.
 		if severity < self.level {
@@ -80,37 +86,49 @@ impl Logger {
 		}
 	}
 
-	///Logs a verbose message.
+	/**
+	Logs a verbose message.
+	*/
 	pub fn log_v(&mut self, text: &str, tag: &str) {
 		self.log(text, tag, LogSeverity::Verbose);
 	}
 
-	///Logs a debug message.
+	/**
+	Logs a debug message.
+	*/
 	pub fn log_d(&mut self, text: &str, tag: &str) {
 		self.log(text, tag, LogSeverity::Debug);
 	}
 
-	///Logs a information message.
+	/**
+	Logs a information message.
+	*/
 	pub fn log_i(&mut self, text: &str, tag: &str) {
 		self.log(text, tag, LogSeverity::Info);
 	}
 
-	///Logs a warning message.
+	/**
+	Logs a warning message.
+	*/
 	pub fn log_w(&mut self, text: &str, tag: &str) {
 		self.log(text, tag, LogSeverity::Warning);
 	}
 
-	///Logs an error message.
+	/**
+	Logs an error message.
+	*/
 	pub fn log_e(&mut self, text: &str, tag: &str) {
 		self.log(text, tag, LogSeverity::Error);
 	}
 
-	///Links a LogListener to this Logger's buffer.
-	///The LogListener will relay any log entries
-	///recorded by the Logger.
-	///Returns: The listener's id in the logger if the LogListener was successfully attached,
-	///Result::Err otherwise
-	///(for instance, a listener's output file couldn't be opened).
+	/**
+	Links a LogListener to this Logger's buffer.
+	The LogListener will relay any log entries
+	recorded by the Logger.
+
+	Returns: The listener's id in the logger if the LogListener was successfully attached, Result::Err otherwise
+	(for instance, a listener's output file couldn't be opened).
+	*/
 	pub fn attach(&mut self, listener: Arc<LogListen>) -> Result<u32, LogError> {
 		//Is this listener ready for attachment?
 		//if !listener.output_ready {
@@ -125,7 +143,9 @@ impl Logger {
 		Ok((result))
 	}
 	
-	///Unlinks a specific LogListener from this Logger's buffer.
+	/**
+	Unlinks a specific LogListener from this Logger's buffer.
+	*/
 	pub fn detach(&mut self, listener_id: u32) -> Result<(), LogError> {
 		//Remove this listener from the attached list
 		//if it was in the list in the first place.
@@ -137,14 +157,18 @@ impl Logger {
 		Ok(())
 	}
 	
-	///Unlinks *all* LogListeners from this Logger's buffer.
+	/**
+	Unlinks *all* LogListeners from this Logger's buffer.
+	*/
 	pub fn detach_all(&mut self) {
 		//TODO: Should we tell listeners they've been detached?
 		//Clear the attached list.
 		self.listeners.clear();
 	}
 
-	///Releases all resources used by this logger.
+	/**
+	Releases all resources used by this logger.
+	*/
 	pub fn shutdown(&mut self) {
 		//Detach listeners, since we're going down.
 		self.detach_all();
@@ -157,8 +181,10 @@ impl Logger {
 		//so we're done.
 	}
 
-	///Determines if a given record's string data can fit
-	///entirely within the logger's buffer.
+	/**
+	Determines if a given record's string data can fit
+	entirely within the logger's buffer.
+	*/
 	pub fn can_fit(&self, record: &LogElement) -> bool {
 		if self.buffer_head + record.text.to_string().len() > self.buffer_size {
 			return false;
@@ -166,8 +192,10 @@ impl Logger {
 		true
 	}
 
-	///Writes given string buffer to the output file without
-	///posting it to the logger's buffer.
+	/**
+	Writes given string buffer to the output file without
+	posting it to the logger's buffer.
+	*/
 	pub fn dump(&mut self, buffer: &[u8]) {
 		let result = self.out_file.write(buffer);
 		match result {
@@ -178,7 +206,9 @@ impl Logger {
 		}
 	}
 
-	///Flushes the buffer to the output file.
+	/**
+	Flushes the buffer to the output file.
+	*/
 	pub fn flush(&mut self) {
 		//Dump buffer to output file.
 		//Remember - only write from the head to the end!
@@ -201,6 +231,10 @@ impl Drop for Logger {
 	}
 }
 
+/**
+Builds Logger instances given a minimum log level and
+buffer size.
+*/
 pub struct LoggerBuilder {
 	level: LogSeverity,
 	buffer_size: usize,

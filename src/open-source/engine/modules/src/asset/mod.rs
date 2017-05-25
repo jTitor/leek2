@@ -1,4 +1,6 @@
-//Module definition for asset.
+/*!
+	Module definition for asset operations.
+*/
 
 //Asset loading.
 //Asset archive operations.
