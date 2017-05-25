@@ -8,4 +8,5 @@ pipelines:
             - cd $BITBUCKET_CLONE_DIR/src
             #...do the build *before* doing a test.
             - gradle doBuild
+            - export RUST_BACKTRACE=1
             - gradle doTest
