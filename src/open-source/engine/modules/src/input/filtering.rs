@@ -1,1 +1,3 @@
-//Defines filtering operations on input devices.
+/*!
+	Defines filtering operations on input devices.
+*/

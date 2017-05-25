@@ -1,4 +1,6 @@
-//Defines elements of an input device.
+/*!
+	Defines elements of an input device.
+*/
 
 //Keyboard...
 

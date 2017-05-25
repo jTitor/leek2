@@ -10,7 +10,9 @@ authors = [ "Me <me@me.me>" ]
 [dependencies]
 #The graphics wrapper.
 #Probably going to use gfx-rs since it provides a higher-level abstraction.
-#gfx = "*"
+gfx = "0.16"
+glutin = "0.8"
+gfx_window_glutin = "0.16"
 #SIMD operations.
 #Not available on release, need to use nightly compiler for this.
 #simd = { git = "https://github.com/huonw/simd" }

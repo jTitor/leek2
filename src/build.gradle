@@ -9,53 +9,14 @@ buildscript {
 
 	//Try to use the Rust plugin.
 	dependencies {
-		classpath "gradle.plugin.com.arielcabib:rust-gradle-plugin:0.1-SNAPSHOT"
+		//We might need to publish the plugin to a public repo first.
+		classpath "gradle.plugin.com.jtitor:rust-gradle-plugin:0.1.2"
 	}
 }
 
-//This adds a rustBuild and rustRun task...
-//Seems really out of date though (and it'll break with Gradle 5.0.).
-//Couldn't we add something that
-//allows Cargo test and the various linting systems?
-//In any case, activate the plugin.
-apply plugin: "com.arielcabib.rust"
+//Add our Rust plugin.
+apply plugin: "com.jtitor.rust"
 
-//--- First try code! ---
-//Delete this once you're used to Gradle.
-task printDemo {
-	//Metadata is placed inside the task.
-	//Everything in this scope is evaluated no matter what task is requested.
-	group 'practice'
-	description 'Prints a message to the screen.'
-
-	doFirst {
-		println 'Entering printDemo!'
-	}
-	//This specifies that this must be done last in a chain of tasks.
-	doLast {
-		println 'Exiting printDemo!'
-	}
-}
-
-task dependencyDemo(dependsOn:'printDemo') {
-	group 'practice'
-	description 'Depends on another task.'
-
-	doFirst {
-		println 'Entering dependencyDemo...'
-	}
-
-	doLast {
-		println 'Exiting dependencyDemo.'
-
-		//When run, this runs printDemo,
-		//*then* dependencyDemo.
-	}
-}
-
-//---BEGIN ACTUAL WORK HERE---
-//This project will eventually want a package step for the
-//subprojects.
 task doBuild(dependsOn:[":open-source:doBuild",":closed-source:doBuild"]) {
 	//		Remember to distinguish debug/release!
 	description "Builds all artifacts."

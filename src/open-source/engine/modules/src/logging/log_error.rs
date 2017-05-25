@@ -1,4 +1,6 @@
-///Possible error codes for failures in log methods.
+/*!
+Possible error codes for failures in log methods.
+*/
 extern crate log;
 
 use std::sync;

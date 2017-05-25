@@ -1,4 +1,6 @@
-//Module definition for linear_algebra.
+/*!
+	Module definition for linear_algebra.
+*/
 
 //Vectors.
 mod vec_base;

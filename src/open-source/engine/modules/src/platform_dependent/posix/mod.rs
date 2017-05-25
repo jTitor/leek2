@@ -1,1 +1,4 @@
-//Module definition for posix.
+/*!
+	Module definition for POSIX-specific
+	fields and operations.
+*/

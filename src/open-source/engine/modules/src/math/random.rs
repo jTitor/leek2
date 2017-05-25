@@ -1,1 +1,3 @@
-//PRNG operations.
+/*!
+	PRNG operations.
+*/

@@ -1,15 +1,19 @@
-///Log listener that prints to a file.
+/*!
+	Log listener that prints to a file.
+*/
 extern crate log;
 
-use ::logging::log_element::LogSeverity;
-use ::logging::log_listener::interface::ListenerBase;
+use std::cell::RefCell;
 use std::fs::{File, OpenOptions};
 use std::sync::Mutex;
-use std::cell::RefCell;
+use super::interface::ListenerBase;
+use super::super::log_element::LogSeverity;
 
 pub type FileListener = ListenerBase<File>;
 
-///Builder for FileListener instances.
+/**
+Builder for FileListener instances.
+*/
 #[derive(Debug)]
 pub struct FileListenerBuilder {
 	level: LogSeverity
