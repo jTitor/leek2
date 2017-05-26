@@ -10,7 +10,7 @@ buildscript {
 	//Try to use the Rust plugin.
 	dependencies {
 		//We might need to publish the plugin to a public repo first.
-		classpath "gradle.plugin.com.jtitor:rust-gradle-plugin:0.1.2"
+		classpath "gradle.plugin.com.jtitor:rust-gradle-plugin:0.1.3"
 	}
 }
 

@@ -45,7 +45,7 @@ pub trait LogListen : Send + Sync {
 	Operates like println!() - the string should have a newline appended.
 
 	# Arguments
-		* record: The newest log entry sent from the Logger.
+	  * record: The newest log entry sent from the Logger.
 	*/
 	fn on_log(&self, record: &LogElement) -> Result<(), ListenerError>;
 }

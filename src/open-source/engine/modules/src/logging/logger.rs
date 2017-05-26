@@ -81,7 +81,7 @@ impl Logger {
 		//Otherwise we update the buffer.
 		else {
 			let record_len = record.text.len();
-			self.buffer[self.buffer_head..record_len].clone_from_slice(&record.text.as_bytes());
+			self.buffer[self.buffer_head..self.buffer_head+record_len].clone_from_slice(&record.text.as_bytes());
 			self.buffer_head += record_len;
 		}
 	}
