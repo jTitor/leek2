@@ -3,4 +3,4 @@
 */
 
 //The generic specification for an audio wrapper.
-mod wrapper_base_spec;
+pub mod wrapper_base_spec;

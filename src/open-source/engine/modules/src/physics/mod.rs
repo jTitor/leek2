@@ -4,4 +4,4 @@
 */
 
 //The generic specification for a physics wrapper.
-mod wrapper_base_spec;
+pub mod wrapper_base_spec;

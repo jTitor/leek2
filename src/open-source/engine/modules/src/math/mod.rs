@@ -4,7 +4,7 @@
 
 //Definitions for linear algebra constructs
 //(vectors, matrices, quaternions).
-mod linear_algebra;
+pub mod linear_algebra;
 
 //PRNG operations.
-mod random;
+pub mod random;

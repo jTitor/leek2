@@ -6,7 +6,7 @@
 //extern crate simd;
 //use simd::f32x4;
 use std::ops;
-use ::math::linear_algebra::vec_base::{VecOps, Vec2Access, Vec3Access};
+use super::vec_base::{VecOps, Vec2Access, Vec3Access};
 
 ///Represents a 3-vector.
 trait Vec3Ops<T=Self> : VecOps<T> {
@@ -75,7 +75,7 @@ impl VecOps<Vec3> for Vec3 {
 		result
 	}
 	
-	///Performs a componentwise divtiplication.
+	///Performs a componentwise multiplication.
 	fn component_mul(&self, rhs: &Vec3) -> Vec3 {
 		let mut result = self.clone();
 		for i in 0..3 {
@@ -83,6 +83,7 @@ impl VecOps<Vec3> for Vec3 {
 		}
 		result
 	}
+	///Performs a componentwise division.
 	fn component_div(&self, rhs: &Vec3) -> Vec3 {
 		self.component_mul(&rhs.as_reciprocal())
 	}

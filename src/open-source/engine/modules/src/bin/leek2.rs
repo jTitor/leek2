@@ -10,6 +10,6 @@ fn main() {
 	//so this should really store the result
 	//and switch on the result value.
 	GameBuilder::new()
-		.build()
+		.build()?
 		.run();
 }
