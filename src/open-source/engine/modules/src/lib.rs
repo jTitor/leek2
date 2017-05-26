@@ -28,3 +28,6 @@ pub mod logging;
 
 //Platform-dependent subsystems.
 pub mod platform_dependent;
+
+//Instantiator for the engine.
+pub mod game;
