@@ -1,9 +1,15 @@
-# README #
+# Summary
+All of the code - engine, game, everything.
+(https://leumi1umbc.visualstudio.com/DefaultCollection/Leek2/)
+A Trello page might be added later.
 
-Another mad excursion into the world of game engines. [Click here for the VSO project page.](https://leumi1umbc.visualstudio.com/DefaultCollection/Leek2/)
+# Required Tools
+To properly build and test the entire product, you'll need:
+  * Rust
+  * Gradle
+    * Java, since Gradle depends on this
 
-Building
+The bootstrapper in `tools` should install all of these by default.
 
-1. Make sure you have tools installed (see tools repository) first.
-2. Run cmake.
-3. If you're under Windows, use MSBuild, otherwise run make.
+# Building and Testing
+To build all artifacts in the project, go to the `src/` directory and call `gradle doBuild`. To test those artifacts, call `gradle doTest` afterward.
