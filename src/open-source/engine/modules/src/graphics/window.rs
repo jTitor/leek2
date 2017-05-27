@@ -60,6 +60,17 @@ pub trait Window {
 /**
 Generic specification for window builders.
 */
-pub trait WindowBuilder {
-	fn build(&self, graphics: Device) -> Result<Window, Error>;
+pub struct WindowBuilder {
+}
+
+impl WindowBuilder {
+	pub fn new() -> WindowBuilder {
+		WindowBuilder{}
+	}
+
+	pub fn build(&self, graphics: &Device) -> Result<Window, Error> {
+		//Dispatch based on the device type.
+		unimplemented!();
+		Ok(unimplemented!())
+	}
 }

@@ -2,10 +2,15 @@
 	Creates an instance of the game engine.
 */
 
+use super::graphics::device::{Device, DeviceBuilder};
+use super::graphics::window::{Window, WindowBuilder};
+
 /**
 An instance of the game engine.
 */
 pub struct Game {
+	graphics: &Device,
+	window: &Window
 	unimplemented!()
 }
 
@@ -15,6 +20,7 @@ impl Game {
 	*/
 	pub fn run(&mut self) {
 		//Enter the game loop here.
+		//	For now, quit on ESC.
 		unimplemented!()
 	}
 }
@@ -26,6 +32,7 @@ impl Drop for Game {
 		//but may be reported.
 
 		//Close the window.
+		self.window.close();
 		//Disconnect the window.
 		//Disconnect the graphics device.
 		unimplemented!()
@@ -48,8 +55,24 @@ impl GameBuilder {
 	pub fn build(&self) -> Result<Game, Error> {
 		//Initialize devices here.
 		//Graphics device...
+		//Given our platform, figure out
+		//the best backend for the device.
+		
+		//TODO: Consider making Game<T> templated
+		//on backend type to avoid polymorphing
+		//on graphics calls?
+		let graphics = DeviceBuilder::new()
+			.build_automatic_backend();
 		//Then the window.
+		let window = WindowBuilder::new()
+			.build(graphics);
 		//Open the window here.
+		window.open()?;
+		//Devices ready, assign them to the game.
 		unimplemented!()
+		Ok(Game {
+			graphics: graphics,
+			window: window
+		})
 	}
 }
