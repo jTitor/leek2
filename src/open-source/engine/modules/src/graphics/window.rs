@@ -68,7 +68,7 @@ impl WindowBuilder {
 		WindowBuilder{}
 	}
 
-	pub fn build(&self, graphics: &Device) -> Result<Window, Error> {
+	pub fn build(&self, graphics: &Device) -> Result<&Window, Error> {
 		//Dispatch based on the device type.
 		unimplemented!();
 		Ok(unimplemented!())

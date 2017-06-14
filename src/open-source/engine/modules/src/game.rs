@@ -20,7 +20,13 @@ impl Game {
 	*/
 	pub fn run(&mut self) {
 		//Enter the game loop here.
-		//	For now, quit on ESC.
+		running := true;
+		while running {
+			//Do update and render here.
+
+			//For now, quit on ESC.
+			running = !escPressed;
+		}
 		unimplemented!()
 	}
 }
