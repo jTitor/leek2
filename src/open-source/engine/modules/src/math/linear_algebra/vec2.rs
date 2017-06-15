@@ -108,6 +108,15 @@ impl VecOps<Vec2> for Vec2 {
 	}
 }
 
+impl Vec2 {
+	pub fn new(f32 x, f32 y) -> Vec2 {
+		let result = Vec2{};
+		*result.mut_x() = x;
+		*result.mut_y() = y;
+		result
+	}
+}
+
 impl Vec2Access<Vec2> for Vec2 {}
 
 //Begin operator implementation.

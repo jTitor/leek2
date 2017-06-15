@@ -16,7 +16,17 @@ pub enum BackendType {
 Represents a physical graphics device. This gets sent draw calls.
 */
 pub trait Device {
-	fn backend_type(&self) -> BackendType;
+	/**
+	Returns the type of backend implementation
+	used by this device.
+	*/
+	pub fn backend_type(&self) -> BackendType;
+	/**
+	Performs any per-frame cleanup the device may need
+	to do.
+	*/
+	//May need to be &mut self?
+	pub fn end_frame(&mut self);
 }
 
 /**
