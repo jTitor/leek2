@@ -36,6 +36,33 @@ pub enum Visibility {
 }
 
 /**
+General specification for window events.
+This is as close to the Glium event types
+as possible, except input is handled separately.
+*/
+pub enum EventType {
+	Awakened,
+	Resized(u32, u32),
+	Moved(i32, i32),
+	Closed,
+	DroppedFile(PathBuf),
+	Focused(bool),
+	Refresh,
+	Suspended(bool),
+	Touch(Touch)
+}
+
+/**
+Windows call their callback whenever they get a window event.
+*/
+type WindowEventCallback = fn(EventType);
+
+/**
+A dummy callback that does nothing.
+*/
+fn default_callback(_: EventType) {}
+
+/**
 Generic specification for a window.
 Through this you can modify window parameters.
 Windows can't be 
@@ -93,6 +120,24 @@ pub trait Window {
 	Returns a Result, so call this with .unwrap().
 	*/
 	fn swap_buffers(&self) -> Result<>;
+
+	/**
+	Sets the callback that handles window events
+	sent to this window.
+	To actually have this callback be run,
+	the window needs to be told to get events
+	with poll_events().
+	
+	The default callback does nothing.
+	*/
+	fn set_callback();
+
+	/**
+	Retrieves any window events sent to this window.
+	If any events were receieved, they will be
+	handled by the callback set in set_callback().
+	*/
+	fn poll_events();
 }
 
 /**
