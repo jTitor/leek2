@@ -31,3 +31,5 @@ pub mod platform_dependent;
 
 //Instantiator for the engine.
 pub mod game;
+
+pub use game::{Game, GameBuilder};

@@ -2,7 +2,7 @@
 	Entry point for testing leek2.
 */
 extern crate leek2;
-use leek2::game::GameBuilder
+use leek2::GameBuilder;
 
 fn main() {
 	//Both GameBuilder::build()

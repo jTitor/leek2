@@ -2,8 +2,8 @@
 	Creates an instance of the game engine.
 */
 
-use super::graphics::device::{Device, DeviceBuilder};
-use super::graphics::window::{Window, WindowBuilder};
+use super::graphics::{Device, DeviceBuilder};
+use super::graphics::{Window, WindowBuilder};
 
 /**
 An instance of the game engine.
