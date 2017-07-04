@@ -4,6 +4,7 @@
 
 use super::graphics::{Device, DeviceBuilder};
 use super::graphics::{Window, WindowBuilder};
+use super::graphics::EventType;
 
 /**
 An instance of the game engine.
@@ -18,16 +19,27 @@ impl Game {
 	/**
 	Initializes the game and enters the game loop.
 	*/
-	pub fn run(&mut self) {
+	pub fn run(&mut self) -> Result<(), unimplemented!()> {
 		//Enter the game loop here.
 		running := true;
 		while running {
+			//Update our input.
+			let escPressed = false;
+			//We do this by getting the window's events...
+			for event in self.window.poll_events() {
+				match event {
+					EventType::Closed => escPressed = true,
+					_ => {}
+				}
+			}
+
 			//Do update and render here.
 
 			//For now, quit on ESC.
 			running = !escPressed;
 		}
-		unimplemented!()
+
+		Ok()
 	}
 }
 

@@ -15,6 +15,9 @@ use super::super::super::window::WindowBuilder;
 pub type ColorFormat = gfx::format::Rgba8;
 pub type DepthFormat = gfx::format::DepthStencil;
 
+/*
+An example of a Glutin event loop.
+
 pub fn main() {
 	let builder = glutin::WindowBuilder::new()
 		.with_title("Triangle example".to_string())
@@ -34,6 +37,7 @@ pub fn main() {
 		device.cleanup();
 	}
 }
+*/
 
 pub struct GlutinDeviceWindowBuilder {
 	//Make this into an info payload that
