@@ -41,7 +41,7 @@ pub fn main() {
 */
 
 #[derive(Debug)]
-pub structGlutinDeviceWindowBuilder {
+pub struct GlutinDeviceWindowBuilder {
 	//Make this into an info payload that
 	//both builders use?
 	base_info: &WindowBuilder

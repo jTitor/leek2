@@ -6,7 +6,7 @@ use math::Vec2;
 use graphics::Device;
 
 #[derive(Debug)]
-pub structWindowBuilder {
+pub struct WindowBuilder {
 	title: String
 	dimensions: Vec2,
 	position: Vec2,

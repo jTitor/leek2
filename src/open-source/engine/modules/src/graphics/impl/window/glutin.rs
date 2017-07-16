@@ -9,7 +9,7 @@ use graphics::{Window, Visibility};
 use math::Vec2;
 
 #[derive(Debug)]
-pub structGlutinWindow {
+pub struct GlutinWindow {
 	/**
 	The actual backend
 	implementation that manages the window.

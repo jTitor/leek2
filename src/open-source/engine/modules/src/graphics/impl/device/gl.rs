@@ -8,7 +8,7 @@ extern crate gfx_device_gl;
 use graphics::{BackendType, Device};
 
 #[derive(Debug)]
-pub structGLDevice {
+pub struct GLDevice {
 	/**
 	The actual backend
 	implementation that runs the graphics calls.

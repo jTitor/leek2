@@ -16,7 +16,7 @@ Has a connection to some output stream
 and a maximum acceptable log level for filtering.
 */
 #[derive(Debug)]
-pub structListenerBase<T> where T: Write + Send {
+pub struct ListenerBase<T> where T: Write + Send {
 	///The output file this listener is connected to.
 	pub output: Mutex<RefCell<T>>,
 	///The minimum log level to record.

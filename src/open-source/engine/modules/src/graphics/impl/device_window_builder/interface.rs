@@ -9,7 +9,7 @@ use super::super::device::Device;
 use super::super::window::Window;
 
 #[derive(Debug)]
-pub structDeviceWindowBuilderPayload {
+pub struct DeviceWindowBuilderPayload {
 	window: &mut Window,
 	device: &mut Device
 }
