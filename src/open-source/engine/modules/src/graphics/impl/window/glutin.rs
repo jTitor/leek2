@@ -5,11 +5,11 @@
 extern crate glutin;
 
 use glutin::Window;
-use super::super::super::window::Window;
-use super::super::super::window::Visibility;
-use super::super::math::linear_algebra::vec2::Vec2;
+use graphics::{Window, Visibility};
+use math::Vec2;
 
-pub struct GlutinWindow {
+#[derive(Debug)]
+pub structGlutinWindow {
 	/**
 	The actual backend
 	implementation that manages the window.
@@ -27,7 +27,7 @@ impl GlutinWindow {
 	}
 }
 
-impl Window for GlutinWindow {
+impl graphics::Window for GlutinWindow {
 	fn title(&self) -> &str {
 		unimplemented!()
 	}
@@ -62,7 +62,7 @@ impl Window for GlutinWindow {
 		}
 	}
 
-	fn open(&self) -> Result<> {
+	fn open(&self) {
 		self.impl_window.show();
 		//Not clear how we handle it;
 		//show() returns void,
@@ -70,7 +70,7 @@ impl Window for GlutinWindow {
 		unimplemented!()
 	}
 
-	fn close(&self) -> Result<> {
+	fn hide(&self) {
 		self.impl_window.hide();
 		//See GlutinWindow.open() impl.
 		unimplemented!()

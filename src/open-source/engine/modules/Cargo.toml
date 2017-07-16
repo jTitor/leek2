@@ -1,5 +1,4 @@
 [package]
-
 name = "leek2"
 version = "0.0.1"
 authors = [ "Me <me@me.me>" ]
@@ -19,5 +18,4 @@ gfx_window_glutin = "0.16"
 log = "*"
 
 [[bin]]
-
 name = "leek2"

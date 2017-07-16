@@ -2,10 +2,11 @@
 Generic specification for window builders.
 */
 
-use super::super::super::math::linear_algebra::vec2::Vec2;
-use super::super::device::Device;
+use math::Vec2;
+use graphics::Device;
 
-pub struct WindowBuilder {
+#[derive(Debug)]
+pub structWindowBuilder {
 	title: String
 	dimensions: Vec2,
 	position: Vec2,
@@ -29,7 +30,7 @@ impl WindowBuilder {
 	}
 
 	pub fn with_title(&mut self, newTitle: &str) -> &mut WindowBuilder {
-		self.title = newTitle;
+		self.title = newTitle.to_owned();
 		self
 	}
 

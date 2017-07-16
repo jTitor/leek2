@@ -7,10 +7,11 @@ extern crate gfx_window_glutin;
 extern crate glutin;
 
 use gfx::Device;
+
+use graphics::WindowBuilder;
 use super::interface::DeviceWindowBuilderPayload;
 use super::super::window::glutin::GlutinWindow;
 use super::super::device::gl::GLDevice;
-use super::super::super::window::WindowBuilder;
 
 pub type ColorFormat = gfx::format::Rgba8;
 pub type DepthFormat = gfx::format::DepthStencil;
@@ -39,7 +40,8 @@ pub fn main() {
 }
 */
 
-pub struct GlutinDeviceWindowBuilder {
+#[derive(Debug)]
+pub structGlutinDeviceWindowBuilder {
 	//Make this into an info payload that
 	//both builders use?
 	base_info: &WindowBuilder

@@ -12,7 +12,8 @@ trait MatOps {
 }
 
 ///A 4x4 matrix.
-pub struct Mat4x4 {
+#[derive(Debug, Copy, Clone)]
+pub structMat4x4 {
 	pub data: [f32; 16]
 }
 

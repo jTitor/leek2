@@ -5,9 +5,10 @@
 extern crate gfx;
 extern crate gfx_device_gl;
 
-use super::super::super::device::{BackendType, Device};
+use graphics::{BackendType, Device};
 
-pub struct GLDevice {
+#[derive(Debug)]
+pub structGLDevice {
 	/**
 	The actual backend
 	implementation that runs the graphics calls.

@@ -9,7 +9,8 @@ use super::graphics::EventType;
 /**
 An instance of the game engine.
 */
-pub struct Game {
+#[derive(Debug)]
+pub structGame {
 	graphics: &Device,
 	window: &Window
 	unimplemented!()
@@ -60,7 +61,8 @@ impl Drop for Game {
 /**
 Generates instances of the game engine.
 */
-pub struct GameBuilder {
+#[derive(Debug)]
+pub structGameBuilder {
 	unimplemented!()
 }
 

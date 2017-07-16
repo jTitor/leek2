@@ -7,8 +7,8 @@
 	implementation doesn't make use of this.
 */
 
-use super::super::super::math::linear_algebra::vec2::Vec2;
-use super::super::device::Device;
+use math::Vec2;
+use graphics::Device;
 
 /**
 A dummy callback that does nothing.
@@ -18,7 +18,6 @@ fn default_callback(_: EventType) {}
 /**
 Generic specification for a window.
 Through this you can modify window parameters.
-Windows can't be 
 */
 pub trait Window {
 	/**
@@ -60,13 +59,13 @@ pub trait Window {
 	/**
 	Opens the window once built.
 	*/
-	fn open(&self) -> Result<>;
+	fn open(&self);
 
 	/**
 	Hides the window from view.
 	If the window hasn't been opened, does nothing.
 	*/
-	fn hide(&self) -> Result<>;
+	fn hide(&self);
 
 	/**
 	Swaps render buffers for this window.

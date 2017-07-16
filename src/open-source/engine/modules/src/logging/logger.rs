@@ -14,7 +14,8 @@ use super::log_listener::interface::LogListen;
 /**
 Handles logging requests.
 */
-pub struct Logger {
+#[derive(Debug)]
+pub structLogger {
 	///The maximum filter level.
 	///If an entry has a level higher than this,
 	///it won't be logged to the buffer at all.
@@ -235,7 +236,8 @@ impl Drop for Logger {
 Builds Logger instances given a minimum log level and
 buffer size.
 */
-pub struct LoggerBuilder {
+#[derive(Debug)]
+pub structLoggerBuilder {
 	level: LogSeverity,
 	buffer_size: usize,
 }

@@ -1,6 +1,7 @@
 /*!
 	The generic specification for a graphics wrapper.
 */
+use platform::{PlatformCode, current_platform};
 
 /**
 Specifies what graphics API the given device uses.
@@ -30,15 +31,61 @@ pub trait Device {
 }
 
 /**
+Returns the graphics backends
+available for the given platform.
+*/
+pub fn available_backends(platform: PlatformCode) -> Vec<BackendType> {
+	match platform {
+		PlatformCode::Windows {
+			return vec!(
+				OpenGL//,
+				//DirectX,	//not implemented yet
+				//Vulkan	//not implemented yet
+			)
+		},
+		PlatformCode::Linux {
+			return vec!(
+				OpenGL//,
+				//Vulkan	//not implemented yet
+			)
+		}
+		PlatformCode::MacOS {
+			return vec!(
+				OpenGL//,
+				//Vulkan	//not implemented yet
+			)
+		}
+		_ -> return vec!();
+	}
+}
+
+pub fn available_backends() -> Vec<BackendType> {
+	available_backends(current_platform())
+}
+
+/**
 Generic builder for graphics devices.
 */
-pub struct DeviceBuilder {
+#[derive(Debug)]
+pub structDeviceBuilder {
 	unimplemented!()
 }
 
 impl DeviceBuilder {
 	pub fn new() -> DeviceBuilder {
 		DeviceBuilder{}
+	}
+
+	/**
+	Gets the default backend for the current platform.
+	*/
+	fn default_backend() -> Result<BackendType, Err> {
+		//TEST:
+		//	* Assert: backend returned is available
+		//	according to device::available_backends() result
+		match current_platform() {
+			PlatformCode::Windows
+		}
 	}
 
 	/**

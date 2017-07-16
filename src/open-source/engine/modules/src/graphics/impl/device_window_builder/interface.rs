@@ -8,7 +8,8 @@
 use super::super::device::Device;
 use super::super::window::Window;
 
-pub struct DeviceWindowBuilderPayload {
+#[derive(Debug)]
+pub structDeviceWindowBuilderPayload {
 	window: &mut Window,
 	device: &mut Device
 }
