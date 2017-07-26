@@ -82,12 +82,19 @@ pub trait Window {
 	
 	The default callback does nothing.
 	*/
-	fn set_callback();
+	fn set_callback(&self, callback: fn(EventType));
 
 	/**
 	Retrieves any window events sent to this window.
 	If any events were receieved, they will be
 	handled by the callback set in set_callback().
 	*/
-	fn poll_events();
+	fn poll_events(&self);
+
+	/**
+	Links the given input device to the window.
+	The window will receive all input events relating
+	to this input device.
+	*/
+	fn connect_input_device(&self, device_id: u32, type_id: u32);
 }

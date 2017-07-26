@@ -1,9 +1,12 @@
 /*!
 	Module definition for input methods.
 */
+pub mod errors;
+pub mod types;
 
 //Defines elements of an input device.
-mod device_components;
+pub mod device;
+pub mod device_components;
 
 //Defines filtering operations on input devices.
-mod filtering;
+pub mod filtering;
