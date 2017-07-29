@@ -1,5 +1,6 @@
 use super::types::KeyCode;
 
+pub enum Signal {
 //Common ASCII characters first.
 //	A-Z
 //	0-9
@@ -26,7 +27,7 @@ use super::types::KeyCode;
 //		Alternately, have the KeyCode for Control represent the character code for Command when on a Mac.
 //	Mac Control Button
 
-//Then Gamepad constants:
+//Then gamepad/mouse constants:
 //	Buttons 0-63. Some of these have aliases for an XBox controller:
 //		Button 0: A Button
 //		Button 1: B Button
@@ -44,3 +45,4 @@ use super::types::KeyCode;
 //		DPad X,1: DPad X Down
 //		DPad X,2: DPad X Left
 //		DPad X,3: DPad X Right
+}

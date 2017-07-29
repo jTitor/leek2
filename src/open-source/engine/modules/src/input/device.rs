@@ -1,6 +1,7 @@
 /*!
 	Defines input devices.
 */
+use super::device_components::{Axii, Buttons, SingleKeyfield};
 
 pub enum DeviceType {
 	Mouse,		//Generally has an X and Y axis, and at least one button.
@@ -15,4 +16,8 @@ Generally this represents a physical
 input device.
 */
 pub struct Device {
+	type: DeviceType,
+	axii: Axii,
+	buttons: Buttons,
+	keys: SingleKeyfield
 }
