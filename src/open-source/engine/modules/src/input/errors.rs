@@ -2,11 +2,13 @@
 Describes errors used in the input module.
 */
 use std::error::Error;
+use std::fmt;
 use super::types::{CharacterCode, KeyfieldLayoutType};
 
 /**
 Errors for backend implementations.
 */
+#[derive(Debug)]
 pub enum InputError {
 	/**
 	The current layout doesn't have a virtual key
@@ -22,5 +24,11 @@ impl Error for InputError {
 				format!("layout {} doesn't have a key code for character code {}", layout_type, code)
 			}
 		}
+	}
+}
+
+impl fmt::Display for InputError {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "Input handler error: {}", self.description())
 	}
 }

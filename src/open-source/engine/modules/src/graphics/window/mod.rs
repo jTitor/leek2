@@ -6,4 +6,4 @@ pub mod errors;
 pub use self::types::{EventType, Visibility};
 pub use self::builder::WindowBuilder;
 pub use self::interface::Window;
-pub use self::errors::{WindowBuilderError};
+pub use self::errors::{WindowBuilderError, WindowError};

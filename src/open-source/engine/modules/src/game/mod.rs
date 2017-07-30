@@ -6,19 +6,19 @@ mod errors;
 use super::graphics::{Device, DeviceBuilder};
 use super::graphics::{Window, WindowBuilder};
 use super::graphics::EventType;
-use errors::GameError;
+use self::errors::GameError;
 
 /**
 An instance of the game engine.
 */
 #[derive(Debug)]
 pub struct Game<'a> {
-	graphics: &Device<'a>,
-	window: &Window<'a>
+	graphics: &'a Device,
+	window: &'a Window
 	//unimplemented!()
 }
 
-impl Game<'a> {
+impl<'a> Game<'a> {
 	/**
 	Initializes the game and enters the game loop.
 	*/
@@ -46,7 +46,7 @@ impl Game<'a> {
 	}
 }
 
-impl Drop for Game {
+impl<'a> Drop for Game<'a> {
 	fn drop(&mut self) {
 		//Disconnect devices here.
 		//Failures aren't fatal,
@@ -74,7 +74,7 @@ impl GameBuilder {
 		}
 	}
 
-	pub fn build(&self) -> Result<Game, Error> {
+	pub fn build(&self) -> Result<Game, GameError> {
 		//Initialize devices here.
 		//Graphics device...
 		//Given our platform, figure out

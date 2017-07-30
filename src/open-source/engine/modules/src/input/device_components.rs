@@ -28,7 +28,7 @@ pub struct Buttons {
 }
 
 impl DeviceComponentList for Buttons {
-	pub fn num_components(&self) -> u32 {
+	fn num_components(&self) -> u32 {
 		self.current_values.len()
 	}
 }
@@ -46,7 +46,7 @@ pub struct MultiStateButtons {
 }
 
 impl DeviceComponentList for MultiStateButtons {
-	pub fn num_components(&self) -> u32 {
+	fn num_components(&self) -> u32 {
 		self.num_buttons
 	}
 }
@@ -63,7 +63,7 @@ pub struct Axii {
 }
 
 impl DeviceComponentList for Axii {
-	pub fn num_components(&self) -> u32 {
+	fn num_components(&self) -> u32 {
 		self.num_axii
 	}
 }
@@ -82,7 +82,7 @@ impl KeyfieldLayout {
 		if self.has_character_code(character) {
 			return Ok(self.characters_to_keys[character]);
 		}
-		InputError(self.layout_type, character)
+		InputError::CharacterCodeUnsupported(self.layout_type, character)
 	}
 }
 

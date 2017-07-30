@@ -4,6 +4,7 @@
 use std::sync;
 use std::io;
 
+#[derive(Debug)]
 pub enum ListenerError {
 	OutputLockNotReady,
 	OutputNotReadyForWrite

@@ -15,7 +15,6 @@ Base class for log listeners.
 Has a connection to some output stream
 and a maximum acceptable log level for filtering.
 */
-#[derive(Debug)]
 pub struct ListenerBase<T> where T: Write + Send {
 	///The output file this listener is connected to.
 	pub output: Mutex<RefCell<T>>,

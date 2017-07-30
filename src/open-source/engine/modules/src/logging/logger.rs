@@ -14,7 +14,6 @@ use super::log_listener::interface::LogListen;
 /**
 Handles logging requests.
 */
-#[derive(Debug)]
 pub struct Logger {
 	///The maximum filter level.
 	///If an entry has a level higher than this,

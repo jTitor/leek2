@@ -9,6 +9,7 @@
 
 use math::Vec2;
 use graphics::{Device, EventType, Visibility};
+use super::WindowError;
 
 /**
 A dummy callback that does nothing.
@@ -71,7 +72,7 @@ pub trait Window {
 	Swaps render buffers for this window.
 	Returns a Result, so call this with .unwrap().
 	*/
-	fn swap_buffers(&self) -> Result<>;
+	fn swap_buffers(&self) -> Result<(), WindowError>;
 
 	/**
 	Sets the callback that handles window events
