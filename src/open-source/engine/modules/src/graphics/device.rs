@@ -22,20 +22,20 @@ pub trait Device {
 	Returns the type of backend implementation
 	used by this device.
 	*/
-	pub fn backend_type(&self) -> BackendType;
+	fn backend_type(&self) -> BackendType;
 	/**
 	Performs any per-frame cleanup the device may need
 	to do.
 	*/
 	//May need to be &mut self?
-	pub fn end_frame(&mut self);
+	fn end_frame(&mut self);
 }
 
 /**
 Returns the graphics backends
 available for the given platform.
 */
-pub fn available_backends(platform: PlatformCode) -> Vec<BackendType> {
+pub fn available_backends_for_platform(platform: PlatformCode) -> Vec<BackendType> {
 	match platform {
 		PlatformCode::Windows => {
 			return vec!(
@@ -56,12 +56,12 @@ pub fn available_backends(platform: PlatformCode) -> Vec<BackendType> {
 				//Vulkan	//not implemented yet
 			)
 		},
-		_ => return vec!();
+		_ => { return vec!(); }
 	}
 }
 
 pub fn available_backends() -> Vec<BackendType> {
-	available_backends(current_platform())
+	available_backends_for_platform(current_platform())
 }
 
 /**
@@ -69,7 +69,7 @@ Generic builder for graphics devices.
 */
 #[derive(Debug)]
 pub struct DeviceBuilder {
-	unimplemented!()
+	//unimplemented!()
 }
 
 impl DeviceBuilder {
@@ -98,12 +98,12 @@ impl DeviceBuilder {
 	Constructs a new graphics device context.
 	
 	Parameters:
-	  * type: The type of graphics backend to use with the physical device.
+	  * backend_type: The type of graphics backend to use with the physical device.
 	*/
-	pub fn build(&self, type: BackendType) -> Result<Device, Err> {
+	pub fn build(&self, backend_type: BackendType) -> Result<Device, Err> {
 		//Check that the backend is available on this platform.
 		let backends = available_backends();
-		if !backends.contains(&type) {
+		if !backends.contains(&backend_type) {
 			return Err(unimplemented!());
 		}
 

@@ -9,14 +9,13 @@ pub trait DeviceComponentList {
 	/**
 		Returns the number of components of this type.
 	*/
-	pub fn num_components(&self) -> u32;
+	fn num_components(&self) -> u32;
 }
 
 /**
 	Any two-state control or set of two-state controls.
 */
 pub trait TwoState {
-	
 }
 
 /**
@@ -56,7 +55,7 @@ impl DeviceComponentList for MultiStateButtons {
 	A control with a continuous range of values.
 */
 pub struct Axii {
-	u32 num_axii,
+	num_axii: u32,
 	min_values: Vec<f32>,
 	max_values: Vec<f32>,
 	current_values: Vec<f32>,
@@ -70,7 +69,7 @@ impl DeviceComponentList for Axii {
 }
 
 pub struct KeyfieldLayout {
-	type: KeyfieldLayoutType,
+	layout_type: KeyfieldLayoutType,
 	characters_to_keys: HashMap<CharacterCode, KeyCode>
 }
 
@@ -83,7 +82,7 @@ impl KeyfieldLayout {
 		if self.has_character_code(character) {
 			return Ok(self.characters_to_keys[character]);
 		}
-		InputError(self.type, character)
+		InputError(self.layout_type, character)
 	}
 }
 

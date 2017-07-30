@@ -1,10 +1,12 @@
 /*!
 	Creates an instance of the game engine.
 */
+mod errors;
 
 use super::graphics::{Device, DeviceBuilder};
 use super::graphics::{Window, WindowBuilder};
 use super::graphics::EventType;
+use errors::GameError;
 
 /**
 An instance of the game engine.
@@ -13,16 +15,16 @@ An instance of the game engine.
 pub struct Game {
 	graphics: &Device,
 	window: &Window
-	unimplemented!()
+	//unimplemented!()
 }
 
 impl Game {
 	/**
 	Initializes the game and enters the game loop.
 	*/
-	pub fn run(&mut self) -> Result<(), unimplemented!()> {
+	pub fn run(&mut self) -> Result<(), GameError> {
 		//Enter the game loop here.
-		running := true;
+		let running = true;
 		while running {
 			//Update our input.
 			let escPressed = false;
@@ -63,7 +65,7 @@ Generates instances of the game engine.
 */
 #[derive(Debug)]
 pub struct GameBuilder {
-	unimplemented!()
+	//unimplemented!()
 }
 
 impl GameBuilder {
@@ -89,7 +91,7 @@ impl GameBuilder {
 		//Open the window here.
 		window.open()?;
 		//Devices ready, assign them to the game.
-		unimplemented!()
+		unimplemented!();
 		Ok(Game {
 			graphics: graphics,
 			window: window

@@ -7,7 +7,7 @@ use graphics::Device;
 
 #[derive(Debug)]
 pub struct WindowBuilder {
-	title: String
+	title: String,
 	dimensions: Vec2,
 	position: Vec2,
 	vsync: bool

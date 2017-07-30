@@ -18,7 +18,9 @@ pub enum InputError {
 impl Error for InputError {
 	fn description(&self) -> &str {
 		match *self {
-			InputError::CharacterCodeUnsupported(layout_type, code) => format!("layout {} doesn't have a key code for character code {}", layout_type, code)
+			InputError::CharacterCodeUnsupported(layout_type, code) => {
+				format!("layout {} doesn't have a key code for character code {}", layout_type, code)
+			}
 		}
 	}
 }

@@ -111,7 +111,7 @@ impl VecOps<Vec3> for Vec3 {
 }
 
 impl Vec3 {
-	pub fn new(f32 x, f32 y, f32 z) -> Vec3 {
+	pub fn new(x: f32, y: f32, z: f32) -> Vec3 {
 		let result = Vec3{};
 		*result.mut_x() = x;
 		*result.mut_y() = y;

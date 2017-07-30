@@ -16,7 +16,7 @@ Generally this represents a physical
 input device.
 */
 pub struct Device {
-	type: DeviceType,
+	device_type: DeviceType,
 	axii: Axii,
 	buttons: Buttons,
 	keys: SingleKeyfield

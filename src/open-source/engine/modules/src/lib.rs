@@ -27,7 +27,7 @@ pub mod asset;
 pub mod logging;
 
 //Platform-dependent subsystems.
-pub mod platform_dependent;
+pub mod platform;
 
 //Instantiator for the engine.
 pub mod game;

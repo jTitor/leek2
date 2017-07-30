@@ -11,7 +11,7 @@ mod posix;
 
 
 //Definitions for platform identification here.
-extern crate os_type;
+//extern crate os_type;
 
 /**
 Represents the platform the library is compiled for.
@@ -43,7 +43,9 @@ pub fn current_platform() -> PlatformCode {
 	PlatformCode::MacOS
 }
 
-#[cfg(not(windows, linux, macos))]
+/*
+#[cfg(not(windows)) & cfg(not(linux)) & cfg(not(macos))]
 pub fn current_platform() -> PlatformCode {
 	PlatformCode::Unknown
 }
+*/
