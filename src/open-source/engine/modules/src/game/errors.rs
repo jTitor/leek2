@@ -13,7 +13,7 @@ pub enum GameError {
 	Unknown
 }
 
-impl Error for InputError {
+impl Error for GameError {
 	fn description(&self) -> &str {
 		match *self {
 			_ => { "unknown error" }

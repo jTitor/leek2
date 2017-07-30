@@ -6,10 +6,11 @@
 pub mod device;
 pub mod window;
 
-pub use device::{Device, DeviceBuilder};
-pub use device::{BackendType, available_backends};
-pub use window::{Window, WindowBuilder};
-pub use window::Visibility;
-pub use window::EventType;
+pub use self::device::{Device, DeviceBuilder};
+pub use self::device::{BackendType, available_backends};
+pub use self::window::{Window, WindowBuilder};
+pub use self::window::Visibility;
+pub use self::window::EventType;
 
-pub use errors::BackendError;
+pub mod errors;
+pub use self::errors::BackendError;

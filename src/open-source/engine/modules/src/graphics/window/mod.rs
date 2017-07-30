@@ -1,7 +1,9 @@
 pub mod types;
 pub mod builder;
 pub mod interface;
+pub mod errors;
 
-pub use types::{EventType, Visibility};
-pub use builder::WindowBuilder;
-pub use interface::Window;
+pub use self::types::{EventType, Visibility};
+pub use self::builder::WindowBuilder;
+pub use self::interface::Window;
+pub use self::errors::{WindowBuilderError};

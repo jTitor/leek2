@@ -3,7 +3,8 @@ Generic specification for window builders.
 */
 
 use math::Vec2;
-use graphics::Device;
+use graphics::{Device, Window};
+use graphics::window::WindowBuilderError;
 
 #[derive(Debug)]
 pub struct WindowBuilder {
@@ -23,7 +24,7 @@ impl WindowBuilder {
 		}
 	}
 
-	pub fn build(&self, graphics: &Device) -> Result<&Window, Error> {
+	pub fn build(&self, graphics: &Device) -> Result<&Window, WindowBuilderError> {
 		//Dispatch based on the device type.
 		unimplemented!();
 		Ok(unimplemented!())

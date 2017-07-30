@@ -38,11 +38,13 @@ pub enum EventType {
 	Resized(u32, u32),
 	Moved(i32, i32),
 	Closed,
-	DroppedFile(PathBuf),
+	//TODO: DroppedFile and Touch
+	//need parameters implemented
+	//DroppedFile(PathBuf),
 	Focused(bool),
 	Refresh,
 	Suspended(bool),
-	Touch(Touch)
+	//Touch(Touch)
 }
 
 /**

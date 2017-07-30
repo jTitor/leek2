@@ -12,13 +12,13 @@ use errors::GameError;
 An instance of the game engine.
 */
 #[derive(Debug)]
-pub struct Game {
-	graphics: &Device,
-	window: &Window
+pub struct Game<'a> {
+	graphics: &Device<'a>,
+	window: &Window<'a>
 	//unimplemented!()
 }
 
-impl Game {
+impl Game<'a> {
 	/**
 	Initializes the game and enters the game loop.
 	*/

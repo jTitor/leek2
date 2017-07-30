@@ -8,7 +8,7 @@
 */
 
 use math::Vec2;
-use graphics::Device;
+use graphics::{Device, EventType, Visibility};
 
 /**
 A dummy callback that does nothing.

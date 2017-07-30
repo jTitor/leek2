@@ -1,7 +1,7 @@
 /**
 	Represents the keys on a keyboard.
 */
-pub type KeyfieldBlock = u128;
+pub type KeyfieldBlock = u64;
 /**
 	Represents the key code presented by an OS event;
 	this is what the OS says was pressed.
