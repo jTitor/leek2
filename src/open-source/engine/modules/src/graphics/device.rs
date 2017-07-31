@@ -1,18 +1,26 @@
 /*!
 	The generic specification for a graphics wrapper.
 */
+use std::fmt;
+use std::sync::Arc;
 use platform::{PlatformCode, current_platform};
 use super::errors::BackendError;
 
 /**
 Specifies what graphics API the given device uses.
 */
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum BackendType {
 	DirectX,
 	OpenGL,
 	Vulkan,
 	Other
+}
+
+impl fmt::Display for BackendType {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "{:?}", self)
+	}
 }
 
 /**
@@ -30,6 +38,12 @@ pub trait Device {
 	*/
 	//May need to be &mut self?
 	fn end_frame(&mut self);
+}
+
+impl fmt::Debug for Device {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "Device {{ backend_type: {} }}", self.backend_type())
+	}
 }
 
 /**
@@ -89,7 +103,7 @@ impl DeviceBuilder {
 		//	according to device::available_backends() result
 		let backends = available_backends();
 		if backends.len() < 1 {
-			return BackendError::NoneAvailable;
+			return Err(BackendError::NoneAvailable);
 		}
 
 		Ok(backends[0])
@@ -101,12 +115,12 @@ impl DeviceBuilder {
 	Parameters:
 	  * backend_type: The type of graphics backend to use with the physical device.
 	*/
-	pub fn build(&self, backend_type: BackendType) -> Result<Device, BackendError> {
+	pub fn build(&self, backend_type: BackendType) -> Result<Arc<Device>, BackendError> {
 		//Check that the backend is available on this platform.
 		let backends = available_backends();
 		let platform = current_platform();
 		if !backends.contains(&backend_type) {
-			return BackendError::BackendUnavailable(backend_type, platform);
+			return Err(BackendError::BackendUnavailable(backend_type, platform));
 		}
 
 		//Otherwise, get the backend builder for this backend type.
@@ -118,7 +132,7 @@ impl DeviceBuilder {
 	Constructs a new graphics device context,
 	picking whatever backend is probably best for this platform.
 	*/
-	pub fn build_automatic_backend(&self) -> Result<Device, BackendError> {
-		self.build(DeviceBuilder::default_backend())
+	pub fn build_automatic_backend(&self) -> Result<Arc<Device>, BackendError> {
+		self.build(DeviceBuilder::default_backend()?)
 	}
 }

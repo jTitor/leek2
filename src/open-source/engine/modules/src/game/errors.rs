@@ -3,6 +3,8 @@ Describes errors used in the game module.
 */
 use std::error::Error;
 use std::fmt;
+use graphics::{BackendError};
+use graphics::window::WindowBuilderError;
 
 /**
 Errors for the game runner.
@@ -10,8 +12,11 @@ Errors for the game runner.
 #[derive(Debug)]
 pub enum GameError {
 	/**
-	The current layout doesn't have a virtual key
-	for the given character code.
+	One of the game's devices had a fatal error.
+	*/
+	DeviceError { cause: BackendError },
+	/**
+	Error unknown.
 	*/
 	Unknown
 }
@@ -25,7 +30,31 @@ impl fmt::Display for GameError {
 impl Error for GameError {
 	fn description(&self) -> &str {
 		match *self {
+			GameError::DeviceError{cause} => { "a device had a fatal error" }
 			GameError::Unknown => { "unknown error" }
+		}
+	}
+
+	fn cause(&self) -> Option<&Error> {
+		match *self {
+			GameError::DeviceError{cause} => Some(&cause),
+			GameError::Unknown => None
+		}
+	}
+}
+
+impl From<BackendError> for GameError {
+	fn from(error: BackendError) -> Self {
+		match error {
+			_ => GameError::DeviceError{ cause: error }
+		}
+	}
+}
+
+impl From<WindowBuilderError> for GameError {
+	fn from(error: WindowBuilderError) -> Self {
+		match error {
+			_ => GameError::DeviceError{ cause: error }
 		}
 	}
 }

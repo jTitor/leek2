@@ -14,11 +14,19 @@ An instance of the game engine.
 #[derive(Debug)]
 pub struct Game<'a> {
 	graphics: &'a Device,
-	window: &'a Window
+	window: &'a Window,
+	escPressed: bool
 	//unimplemented!()
 }
 
 impl<'a> Game<'a> {
+	fn window_event_callback(event: EventType) {
+		match event {
+			EventType::Closed => escPressed = true,
+			_ => {}
+		}
+	}
+
 	/**
 	Initializes the game and enters the game loop.
 	*/
@@ -30,7 +38,7 @@ impl<'a> Game<'a> {
 			let escPressed = false;
 			//We do this by getting the window's events...
 			for event in self.window.poll_events() {
-				match event {
+				match *event {
 					EventType::Closed => escPressed = true,
 					_ => {}
 				}
@@ -42,7 +50,7 @@ impl<'a> Game<'a> {
 			running = !escPressed;
 		}
 
-		Ok()
+		Ok(())
 	}
 }
 
@@ -53,7 +61,7 @@ impl<'a> Drop for Game<'a> {
 		//but may be reported.
 
 		//Close the window.
-		self.window.close();
+		self.window.hide();
 		//Disconnect the window.
 		//Disconnect the graphics device.
 		unimplemented!()
@@ -84,12 +92,12 @@ impl GameBuilder {
 		//on backend type to avoid polymorphing
 		//on graphics calls?
 		let graphics = DeviceBuilder::new()
-			.build_automatic_backend();
+			.build_automatic_backend()?;
 		//Then the window.
 		let window = WindowBuilder::new()
-			.build(graphics);
+			.build(graphics)?;
 		//Open the window here.
-		window.open()?;
+		window.open();
 		//Devices ready, assign them to the game.
 		unimplemented!();
 		Ok(Game {

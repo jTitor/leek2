@@ -2,6 +2,7 @@
 	Module definition for platform-dependent
 	fields and operations.
 */
+use std::fmt;
 
 //Windows-only operations and wrappers.
 mod windows;
@@ -16,12 +17,20 @@ mod posix;
 /**
 Represents the platform the library is compiled for.
 */
+#[derive(Debug, PartialEq)]
 pub enum PlatformCode {
 	Windows,
 	Linux,
 	MacOS,
 	Unknown
 }
+
+impl fmt::Display for PlatformCode {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "{:?}", self)
+	}
+}
+
 //pub use os_type::OSType as PlatformCode;
 //let os = os_type::current_platform();
 

@@ -7,6 +7,7 @@
 	implementation doesn't make use of this.
 */
 
+use std::fmt;
 use math::Vec2;
 use graphics::{Device, EventType, Visibility};
 use super::WindowError;
@@ -87,10 +88,8 @@ pub trait Window {
 
 	/**
 	Retrieves any window events sent to this window.
-	If any events were receieved, they will be
-	handled by the callback set in set_callback().
 	*/
-	fn poll_events(&self);
+	fn poll_events(&self) -> Box<Iterator<Item=&EventType>>;
 
 	/**
 	Links the given input device to the window.
@@ -98,4 +97,10 @@ pub trait Window {
 	to this input device.
 	*/
 	fn connect_input_device(&self, device_id: u32, type_id: u32);
+}
+
+impl fmt::Debug for Window {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "Window {{ title: {} }}", self.title())
+	}
 }

@@ -1,3 +1,5 @@
+use std::fmt;
+
 /**
 	Represents the keys on a keyboard.
 */
@@ -20,6 +22,13 @@ pub type SignalCode = u32;
 Specifies a mapping of characters and OS-specific
 virtual keys to engine-standardized virtual keys.
 */
+#[derive(Debug, PartialEq)]
 pub enum KeyfieldLayoutType {
 	QWERTY
+}
+
+impl fmt::Display for KeyfieldLayoutType {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "{:?}", self)
+	}
 }

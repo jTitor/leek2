@@ -43,3 +43,6 @@ _ReSharper*/
 **/.gradle/*
 #Rust Cargo lock files.
 *.lock
+
+#Visual Studio Code per-folder configuration.
+**/.vscode/*

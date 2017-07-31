@@ -29,7 +29,7 @@ pub struct Buttons {
 
 impl DeviceComponentList for Buttons {
 	fn num_components(&self) -> u32 {
-		self.current_values.len()
+		self.current_values.len() as u32
 	}
 }
 
@@ -75,14 +75,14 @@ pub struct KeyfieldLayout {
 
 impl KeyfieldLayout {
 	fn has_character_code(&self, character: CharacterCode) -> bool {
-		self.characters_to_keys.contains_key(character)
+		self.characters_to_keys.contains_key(&character)
 	}
 
 	fn get_key(&self, character: CharacterCode) -> Result<KeyCode, InputError> {
 		if self.has_character_code(character) {
-			return Ok(self.characters_to_keys[character]);
+			return Ok(self.characters_to_keys[&character]);
 		}
-		InputError::CharacterCodeUnsupported(self.layout_type, character)
+		Err(InputError::CharacterCodeUnsupported(self.layout_type, character))
 	}
 }
 

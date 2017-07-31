@@ -13,7 +13,7 @@ trait Vec2Ops<T=Self> : VecOps<T> {
 }
 
 ///A struct guaranteed to hold 2 f32s.
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Default)]
 pub struct Vec2 {
 	pub data: [f32; 2]
 }

@@ -18,8 +18,8 @@ impl WindowBuilder {
 	pub fn new() -> WindowBuilder {
 		WindowBuilder{
 			title: "Untitled Window".to_string(),
-			dimensions: Vec2::new(1,1),
-			position: Vec2{},
+			dimensions: Vec2::new(1.0,1.0),
+			position: Vec2::default(),
 			vsync: false
 		}
 	}

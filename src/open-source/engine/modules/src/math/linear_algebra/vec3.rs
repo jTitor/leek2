@@ -15,7 +15,7 @@ trait Vec3Ops<T=Self> : VecOps<T> {
 }
 
 ///A struct guaranteed to hold 3 f32s.
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Default)]
 pub struct Vec3 {
 	pub data: [f32; 3]
 }

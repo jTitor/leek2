@@ -30,7 +30,7 @@ impl Error for BackendError {
 		match *self {
 			BackendError::NoneAvailable => "no suitable backend available",
 			BackendError::BackendUnavailable(backend_type, platform_code) => {
-				format!("backend {} isn't available on platform {}", backend_type, platform_code)
+				format!("backend {} isn't available on platform {}", backend_type, platform_code).as_str()
 			}
 		}
 	}
