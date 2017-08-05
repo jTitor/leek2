@@ -22,7 +22,7 @@ pub type SignalCode = u32;
 Specifies a mapping of characters and OS-specific
 virtual keys to engine-standardized virtual keys.
 */
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub enum KeyfieldLayoutType {
 	QWERTY
 }

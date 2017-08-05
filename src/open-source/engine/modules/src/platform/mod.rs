@@ -17,7 +17,7 @@ mod posix;
 /**
 Represents the platform the library is compiled for.
 */
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub enum PlatformCode {
 	Windows,
 	Linux,

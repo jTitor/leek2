@@ -9,7 +9,7 @@ use super::errors::BackendError;
 /**
 Specifies what graphics API the given device uses.
 */
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub enum BackendType {
 	DirectX,
 	OpenGL,

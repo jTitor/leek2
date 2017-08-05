@@ -24,10 +24,10 @@ impl Game {
 	*/
 	pub fn run(&mut self) -> Result<(), GameError> {
 		//Enter the game loop here.
-		let running = true;
+		let mut running = true;
 		while running {
 			//Update our input.
-			let escPressed = false;
+			let mut escPressed = false;
 			//We do this by getting the window's events...
 			for event in self.window.poll_events() {
 				match *event {

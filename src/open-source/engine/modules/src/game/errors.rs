@@ -31,16 +31,16 @@ impl fmt::Display for GameError {
 impl Error for GameError {
 	fn description(&self) -> &str {
 		match *self {
-			GameError::DeviceError{cause} => { "a device had a fatal error" },
-			GameError::WindowBuildFailed{cause} => { "a window could not be built" },
+			GameError::DeviceError{ref cause} => { "a device had a fatal error" },
+			GameError::WindowBuildFailed{ref cause} => { "a window could not be built" },
 			_ => { "unknown error" }
 		}
 	}
 
 	fn cause(&self) -> Option<&Error> {
 		match *self {
-			GameError::DeviceError{cause} => Some(&cause),
-			GameError::WindowBuildFailed{cause} => Some(&cause),
+			GameError::DeviceError{ref cause} => Some(cause),
+			GameError::WindowBuildFailed{ref cause} => Some(cause),
 			GameError::Unknown => None
 		}
 	}
