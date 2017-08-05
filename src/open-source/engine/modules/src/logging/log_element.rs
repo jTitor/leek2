@@ -18,10 +18,10 @@ impl fmt::Display for LogSeverity {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		let disp_text;
 		match *self {
-			LogSeverity::Verbose => { disp_text = "V"; }
-			LogSeverity::Debug => { disp_text = "D"; }
-			LogSeverity::Info => { disp_text = "I"; }
-			LogSeverity::Warning => { disp_text = "W"; }
+			LogSeverity::Verbose => { disp_text = "V"; },
+			LogSeverity::Debug => { disp_text = "D"; },
+			LogSeverity::Info => { disp_text = "I"; },
+			LogSeverity::Warning => { disp_text = "W"; },
 			LogSeverity::Error => { disp_text = "E"; }
 		}
 		write!(f, "{}", disp_text)

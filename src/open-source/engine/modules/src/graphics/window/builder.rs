@@ -24,7 +24,7 @@ impl WindowBuilder {
 		}
 	}
 
-	pub fn build(&self, graphics: &Device) -> Result<&Window, WindowBuilderError> {
+	pub fn build(&self, graphics: &Device) -> Result<Box<Window>, WindowBuilderError> {
 		//Dispatch based on the device type.
 		unimplemented!();
 		Ok(unimplemented!())

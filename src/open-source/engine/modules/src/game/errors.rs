@@ -15,6 +15,7 @@ pub enum GameError {
 	One of the game's devices had a fatal error.
 	*/
 	DeviceError { cause: BackendError },
+	WindowBuildFailed { cause: WindowBuilderError },
 	/**
 	Error unknown.
 	*/
@@ -30,14 +31,16 @@ impl fmt::Display for GameError {
 impl Error for GameError {
 	fn description(&self) -> &str {
 		match *self {
-			GameError::DeviceError{cause} => { "a device had a fatal error" }
-			GameError::Unknown => { "unknown error" }
+			GameError::DeviceError{cause} => { "a device had a fatal error" },
+			GameError::WindowBuildFailed{cause} => { "a window could not be built" },
+			_ => { "unknown error" }
 		}
 	}
 
 	fn cause(&self) -> Option<&Error> {
 		match *self {
 			GameError::DeviceError{cause} => Some(&cause),
+			GameError::WindowBuildFailed{cause} => Some(&cause),
 			GameError::Unknown => None
 		}
 	}
@@ -54,7 +57,7 @@ impl From<BackendError> for GameError {
 impl From<WindowBuilderError> for GameError {
 	fn from(error: WindowBuilderError) -> Self {
 		match error {
-			_ => GameError::DeviceError{ cause: error }
+			_ => GameError::WindowBuildFailed{ cause: error }
 		}
 	}
 }

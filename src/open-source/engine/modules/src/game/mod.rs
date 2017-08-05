@@ -12,21 +12,13 @@ use self::errors::GameError;
 An instance of the game engine.
 */
 #[derive(Debug)]
-pub struct Game<'a> {
-	graphics: &'a Device,
-	window: &'a Window,
-	escPressed: bool
+pub struct Game {
+	graphics: Box<Device>,
+	window: Box<Window>
 	//unimplemented!()
 }
 
-impl<'a> Game<'a> {
-	fn window_event_callback(event: EventType) {
-		match event {
-			EventType::Closed => escPressed = true,
-			_ => {}
-		}
-	}
-
+impl Game {
 	/**
 	Initializes the game and enters the game loop.
 	*/
@@ -54,7 +46,7 @@ impl<'a> Game<'a> {
 	}
 }
 
-impl<'a> Drop for Game<'a> {
+impl Drop for Game {
 	fn drop(&mut self) {
 		//Disconnect devices here.
 		//Failures aren't fatal,
@@ -95,7 +87,7 @@ impl GameBuilder {
 			.build_automatic_backend()?;
 		//Then the window.
 		let window = WindowBuilder::new()
-			.build(graphics)?;
+			.build(&*graphics)?;
 		//Open the window here.
 		window.open();
 		//Devices ready, assign them to the game.

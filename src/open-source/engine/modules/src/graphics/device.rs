@@ -115,7 +115,7 @@ impl DeviceBuilder {
 	Parameters:
 	  * backend_type: The type of graphics backend to use with the physical device.
 	*/
-	pub fn build(&self, backend_type: BackendType) -> Result<Arc<Device>, BackendError> {
+	pub fn build(&self, backend_type: BackendType) -> Result<Box<Device>, BackendError> {
 		//Check that the backend is available on this platform.
 		let backends = available_backends();
 		let platform = current_platform();
@@ -132,7 +132,7 @@ impl DeviceBuilder {
 	Constructs a new graphics device context,
 	picking whatever backend is probably best for this platform.
 	*/
-	pub fn build_automatic_backend(&self) -> Result<Arc<Device>, BackendError> {
+	pub fn build_automatic_backend(&self) -> Result<Box<Device>, BackendError> {
 		self.build(DeviceBuilder::default_backend()?)
 	}
 }

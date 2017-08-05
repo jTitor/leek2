@@ -38,23 +38,25 @@ impl fmt::Display for PlatformCode {
 Returns the platform this library is compiled for.
 */
 #[cfg(windows)]
-pub fn current_platform() -> PlatformCode {
+fn get_current_platform() -> PlatformCode {
 	PlatformCode::Windows
 }
 
 #[cfg(linux)]
-pub fn current_platform() -> PlatformCode {
+fn get_current_platform() -> PlatformCode {
 	PlatformCode::Linux
 }
 
-#[cfg(macos)]
-pub fn current_platform() -> PlatformCode {
+#[cfg(target_os = "macos")]
+fn get_current_platform() -> PlatformCode {
 	PlatformCode::MacOS
 }
 
-/*
-#[cfg(not(windows)) & cfg(not(linux)) & cfg(not(macos))]
-pub fn current_platform() -> PlatformCode {
+#[cfg(not(any(target_os = "macos", windows, linux)))]
+fn get_current_platform() -> PlatformCode {
 	PlatformCode::Unknown
 }
-*/
+
+pub fn current_platform() -> PlatformCode {
+	get_current_platform()
+}
