@@ -70,8 +70,7 @@ pub struct GameBuilder {
 
 impl GameBuilder {
 	pub fn new() -> GameBuilder {
-		GameBuilder {
-		}
+		GameBuilder {}
 	}
 
 	pub fn build(&self) -> Result<Game, GameError> {

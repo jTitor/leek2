@@ -12,6 +12,6 @@ fn main() {
 	//so this should really store the result
 	//and switch on the result value.
 	let _ = GameBuilder::new()
-		.build()?
+		.build().unwrap()
 		.run();
 }

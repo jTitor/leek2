@@ -29,9 +29,7 @@ impl Error for BackendError {
 	fn description(&self) -> &str {
 		match *self {
 			BackendError::NoneAvailable => "no suitable backend available",
-			BackendError::BackendUnavailable(backend_type, platform_code) => {
-				format!("backend isn't available on this platform", backend_type, platform_code).as_str()
-			}
+			BackendError::BackendUnavailable(backend_type, platform_code) => "backend isn't available on this platform"
 		}
 	}
 }
