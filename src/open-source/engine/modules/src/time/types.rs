@@ -31,3 +31,5 @@ impl TimeRange {
 		self.end - self.start
 	}
 }
+
+pub type DateTime = unimplemented!();

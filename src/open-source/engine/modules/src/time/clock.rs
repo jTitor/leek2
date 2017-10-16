@@ -30,6 +30,28 @@ pub trait Clock {
 	}
 }
 
+pub trait ClockInternal {
+	/**
+	 Returns the timestamp when this clock was initialized.
+	 This is used to generate DateTimes on this clock
+	 by applying the elapsed timestamp as a duration on
+	 clock_start_datetime().
+	 */
+	fn clock_start_timestamp(&self) -> TimeStamp {
+		unimplemented!()
+	}
+	
+	/**
+	 Returns the timezone-dependent date and time
+	 this clock was initialized.
+	 This is used to generate DateTimes on this clock
+	 by applying the elapsed timestamp as a duration.
+	 */
+	fn clock_start_datetime(&self) {
+
+	}
+}
+
 pub struct ClockFactory {}
 
 impl ClockFactory {
