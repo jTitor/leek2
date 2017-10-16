@@ -30,18 +30,18 @@ impl WindowBuilder {
 		Ok(unimplemented!())
 	}
 
-	pub fn with_title(&mut self, newTitle: &str) -> &mut WindowBuilder {
-		self.title = newTitle.to_owned();
+	pub fn with_title(&mut self, new_title: &str) -> &mut WindowBuilder {
+		self.title = new_title.to_owned();
 		self
 	}
 
-	pub fn with_dimensions(&mut self, newDimensions: Vec2) -> &mut WindowBuilder {
-		self.dimensions = newDimensions;
+	pub fn with_dimensions(&mut self, new_dimensions: Vec2) -> &mut WindowBuilder {
+		self.dimensions = new_dimensions;
 		self
 	}
 
-	pub fn with_position(&mut self, newPosition: Vec2) -> &mut WindowBuilder {
-		self.position = newPosition;
+	pub fn with_position(&mut self, new_position: Vec2) -> &mut WindowBuilder {
+		self.position = new_position;
 		self
 	}
 }
