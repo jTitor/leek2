@@ -12,18 +12,26 @@ impl WindowsClock {
 }
 
 impl Clock for WindowsClock {
-	fn now(&self) -> TimeStamp {
+	fn now_timestamp(&self) -> TimeStamp {
 		//Query the performance counter.
 		unimplemented!()
 	}
 
-	fn previous_time(&self) -> TimeStamp {
+	fn previous_timestamp(&self) -> TimeStamp {
 		//Query the performance counter.
 		unimplemented!()
 	}
 
 	fn update(&self) {
 		//Query the performance counter.
+		unimplemented!()
+	}
+
+	fn clock_start_timestamp(&self) -> TimeStamp {
+		unimplemented!()
+	}
+	
+	fn clock_start_datetime(&self) -> DateTime {
 		unimplemented!()
 	}
 }

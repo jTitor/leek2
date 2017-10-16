@@ -1,3 +1,5 @@
+use super::internal::DateTimeInternal;
+
 pub type TimeStamp = i64;
 pub type TimeDuration = i64;
 
@@ -32,4 +34,25 @@ impl TimeRange {
 	}
 }
 
-pub type DateTime = unimplemented!();
+pub struct DateTime {
+	pub origin: DateTimeInternal,
+	pub offset: TimeStamp	//The time since the given origin.
+}
+
+impl DateTime {
+	fn now() -> DateTime {
+		DateTime {
+			origin: DateTimeInternal::now(),
+			offset: 0
+		}
+	}
+
+	fn offset_by(&self, offset: TimeStamp) -> DateTime {
+		DateTime {
+			origin: self.origin,
+			offset: self.offset + offset
+		}
+	}
+}
+
+//TODO: impl fmt::Display for DateTime
