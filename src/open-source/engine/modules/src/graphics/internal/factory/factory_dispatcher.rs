@@ -13,7 +13,7 @@ pub struct FactoryDispatcher {
 
 impl FactoryDispatcher {
 	pub fn new(factory: &GraphicsFactory) -> FactoryDispatcher {
-		FactoryDispatcher { factory: Rc::from_raw(factory) }
+		FactoryDispatcher { factory: Rc::new(*factory) }
 	}
 
 	pub fn dispatch(&self) -> Result<GraphicsPayload, BackendError> {

@@ -10,6 +10,8 @@ use std::sync::Arc;
 use super::log_element::{LogSeverity, LogElement};
 use super::log_error::LogError;
 use super::log_listener::interface::LogListen;
+use time::Clock;
+use std::sync::Arc;
 
 /**
 Handles logging requests.
@@ -29,7 +31,8 @@ pub struct Logger {
 	pub buffer_size: usize,
 	///The LogListeners that are listening to this Logger.
 	listeners: HashMap<u32, Arc<LogListen>>,
-	listener_next_id: u32
+	listener_next_id: u32,
+	clock: Arc<Clock>
 }
 
 impl fmt::Debug for Logger {
@@ -69,7 +72,7 @@ impl Logger {
 		}
 
 		//Otherwise, broadcast it to any readers.
-		let record = LogElement{text: text, tag: tag, severity: severity};
+		let record = LogElement{text: text, tag: tag, severity: severity, time_stamp: self.clock.now()};
 		self.broadcast(&record);
 		//Can the buffer fit this line?
 		if !self.can_fit(&record) {
@@ -228,68 +231,5 @@ impl Logger {
 impl Drop for Logger {
 	fn drop(&mut self) {
 		self.shutdown();
-	}
-}
-
-/**
-Builds Logger instances given a minimum log level and
-buffer size.
-*/
-#[derive(Debug)]
-pub struct LoggerBuilder {
-	level: LogSeverity,
-	buffer_size: usize,
-}
-
-impl LoggerBuilder {
-	pub fn new() -> LoggerBuilder {
-		LoggerBuilder {
-			level: LogSeverity::Info,
-			buffer_size: 1024
-		}
-	}
-
-	pub fn level(&mut self, val: LogSeverity) -> &mut LoggerBuilder {
-		self.level = val;
-		self
-	}
-
-	pub fn buffer_size(&mut self, val: usize) -> &mut LoggerBuilder {
-		//Buffers can't be zero-sized, but anything else goes.
-		if val <= 0 {
-			return self;
-		}
-		self.buffer_size = val;
-		self
-	}
-
-	pub fn build(&self, out_file_path: &str) -> Result<Logger, LogError> {
-		//Connect to our output file.
-		//If that failed, abort here.
-		let file = OpenOptions::new()
-					.read(true)
-					.write(true)
-					.append(true)
-					.create(true)
-					.open(out_file_path);
-		match file {
-			Ok(opened_file) => {
-				//Otherwise, construct our Logger now.
-				return Ok(
-					Logger {
-							level: self.level,
-							out_file: opened_file,
-							buffer: vec![0; self.buffer_size].into_boxed_slice(),
-							buffer_head: 0,
-							buffer_size: self.buffer_size,
-							listeners: HashMap::new(),
-							listener_next_id: 0
-						}
-					);
-			},
-			_ => {
-				return Err(LogError::LoggerOutputNotReady);
-			}
-		}
 	}
 }

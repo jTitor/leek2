@@ -15,11 +15,13 @@ gfx_device_gl = "*"
 glutin = "0.8"
 gfx_window_glutin = "0.16"
 
-
 #SIMD operations.
 #Not available on release, need to use nightly compiler for this.
 #simd = { git = "https://github.com/huonw/simd" }
 log = "*"
+
+#Platform-specific APIs.
+winapi = "*"
 
 [[bin]]
 name = "leek2"

@@ -13,7 +13,7 @@ pub struct GLDevice {
 	*/
 	impl_device: gfx_device_gl::Device,
 	impl_factory: gfx_device_gl::Factory,
-	impl_render_target_view: Box<gfx_core::handle::RenderTargetView>,
+	impl_render_target_view: gfx_core::handle::RenderTargetView,
 	impl_depth_stencil_view: gfx_core::handle::DepthStencilView
 }
 

@@ -75,7 +75,7 @@ impl graphics::Window for GlutinWindow {
 		unimplemented!()
 	}
 
-	fn swap_buffers(&self) -> Result<> {
+	fn swap_buffers(&self) -> Result<(), unimplemented!()> {
 		let result = self.impl_window.swap_buffers();
 		//You probably want to genericize this
 		//error.

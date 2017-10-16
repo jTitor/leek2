@@ -53,7 +53,7 @@ impl GlutinDeviceWindowBuilder {
 		let device_request = factory.device_request;
 		let builder = glutin::WindowBuilder::new()
 		.with_title(window_request.title.to_string())
-		.with_dimensions(window_request.dimensions.x(), window_request.dimensions.y());
+		.with_dimensions(window_request.dimensions.x() as u32, window_request.dimensions.y() as u32);
 		if window_request.vsync {
 			builder = builder.with_vsync();
 		}
