@@ -3,7 +3,7 @@
 */
 
 //Vectors.
-mod vec_base;
+pub mod vec_base;
 pub mod vec2;
 pub mod vec3;
 pub mod vec4;

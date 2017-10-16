@@ -20,6 +20,7 @@ Values:
   * Maximized: The window is in the windowing manager's
   list of accessible windows and covers as much of the screen as the manager will allow.
 */
+#[derive(Debug, PartialEq, Copy)]
 pub enum Visibility {
 	Closed,
 	Normal,
@@ -33,6 +34,7 @@ General specification for window events.
 This is as close to the Glium event types
 as possible, except input is handled separately.
 */
+#[derive(Debug, PartialEq, Copy)]
 pub enum EventType {
 	Awakened,
 	Resized(u32, u32),

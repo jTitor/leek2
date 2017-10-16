@@ -1,17 +1,15 @@
 /*!
 Builds a Device and Window via Gfx and Glutin.
 */
-#[macro_use]
-extern crate gfx;
-extern crate gfx_window_glutin;
-extern crate glutin;
+use gfx;
+use glutin;
+use gfx_window_glutin;
 
-use gfx::Device;
-
-use graphics::WindowBuilder;
-use super::interface::DeviceWindowBuilderPayload;
-use super::super::window::glutin::GlutinWindow;
+use graphics::GraphicsPayload;
+use super::FactoryDispatcher;
+use super::super::window::GlutinWindow;
 use super::super::device::gl::GLDevice;
+use math::vec_base::Vec2Access;
 
 pub type ColorFormat = gfx::format::Rgba8;
 pub type DepthFormat = gfx::format::DepthStencil;
@@ -42,30 +40,34 @@ pub fn main() {
 
 #[derive(Debug)]
 pub struct GlutinDeviceWindowBuilder {
-	//Make this into an info payload that
-	//both builders use?
-	base_info: &WindowBuilder
 }
 
 impl GlutinDeviceWindowBuilder {
-	pub fn build(&self) -> DeviceWindowBuilderPayload {
+	pub fn new() -> GlutinDeviceWindowBuilder {
+		GlutinDeviceWindowBuilder {}
+	}
+
+	pub fn build(&self, dispatcher: &FactoryDispatcher) -> GraphicsPayload {
+		let factory = dispatcher.factory;
+		let window_request = factory.window_request;
+		let device_request = factory.device_request;
 		let builder = glutin::WindowBuilder::new()
-		.with_title(self.base_info.title.to_string())
-		.with_dimensions(self.base_info.dimensions.x(), self.base_info.dimensions.y())
-		.with_vsync(self.base_info.vsync);
+		.with_title(window_request.title.to_string())
+		.with_dimensions(window_request.dimensions.x(), window_request.dimensions.y());
+		if window_request.vsync {
+			builder = builder.with_vsync();
+		}
 
 		let (window, mut device, mut factory, main_color, mut main_depth) =
-			gfx_window_glutin::init::<ColorFormat, DepthFormat>(builder);
+			gfx_window_glutin::init::<ColorFormat, DepthFormat>(builder, unimplemented!());
 
-		let result_window = GlutinWindow::new(window);
+		let result_window = Box::new(GlutinWindow::new(window));
 		//Isn't device a reference?
-		let result_device = GLDevice::new(device);
+		let result_device = Box::new(GLDevice::new(device, factory, main_color, main_depth));
 
-		//TODO: What do we do with the factory,
-		//main_color and main_depth?
-		BuilderPayload {
-			window: result_window,
-			device: result_device
+		GraphicsPayload {
+			device: result_device,
+			window: result_window
 		}
 	}
 }

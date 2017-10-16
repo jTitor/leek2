@@ -1,10 +1,9 @@
 /*!
 	Implements a window via Glutin+Gfx.
 */
-#[macro_use]
-extern crate glutin;
+use glutin;
 
-use glutin::Window;
+use graphics;
 use graphics::{Window, Visibility};
 use math::Vec2;
 
@@ -19,8 +18,8 @@ pub struct GlutinWindow {
 }
 
 impl GlutinWindow {
-	pub fn new(glutin_window: glutin::Window) -> GlutinWindowBuilder {
-		GlutinWindowBuilder {
+	pub fn new(glutin_window: glutin::Window) -> GlutinWindow {
+		GlutinWindow {
 			impl_window: glutin_window,
 			visibility: Visibility::Closed
 		}
@@ -37,15 +36,15 @@ impl graphics::Window for GlutinWindow {
 	}
 
 	fn position(&self) -> Vec2 {
-		if let position = self.impl_window.get_position() {
-			return Vec2::new(position.0, position.1);
+		if let Some(position) = self.impl_window.get_position() {
+			return Vec2::new(position.0 as f32, position.1 as f32);
 		}
 		Vec2{}
 	}
 
 	fn dimensions(&self) -> Vec2 {
-		if let dimensions = self.impl_window.get_inner_size_pixels() {
-			return Vec2::new(dimensions.0, dimensions.1);
+		if let Some(dimensions) = self.impl_window.get_inner_size_pixels() {
+			return Vec2::new(dimensions.0 as f32, dimensions.1 as f32);
 		}
 		Vec2{}
 	}
@@ -58,7 +57,7 @@ impl graphics::Window for GlutinWindow {
 		match self.visibility {
 			Visibility::Closed => return false,
 			Visibility::Minimized => return false,
-			_ => return true;
+			_ => return true
 		}
 	}
 
