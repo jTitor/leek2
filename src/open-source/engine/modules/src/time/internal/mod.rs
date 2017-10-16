@@ -5,4 +5,4 @@ pub mod posix_clock;
 pub use self::posix_clock::PosixClock;
 
 pub mod types;
-pub use self::types::DateTimeInternal;
+pub use self::types::{DateTimeInternal, DateTimeInternalFactory};

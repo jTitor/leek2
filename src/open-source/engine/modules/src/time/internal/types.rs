@@ -1,7 +1,11 @@
-pub type DateTimeInternal = unimplemented!();
+use chrono;
 
-impl DateTimeInternal {
+pub type DateTimeInternal = chrono::DateTime<chrono::Local>;
+
+pub struct DateTimeInternalFactory {}
+
+impl DateTimeInternalFactory {
 	fn now() -> DateTimeInternal {
-		unimplemented!()
+		chrono::Local::now()
 	}
 }

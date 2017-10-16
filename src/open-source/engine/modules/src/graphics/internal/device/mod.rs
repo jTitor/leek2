@@ -1,2 +1,2 @@
 pub mod gl;
-pub use gl::GLDevice;
+pub use self::gl::GLDevice;

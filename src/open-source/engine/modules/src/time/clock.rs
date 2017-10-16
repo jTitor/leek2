@@ -57,18 +57,3 @@ pub trait Clock {
 		self.timestamp_as_datetime(self.previous_timestamp())
 	}
 }
-
-pub struct ClockFactory {}
-
-impl ClockFactory {
-	fn new() -> ClockFactory { ClockFactory{} }
-	
-	fn build(&self) -> Result<&Clock, GameError> {
-		match current_platform() {
-			PlatformCode::Windows => { return Ok(&WindowsClock::new()); },
-			PlatformCode::MacOS => { return Ok(&PosixClock::new()); },
-			PlatformCode::Linux => { return Ok(&PosixClock::new()); }
-			_ => { return Err(GameError::PlatformUnsupported); }
-		}
-	}
-}

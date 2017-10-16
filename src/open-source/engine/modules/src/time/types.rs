@@ -1,4 +1,4 @@
-use super::internal::DateTimeInternal;
+use super::internal::DateTimeInternalFactory;
 
 pub type TimeStamp = i64;
 pub type TimeDuration = i64;
@@ -42,7 +42,7 @@ pub struct DateTime {
 impl DateTime {
 	fn now() -> DateTime {
 		DateTime {
-			origin: DateTimeInternal::now(),
+			origin: DateTimeInternalFactory::now(),
 			offset: 0
 		}
 	}

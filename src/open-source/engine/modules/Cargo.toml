@@ -20,6 +20,9 @@ gfx_window_glutin = "0.16"
 #simd = { git = "https://github.com/huonw/simd" }
 log = "*"
 
+#Chrono for timekeeping.
+chrono = "*"
+
 #Platform-specific APIs.
 winapi = "*"
 

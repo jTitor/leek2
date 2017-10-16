@@ -1,5 +1,6 @@
 //Crate root for the engine.
 #[macro_use]
+extern crate chrono;
 extern crate gfx;
 extern crate gfx_core;
 extern crate gfx_device_gl;

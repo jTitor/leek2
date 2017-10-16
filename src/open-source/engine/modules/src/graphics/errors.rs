@@ -5,6 +5,7 @@ use std::error::Error;
 use std::fmt;
 use super::device::BackendType;
 use platform::PlatformCode;
+use game::GameError;
 
 /**
 Errors for backend implementations.
