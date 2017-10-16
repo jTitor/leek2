@@ -10,6 +10,7 @@ pub struct DeviceRequest {
 pub struct WindowRequest {
 	pub title: String,
 	pub dimensions: Vec2,
+	pub position: Vec2,
 	pub vsync: bool
 }
 
@@ -26,6 +27,7 @@ impl GraphicsFactory {
 		let window = WindowRequest {
 			title: String::from("Default Title"),
 			dimensions: Vec2::new(1.0, 1.0),
+			position: Vec2::new(0.0, 0.0),
 			vsync: true
 		};
 		
@@ -50,13 +52,18 @@ impl GraphicsFactory {
 		self
 	}
 
+	fn with_position(&mut self, position: Vec2) -> &mut GraphicsFactory {
+		self.window_request.position = position;
+		self
+	}
+
 	fn with_vsync(&mut self, vsync: bool) -> &mut GraphicsFactory {
 		self.window_request.vsync = vsync;
 		self
 	}
 
 	fn build(&self) -> Result<GraphicsPayload, BackendError> {
-		FactoryDispatcher::new()
-			.dispatch(self)
+		FactoryDispatcher::new(self)
+			.dispatch()
 	}
 }

@@ -28,12 +28,14 @@ impl fmt::Display for WindowBuilderError {
 
 #[derive(Debug)]
 pub enum WindowError {
+	BackendOperationFailed,
 	Unknown
 }
 
 impl Error for WindowError {
 	fn description(&self) -> &str {
 		match *self {
+			WindowError::BackendOperationFailed => "graphics backend operation failed",
 			WindowError::Unknown => "unknown error",
 		}
 	}

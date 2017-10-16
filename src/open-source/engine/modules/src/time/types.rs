@@ -1,18 +1,17 @@
 pub type TimeStamp = i64;
-
-impl TimeStamp {
-	fn as_seconds(self) -> f64 {
-		unimplemented!()
-	}
-
-	fn as_milliseconds(self) -> f64 {
-		unimplemented!()
-	}
-}
-
 pub type TimeDuration = i64;
 
-impl TimeDuration {
+trait TimeElement {
+	fn as_seconds(self) -> f64;/* {
+		unimplemented!()
+	}*/
+
+	fn as_milliseconds(self) -> f64;/* {
+		unimplemented!()
+	}*/
+}
+
+impl TimeElement for i64 {
 	fn as_seconds(self) -> f64 {
 		unimplemented!()
 	}

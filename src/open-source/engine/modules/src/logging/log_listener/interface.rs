@@ -8,7 +8,7 @@ use std::fmt;
 use std::io::Write;
 use std::sync::Mutex;
 use super::listener_error::ListenerError;
-use super::super::log_element::{LogSeverity, LogElement};
+use logging::{LogSeverity, LogElement};
 
 /**
 Base class for log listeners.

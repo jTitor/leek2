@@ -36,6 +36,8 @@ pub mod logging;
 //Platform-dependent subsystems.
 pub mod platform;
 
+pub mod time;
+
 //Instantiator for the engine.
 pub mod game;
 

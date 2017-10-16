@@ -9,7 +9,7 @@
 
 use std::fmt;
 use math::Vec2;
-use graphics::{Device, EventType, Visibility};
+use graphics::{EventType, Visibility};
 use super::WindowError;
 
 /**

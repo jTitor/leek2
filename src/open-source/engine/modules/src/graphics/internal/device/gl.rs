@@ -17,6 +17,8 @@ pub struct GLDevice {
 	impl_depth_stencil_view: gfx_core::handle::DepthStencilView
 }
 
+//TODO: impl Debug for GLDevice
+
 impl Device for GLDevice {
 	fn backend_type(&self) -> BackendType {
 		BackendType::OpenGL

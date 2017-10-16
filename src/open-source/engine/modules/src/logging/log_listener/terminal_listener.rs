@@ -7,7 +7,7 @@ use std::cell::RefCell;
 use std::io;
 use std::sync::Mutex;
 use super::interface::ListenerBase;
-use super::super::log_element::LogSeverity;
+use logging::LogSeverity;
 
 pub type TerminalListener = ListenerBase<io::Stdout>;
 

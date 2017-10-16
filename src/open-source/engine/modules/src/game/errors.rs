@@ -17,6 +17,16 @@ pub enum GameError {
 	DeviceError { cause: BackendError },
 	WindowBuildFailed { cause: WindowBuilderError },
 	/**
+	The game can't perform the requested command
+	under the current platform.
+	*/
+	PlatformUnsupported,
+	/**
+	 The game can perform the given command,
+	 but the parameters are out of bounds in some way.
+	 */
+	InvalidRequest,
+	/**
 	Error unknown.
 	*/
 	Unknown
@@ -33,6 +43,8 @@ impl Error for GameError {
 		match *self {
 			GameError::DeviceError{ref cause} => { "a device had a fatal error" },
 			GameError::WindowBuildFailed{ref cause} => { "a window could not be built" },
+			GameError::PlatformUnsupported => { "this platform doesn't support the requested command" },
+			GameError::InvalidRequest => { "a window could not be built" },
 			_ => { "unknown error" }
 		}
 	}

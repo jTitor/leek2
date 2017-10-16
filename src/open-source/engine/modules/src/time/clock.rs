@@ -4,6 +4,7 @@
 use platform::{current_platform, PlatformCode};
 use time::{TimeStamp, TimeDuration};
 use super::internal::WindowsClock;
+use game::GameError;
 
 pub trait Clock {
 	/**
@@ -32,14 +33,14 @@ pub trait Clock {
 pub struct ClockFactory {}
 
 impl ClockFactory {
-	fn new() -> ClockFactory { ClockFactory() }
+	fn new() -> ClockFactory { ClockFactory{} }
 	
-	fn build(&self) -> Result<&Clock, _> {
+	fn build(&self) -> Result<&Clock, GameError> {
 		match current_platform() {
-			PlatformCode::Windows => { return WindowsClock::new(); },
-			PlatformCode::MacOS => { return unimplemented!(); },
-			PlatformCode::Linux => { return unimplemented!(); }
-			_ => { return Err(unimplemented!()); }
+			PlatformCode::Windows => { return Ok(&WindowsClock::new()); },
+			PlatformCode::MacOS => { return Ok(unimplemented!()); },
+			PlatformCode::Linux => { return Ok(unimplemented!()); }
+			_ => { return Err(GameError::PlatformUnsupported); }
 		}
 	}
 }

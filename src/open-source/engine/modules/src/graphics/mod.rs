@@ -14,6 +14,7 @@ pub use self::window::EventType;
 
 pub mod errors;
 pub use self::errors::BackendError;
+pub use self::window::{WindowError, WindowBuilderError};
 
 pub mod graphics_payload;
 pub use self::graphics_payload::GraphicsPayload;

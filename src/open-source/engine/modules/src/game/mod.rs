@@ -6,7 +6,7 @@ mod errors;
 use super::graphics::{Device, DeviceBuilder};
 use super::graphics::{Window, WindowBuilder};
 use super::graphics::EventType;
-use self::errors::GameError;
+pub use self::errors::GameError;
 
 /**
 An instance of the game engine.

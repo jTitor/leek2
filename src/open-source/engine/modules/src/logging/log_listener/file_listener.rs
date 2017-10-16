@@ -7,7 +7,7 @@ use std::cell::RefCell;
 use std::fs::{File, OpenOptions};
 use std::sync::Mutex;
 use super::interface::ListenerBase;
-use super::super::log_element::LogSeverity;
+use logging::LogSeverity;
 
 pub type FileListener = ListenerBase<File>;
 

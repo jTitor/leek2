@@ -1,3 +1,5 @@
+use std::fmt;
+
 //TODO: PartialOrd derive implementation is apparently
 //very bad, consider alternate route.
 #[derive(Debug, PartialEq, PartialOrd, Clone, Copy)]
@@ -24,7 +26,7 @@ impl fmt::Display for LogSeverity {
 }
 
 impl LogSeverity {
-	fn long_name(self) -> &str {
+	fn long_name(self) -> &'static str {
 		let disp_text;
 		match self {
 			LogSeverity::Verbose => { disp_text = "verbose"; },
@@ -37,7 +39,7 @@ impl LogSeverity {
 		disp_text
 	}
 
-	fn as_prefix(self) -> &str {
+	fn as_prefix(self) -> &'static str {
 		let disp_text;
 		match self {
 			LogSeverity::Verbose => { disp_text = "(verbose) "; },

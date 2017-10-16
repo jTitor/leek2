@@ -4,14 +4,13 @@
 
 use std::collections::HashMap;
 use std::fmt;
-use std::fs::{File, OpenOptions};
+use std::fs::File;
 use std::io::Write;
 use std::sync::Arc;
-use super::log_element::{LogSeverity, LogElement};
+use logging::{LogSeverity, LogElement};
 use super::log_error::LogError;
 use super::log_listener::interface::LogListen;
 use time::Clock;
-use std::sync::Arc;
 
 /**
 Handles logging requests.

@@ -1,3 +1,0 @@
-/*!
- Builds a Glutin window.
- */

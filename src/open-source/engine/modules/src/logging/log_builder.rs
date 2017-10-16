@@ -2,11 +2,14 @@
 Builds Logger instances given a minimum log level and
 buffer size.
 */
-use super::Logger;
+use std::fs::OpenOptions;
+use std::collections::HashMap;
+
+use logging::LogSeverity;
+use logging::{Logger, LogError};
 use std::sync::Arc;
 use time::Clock;
 
-#[derive(Debug)]
 pub struct LoggerBuilder {
 	level: LogSeverity,
 	buffer_size: usize,
@@ -14,11 +17,11 @@ pub struct LoggerBuilder {
 }
 
 impl LoggerBuilder {
-	pub fn new(clock: &Clock) -> LoggerBuilder {
+	pub fn new(clock: Arc<Clock>) -> LoggerBuilder {
 		LoggerBuilder {
 			level: LogSeverity::Info,
 			buffer_size: 1024,
-			clock: Arc::new(*clock)
+			clock: clock
 		}
 	}
 

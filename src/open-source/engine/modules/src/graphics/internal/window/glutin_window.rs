@@ -4,10 +4,9 @@
 use glutin;
 
 use graphics;
-use graphics::{Window, Visibility};
+use graphics::{Window, Visibility, WindowError};
 use math::Vec2;
 
-#[derive(Debug)]
 pub struct GlutinWindow {
 	/**
 	The actual backend
@@ -16,6 +15,8 @@ pub struct GlutinWindow {
 	impl_window: glutin::Window,
 	visibility: Visibility
 }
+
+//TODO: impl Debug for GlutinWindow
 
 impl GlutinWindow {
 	pub fn new(glutin_window: glutin::Window) -> GlutinWindow {
@@ -39,14 +40,14 @@ impl graphics::Window for GlutinWindow {
 		if let Some(position) = self.impl_window.get_position() {
 			return Vec2::new(position.0 as f32, position.1 as f32);
 		}
-		Vec2{}
+		Vec2::default()
 	}
 
 	fn dimensions(&self) -> Vec2 {
 		if let Some(dimensions) = self.impl_window.get_inner_size_pixels() {
 			return Vec2::new(dimensions.0 as f32, dimensions.1 as f32);
 		}
-		Vec2{}
+		Vec2::default()
 	}
 
 	fn is_open(&self) -> bool {
@@ -63,23 +64,16 @@ impl graphics::Window for GlutinWindow {
 
 	fn open(&self) {
 		self.impl_window.show();
-		//Not clear how we handle it;
-		//show() returns void,
-		//so how do we pick up a panic?
-		unimplemented!()
 	}
 
 	fn hide(&self) {
 		self.impl_window.hide();
-		//See GlutinWindow.open() impl.
-		unimplemented!()
 	}
 
-	fn swap_buffers(&self) -> Result<(), unimplemented!()> {
-		let result = self.impl_window.swap_buffers();
-		//You probably want to genericize this
-		//error.
-		unimplemented!()
-		result
+	fn swap_buffers(&self) -> Result<(), WindowError> {
+		match self.impl_window.swap_buffers() {
+			Ok(_) => Ok(()),
+			_ => Err(WindowError::BackendOperationFailed)
+		}
 	}
 }
