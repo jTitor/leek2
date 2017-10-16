@@ -17,7 +17,15 @@ impl FactoryDispatcher {
 	}
 
 	pub fn dispatch(&self) -> Result<GraphicsPayload, BackendError> {
-		match self.factory.device_request.device_type {
+		//Check that the backend is available on this platform.
+		let backend_request_type = self.factory.device_request.device_type;
+		let backends = available_backends();
+		let platform = current_platform();
+		if !backends.contains(&backend_request_type) {
+			return Err(BackendError::BackendUnavailable(backend_request_type, platform));
+		}
+		
+		match backend_request_type {
 			BackendType::OpenGL => {
 				//Try to get the Glutin factories.
 				let dispatcher = GlutinDeviceWindowBuilder::new();

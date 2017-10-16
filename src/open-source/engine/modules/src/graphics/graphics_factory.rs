@@ -3,10 +3,12 @@ use super::{BackendType, BackendError};
 use math::Vec2;
 use super::internal::FactoryDispatcher;
 
+#[derive(Debug)]
 pub struct DeviceRequest {
 	pub device_type: BackendType
 }
 
+#[derive(Debug)]
 pub struct WindowRequest {
 	pub title: String,
 	pub dimensions: Vec2,
@@ -14,6 +16,7 @@ pub struct WindowRequest {
 	pub vsync: bool
 }
 
+#[derive(Debug)]
 pub struct GraphicsFactory {
 	pub device_request: DeviceRequest,
 	pub window_request: WindowRequest
