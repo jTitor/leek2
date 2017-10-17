@@ -1,3 +1,4 @@
+use game::GameError;
 use graphics::{Device, Window};
 use graphics::EventType;
 use time::Clock;

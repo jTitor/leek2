@@ -71,7 +71,7 @@ impl Logger {
 		}
 
 		//Otherwise, broadcast it to any readers.
-		let record = LogElement{text: text, tag: tag, severity: severity, time_stamp: self.clock.now()};
+		let record = LogElement{text: text, tag: tag, severity: severity, time_stamp: self.clock.now_datetime()};
 		self.broadcast(&record);
 		//Can the buffer fit this line?
 		if !self.can_fit(&record) {

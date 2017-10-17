@@ -13,7 +13,7 @@ impl WindowsClock {
 	pub fn new() -> WindowsClock {
 		let start_timestamp = unimplemented!();
 		WindowsClock {
-			origin: DateTime::now(),
+			origin_datetime: DateTime::now(),
 			origin_timestamp: start_timestamp,
 			now_timestamp: start_timestamp,
 			previous_timestamp: start_timestamp

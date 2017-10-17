@@ -4,6 +4,8 @@
  to generate the desired payload.
  */
 use graphics::{GraphicsFactory, GraphicsPayload, BackendError, BackendType};
+use graphics::available_backends;
+use platform::current_platform;
 use super::glutin::GlutinDeviceWindowBuilder;
 use std::rc::Rc;
 

@@ -1,3 +1,4 @@
+use platform::{current_platform, PlatformCode};
 use time::Clock;
 use time::internal::{WindowsClock, PosixClock};
 use game::GameError;

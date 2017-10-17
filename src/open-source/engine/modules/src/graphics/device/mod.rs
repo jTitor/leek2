@@ -2,11 +2,9 @@
 	The generic specification for a graphics wrapper.
 */
 mod device;
-mod device_builder;
 mod types;
 
 pub use self::device::Device;
-pub use self::device_builder::DeviceBuilder;
 pub use self::types::BackendType;
 
 use platform::{PlatformCode, current_platform};

@@ -8,8 +8,8 @@ use graphics::{BackendType, Device};
 
 type GfxGlDevice = gfx_device_gl::Device;
 type GfxGlDeviceFactory = gfx_device_gl::Factory;
-type GfxRenderTargetView = gfx_core::handle::RenderTargetView<gfx_device_gl::Resources, gfx::format::Rgba8>;
-type GfxDepthStencilView = gfx_core::handle::DepthStencilView<gfx_device_gl::Resources, gfx::format::DepthStencil>;
+type GfxRenderTargetView = gfx_core::handle::RenderTargetView<gfx_device_gl::Resources, gfx_core::format::Rgba8>;
+type GfxDepthStencilView = gfx_core::handle::DepthStencilView<gfx_device_gl::Resources, gfx_core::format::DepthStencil>;
 
 pub struct GLDevice {
 	/**
