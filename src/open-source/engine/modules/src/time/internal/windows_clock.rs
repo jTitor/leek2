@@ -32,7 +32,7 @@ impl Clock for WindowsClock {
 		self.previous_timestamp
 	}
 
-	fn update(&self) {
+	fn update(&mut self) {
 		//Query the performance counter.
 		unimplemented!()
 	}

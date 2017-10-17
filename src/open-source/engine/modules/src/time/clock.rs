@@ -20,7 +20,7 @@ pub trait Clock {
 	 Updates the clock, so that now_timestamp()
 	 returns the current time.
 	 */
-	fn update(&self);
+	fn update(&mut self);
 	/**
 	 Returns the timestamp when this clock was initialized.
 	 This is used to generate DateTimes on this clock

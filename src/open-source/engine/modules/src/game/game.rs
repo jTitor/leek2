@@ -32,6 +32,7 @@ impl Game {
 			}
 
 			//Do update and render here.
+			self.clock.update();
 
 			//For now, quit on ESC.
 			running = !escPressed;
