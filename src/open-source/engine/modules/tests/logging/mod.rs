@@ -1,7 +1,3 @@
-extern crate log;
-extern crate leek2;
-//Use macros from other crates.
-
 use std::sync::Arc;
 use self::leek2::logging::logger::{LoggerBuilder};
 use self::leek2::logging::log_element::LogSeverity;

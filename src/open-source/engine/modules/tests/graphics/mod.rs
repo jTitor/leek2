@@ -1,5 +1,3 @@
-extern crate leek2;
-
 use leek2::graphics::available_backends;
 use leek2::graphics::Device;
 
