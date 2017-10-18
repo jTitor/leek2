@@ -6,6 +6,8 @@ extern crate gfx_core;
 extern crate gfx_device_gl;
 extern crate gfx_window_glutin;
 extern crate glutin;
+extern crate winapi;
+extern crate kernel32;
 
 //Define our base level pub modules.
 

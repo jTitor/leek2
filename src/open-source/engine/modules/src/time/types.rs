@@ -3,7 +3,7 @@ use super::internal::{DateTimeInternal, DateTimeInternalFactory};
 pub type TimeStamp = i64;
 pub type TimeDuration = i64;
 
-trait TimeElement {
+pub trait TimeElement {
 	fn as_seconds(self) -> f64;/* {
 		unimplemented!()
 	}*/
@@ -11,6 +11,8 @@ trait TimeElement {
 	fn as_milliseconds(self) -> f64;/* {
 		unimplemented!()
 	}*/
+
+	fn as_timestamp(self) -> TimeStamp;
 }
 
 impl TimeElement for i64 {
@@ -20,6 +22,10 @@ impl TimeElement for i64 {
 
 	fn as_milliseconds(self) -> f64 {
 		unimplemented!()
+	}
+
+	fn as_timestamp(self) -> TimeStamp {
+		self
 	}
 }
 
