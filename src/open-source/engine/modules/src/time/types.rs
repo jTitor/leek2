@@ -4,26 +4,18 @@ pub type TimeStamp = i64;
 pub type TimeDuration = i64;
 
 pub trait TimeElement {
-	fn as_seconds(self) -> f64;/* {
-		unimplemented!()
-	}*/
+	fn as_seconds(self) -> f64 {
+		self.as_timestamp() as f64 / 1000000000.0
+	}
 
-	fn as_milliseconds(self) -> f64;/* {
-		unimplemented!()
-	}*/
+	fn as_milliseconds(self) -> f64 {
+		self.as_timestamp() as f64 / 1000000.0
+	}
 
 	fn as_timestamp(self) -> TimeStamp;
 }
 
 impl TimeElement for i64 {
-	fn as_seconds(self) -> f64 {
-		unimplemented!()
-	}
-
-	fn as_milliseconds(self) -> f64 {
-		unimplemented!()
-	}
-
 	fn as_timestamp(self) -> TimeStamp {
 		self
 	}

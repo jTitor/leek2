@@ -1,10 +1,9 @@
 use std::time::{Instant, Duration};
-use time::{Clock, TimeStamp, DateTime};
+use time::{Clock, TimeStamp, DateTime, TimeElement};
 
 pub struct PosixClock {
 	origin_datetime: DateTime,
 	origin_timestamp: Instant,
-	//Uses performance counter structs.
 	now_timestamp: Instant,
 	previous_timestamp: Instant
 }
@@ -21,17 +20,22 @@ impl PosixClock {
 	}
 }
 
-//TODO: These are second + nanosecond structs,
-//convert them to be entirely nanosecond
+fn duration_to_timestamp(duration: Duration) -> TimeStamp {
+	let seconds_as_nanos = duration.as_secs() as i64 * 1000000000;
+	let nanos_remaining = duration.subsec_nanos() as i64;
+	
+	seconds_as_nanos + nanos_remaining
+}
+
 impl Clock for PosixClock {
 	fn now_timestamp(&self) -> TimeStamp {
 		//Query the performance counter.
-		self.now_timestamp.duration_since(self.origin_timestamp)
+		duration_to_timestamp(self.now_timestamp.duration_since(self.origin_timestamp))
 	}
 
 	fn previous_timestamp(&self) -> TimeStamp {
 		//Query the performance counter.
-		self.previous_timestamp.duration_since(self.origin_timestamp)
+		duration_to_timestamp(self.previous_timestamp.duration_since(self.origin_timestamp))
 	}
 
 	fn update(&mut self) {
@@ -41,7 +45,7 @@ impl Clock for PosixClock {
 	}
 
 	fn clock_start_timestamp(&self) -> TimeStamp {
-		self.origin_timestamp.duration_since(self.origin_timestamp)
+		duration_to_timestamp(self.origin_timestamp.duration_since(self.origin_timestamp))
 	}
 	
 	fn clock_start_datetime(&self) -> DateTime {
