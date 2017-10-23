@@ -31,9 +31,9 @@ impl GameBuilder {
 		//Devices ready, assign them to the game.
 		unimplemented!();
 		Ok(Game {
-			graphics: graphics_payload.graphics,
+			graphics: graphics_payload.device,
 			window: graphics_payload.window,
-			clock: clock
+			clock: Box::new(clock)
 		})
 	}
 }

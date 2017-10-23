@@ -6,13 +6,13 @@ use game::GameError;
 pub struct ClockFactory {}
 
 impl ClockFactory {
-	fn new() -> ClockFactory { ClockFactory{} }
+	pub fn new() -> ClockFactory { ClockFactory{} }
 	
-	fn build(&self) -> Result<Clock, GameError> {
+	pub fn build(&self) -> Result<&mut Clock, GameError> {
 		match current_platform() {
-			PlatformCode::Windows => { return Ok(WindowsClock::new()); },
-			PlatformCode::MacOS => { return Ok(PosixClock::new()); },
-			PlatformCode::Linux => { return Ok(PosixClock::new()); }
+			PlatformCode::Windows => { return Ok(&mut WindowsClock::new()); },
+			PlatformCode::MacOS => { return Ok(&mut PosixClock::new()); },
+			PlatformCode::Linux => { return Ok(&mut PosixClock::new()); }
 			_ => { return Err(GameError::PlatformUnsupported); }
 		}
 	}

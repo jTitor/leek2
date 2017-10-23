@@ -1,6 +1,7 @@
 /*!
  Generic specification for time measurers.
  */
+use std::fmt;
 use platform::{current_platform, PlatformCode};
 use time::{TimeStamp, TimeDuration, DateTime};
 use super::internal::{WindowsClock, PosixClock};
@@ -55,5 +56,11 @@ pub trait Clock {
 
 	fn previous_datetime(&self) -> DateTime {
 		self.timestamp_as_datetime(self.previous_timestamp())
+	}
+}
+
+impl fmt::Debug for Clock {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "Clock {{ now_timestamp: {} }}", self.now_timestamp())
 	}
 }

@@ -7,6 +7,6 @@
 use graphics::{Device, Window};
 
 pub struct GraphicsPayload {
-	device: Box<Device>,
-	window: Box<Window>
+	pub device: Box<Device>,
+	pub window: Box<Window>
 }

@@ -1,4 +1,4 @@
-♦[package]
+[package]
 name = "leek2"
 version = "0.0.1"
 authors = [ "Me <me@me.me>" ]

@@ -1,7 +1,8 @@
 use time::{Clock, TimeStamp, DateTime, TimeElement};
-use winapi::{QueryPerformanceCounter, QueryPerformanceFrequency, LARGEINTEGER};
-
-type WinTimeStamp = LARGEINTEGER;
+//use winapi::{QueryPerformanceCounter, QueryPerformanceFrequency, LARGEINTEGER};
+use winapi::LARGE_INTEGER;
+use kernel32::{QueryPerformanceCounter, QueryPerformanceFrequency};
+type WinTimeStamp = LARGE_INTEGER;
 
 //From https://github.com/ajacksified/rusty/blob/master/src/libstd/sys/windows/time.rs
 // Computes (value*numer)/denom without overflow, as long as both
@@ -23,35 +24,34 @@ pub struct WindowsClock {
 	previous_timestamp: TimeStamp,
 	//Uses performance counter structs.
 	//TODO: add Win32 fields
-	perfcounter_frequency: LARGEINTEGER
-	
+	perfcounter_frequency: LARGE_INTEGER
 }
 
 fn queryPerformanceCounter(outTimestamp: &mut WinTimeStamp) {
 	unsafe {
 		//Might be better to actually return the result here
-		_ = QueryPerformanceCounter(outTimestamp);
+		QueryPerformanceCounter(outTimestamp);
 	}
 }
 
-fn query_performance_counter_as_timestamp(inFrequency: LARGEINTEGER) -> TimeStamp {
-	let tempWinTimeStamp: WinTimeStamp = 0;
-	queryPerformanceCounter(&tempWinTimeStamp);
+fn query_performance_counter_as_timestamp(inFrequency: LARGE_INTEGER) -> TimeStamp {
+	let mut tempWinTimeStamp: WinTimeStamp = 0;
+	queryPerformanceCounter(&mut tempWinTimeStamp);
 	mul_div_i64(tempWinTimeStamp, 1, inFrequency)
 }
 
-fn queryPerformanceFrequency(outFrequency: &mut LARGEINTEGER) {
+fn queryPerformanceFrequency(outFrequency: &mut LARGE_INTEGER) {
 	unsafe {
 		//Might be better to actually return the result here
-		_ = QueryPerformanceFrequency(outFrequency);
+		QueryPerformanceFrequency(outFrequency);
 	}
 }
 
 impl WindowsClock {
 	pub fn new() -> WindowsClock {
-		let frequency : LARGEINTEGER = 0;
-		queryPerformanceFrequency(&frequency);
-		let start_timestamp : query_performance_counter_as_timestamp(frequency)
+		let mut frequency : LARGE_INTEGER = 0;
+		queryPerformanceFrequency(&mut frequency);
+		let start_timestamp = query_performance_counter_as_timestamp(frequency);
 		WindowsClock {
 			origin_datetime: DateTime::now(),
 			origin_timestamp: start_timestamp,

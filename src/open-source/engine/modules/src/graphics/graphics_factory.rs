@@ -23,7 +23,7 @@ pub struct GraphicsFactory {
 }
 
 impl GraphicsFactory {
-	fn new() -> GraphicsFactory {
+	pub fn new() -> GraphicsFactory {
 		let device = DeviceRequest {
 			device_type: BackendType::Other
 		};
@@ -40,32 +40,32 @@ impl GraphicsFactory {
 		}
 	}
 
-	fn with_device_type(&mut self, device_type: BackendType) -> &mut GraphicsFactory {
+	pub fn with_device_type(&mut self, device_type: BackendType) -> &mut GraphicsFactory {
 		self.device_request.device_type = device_type;
 		self
 	}
 
-	fn with_title(&mut self, title: &str) -> &mut GraphicsFactory {
+	pub fn with_title(&mut self, title: &str) -> &mut GraphicsFactory {
 		self.window_request.title = String::from(title);
 		self
 	}
 
-	fn with_dimensions(&mut self, dimensions: Vec2) -> &mut GraphicsFactory {
+	pub fn with_dimensions(&mut self, dimensions: Vec2) -> &mut GraphicsFactory {
 		self.window_request.dimensions = dimensions;
 		self
 	}
 
-	fn with_position(&mut self, position: Vec2) -> &mut GraphicsFactory {
+	pub fn with_position(&mut self, position: Vec2) -> &mut GraphicsFactory {
 		self.window_request.position = position;
 		self
 	}
 
-	fn with_vsync(&mut self, vsync: bool) -> &mut GraphicsFactory {
+	pub fn with_vsync(&mut self, vsync: bool) -> &mut GraphicsFactory {
 		self.window_request.vsync = vsync;
 		self
 	}
 
-	fn build(&self) -> Result<GraphicsPayload, BackendError> {
+	pub fn build(&self) -> Result<GraphicsPayload, BackendError> {
 		FactoryDispatcher::new(self)
 			.dispatch()
 	}
