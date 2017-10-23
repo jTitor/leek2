@@ -1,3 +1,4 @@
+use std::fmt;
 use super::internal::{DateTimeInternal, DateTimeInternalFactory};
 
 pub type TimeStamp = i64;
@@ -32,6 +33,7 @@ impl TimeRange {
 	}
 }
 
+#[derive(PartialEq, Debug)]
 pub struct DateTime {
 	pub origin: DateTimeInternal,
 	pub offset: TimeStamp	//The time since the given origin.
@@ -53,4 +55,16 @@ impl DateTime {
 	}
 }
 
-//TODO: impl fmt::Display for DateTime
+impl Ord for DateTime {
+	fn cmp(&self, other: &DateTime) -> Ordering {
+		let dt1 = DateTimeInternalFactory::normalize(self.origin, self.offset);
+		let dt2 = DateTimeInternalFactory::normalize(other.origin, other.offset);
+		dt1.cmp(dt2)
+	}
+}
+
+impl fmt::Display for DateTime {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "{}", DateTimeInternalFactory::normalize(self.origin, self.offset))
+	}
+}
