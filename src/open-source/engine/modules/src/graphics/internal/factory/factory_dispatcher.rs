@@ -7,15 +7,14 @@ use graphics::{GraphicsFactory, GraphicsPayload, BackendError, BackendType};
 use graphics::available_backends;
 use platform::current_platform;
 use super::glutin::GlutinDeviceWindowBuilder;
-use std::rc::Rc;
 
 pub struct FactoryDispatcher {
-	pub factory: Rc<GraphicsFactory>
+	pub factory: GraphicsFactory
 }
 
 impl FactoryDispatcher {
 	pub fn new(factory: &GraphicsFactory) -> FactoryDispatcher {
-		FactoryDispatcher { factory: Rc::new(*factory) }
+		FactoryDispatcher { factory: factory.clone() }
 	}
 
 	pub fn dispatch(&self) -> Result<GraphicsPayload, BackendError> {

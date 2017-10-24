@@ -2,9 +2,11 @@
 	Implements OpenGL graphics operations.
 */
 use gfx_core;
+use gfx_core::Device;
 use gfx_device_gl;
 
-use graphics::{BackendType, Device};
+use graphics;
+use graphics::BackendType;
 
 type GfxGlDevice = gfx_device_gl::Device;
 type GfxGlDeviceFactory = gfx_device_gl::Factory;
@@ -24,7 +26,7 @@ pub struct GLDevice {
 
 //TODO: impl Debug for GLDevice
 
-impl Device for GLDevice {
+impl graphics::Device for GLDevice {
 	fn backend_type(&self) -> BackendType {
 		BackendType::OpenGL
 	}

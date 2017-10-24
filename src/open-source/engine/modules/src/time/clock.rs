@@ -2,10 +2,7 @@
  Generic specification for time measurers.
  */
 use std::fmt;
-use platform::{current_platform, PlatformCode};
 use time::{TimeStamp, TimeDuration, DateTime};
-use super::internal::{WindowsClock, PosixClock};
-use game::GameError;
 
 pub trait Clock {
 	/**

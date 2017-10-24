@@ -48,10 +48,10 @@ impl GlutinDeviceWindowBuilder {
 	}
 
 	pub fn build(&self, dispatcher: &FactoryDispatcher) -> GraphicsPayload {
-		let factory = dispatcher.factory;
-		let window_request = factory.window_request;
+		let factory = dispatcher.factory.clone();
+		let window_request = factory.window_request.clone();
 		let device_request = factory.device_request;
-		let builder = glutin::WindowBuilder::new()
+		let mut builder = glutin::WindowBuilder::new()
 		.with_title(window_request.title.to_string())
 		.with_dimensions(window_request.dimensions.x() as u32, window_request.dimensions.y() as u32);
 		if window_request.vsync {

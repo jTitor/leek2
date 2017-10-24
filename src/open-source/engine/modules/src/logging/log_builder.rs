@@ -60,7 +60,7 @@ impl LoggerBuilder {
 							buffer_size: self.buffer_size,
 							listeners: HashMap::new(),
 							listener_next_id: 0,
-							clock: self.clock
+							clock: self.clock.clone()
 						}
 					);
 			},

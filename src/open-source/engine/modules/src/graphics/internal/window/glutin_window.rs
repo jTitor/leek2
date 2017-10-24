@@ -4,7 +4,7 @@
 use glutin;
 
 use graphics;
-use graphics::{Window, Visibility, WindowError};
+use graphics::{Window, Visibility, WindowError, EventType};
 use math::Vec2;
 
 pub struct GlutinWindow {
@@ -76,4 +76,19 @@ impl graphics::Window for GlutinWindow {
 			_ => Err(WindowError::BackendOperationFailed)
 		}
 	}
+
+	fn set_callback(&self, callback: fn(EventType)) {
+		unimplemented!()
+	}
+
+
+	fn poll_events(&self) -> Box<Iterator<Item=&EventType>> {
+		unimplemented!()
+	}
+
+
+	fn connect_input_device(&self, device_id: u32, type_id: u32) {
+		unimplemented!()
+	}
+
 }

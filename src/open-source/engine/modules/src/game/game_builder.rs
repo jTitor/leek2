@@ -1,7 +1,7 @@
 use game::Game;
 use game::GameError;
-use graphics::{GraphicsFactory, GraphicsPayload};
-use graphics::{Device, Window};
+use graphics::GraphicsFactory;
+use graphics::Window;
 use time::ClockFactory;
 
 /**
@@ -33,7 +33,7 @@ impl GameBuilder {
 		Ok(Game {
 			graphics: graphics_payload.device,
 			window: graphics_payload.window,
-			clock: Box::new(clock)
+			clock: clock
 		})
 	}
 }

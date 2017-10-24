@@ -53,7 +53,7 @@ impl Error for GameError {
 		match *self {
 			GameError::DeviceError{ref cause} => Some(cause),
 			GameError::WindowBuildFailed{ref cause} => Some(cause),
-			GameError::Unknown => None
+			_ => None
 		}
 	}
 }

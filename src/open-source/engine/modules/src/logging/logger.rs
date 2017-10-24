@@ -21,17 +21,17 @@ pub struct Logger {
 	///it won't be logged to the buffer at all.
 	pub level: LogSeverity,
 	///The output file to write to.
-	out_file: File,
+	pub out_file: File,
 	///Contains the last few logged strings.
-	buffer: Box<[u8]>,
+	pub buffer: Box<[u8]>,
 	///The current head of the log buffer.
-	buffer_head: usize,
+	pub buffer_head: usize,
 	///The length of the log buffer in characters.
 	pub buffer_size: usize,
 	///The LogListeners that are listening to this Logger.
-	listeners: HashMap<u32, Arc<LogListen>>,
-	listener_next_id: u32,
-	clock: Arc<Clock>
+	pub listeners: HashMap<u32, Arc<LogListen>>,
+	pub listener_next_id: u32,
+	pub clock: Arc<Clock>
 }
 
 impl fmt::Debug for Logger {

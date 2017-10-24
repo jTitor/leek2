@@ -8,9 +8,9 @@ An instance of the game engine.
 */
 #[derive(Debug)]
 pub struct Game {
-	graphics: Box<Device>,
-	window: Box<Window>,
-	clock: Box<Clock>
+	pub graphics: Box<Device>,
+	pub window: Box<Window>,
+	pub clock: Box<Clock>
 	//unimplemented!()
 }
 

@@ -1,5 +1,5 @@
 use std::time::{Instant, Duration};
-use time::{Clock, TimeStamp, DateTime, TimeElement};
+use time::{Clock, TimeStamp, DateTime};
 
 pub struct PosixClock {
 	origin_datetime: DateTime,
