@@ -3,7 +3,7 @@
 */
 use std::fmt;
 use super::log_severity::LogSeverity;
-use time::DateTime;
+use time::TimeStamp;
 
 #[derive(Debug)]
 pub struct LogElement<'a> {
@@ -11,7 +11,7 @@ pub struct LogElement<'a> {
 	//Actual log message.
 	pub text : &'a str,
 	pub tag : &'a str,
-	pub time_stamp : DateTime
+	pub time_stamp : TimeStamp
 }
 
 impl<'a> fmt::Display for LogElement<'a> {

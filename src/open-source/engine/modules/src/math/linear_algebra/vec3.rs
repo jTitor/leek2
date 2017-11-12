@@ -118,6 +118,38 @@ impl Vec3 {
 		*result.mut_z() = z;
 		result
 	}
+
+	///Returns the 3-space up vector.
+	pub fn up() -> Vec3 {
+		Vec3::new(0.0, 1.0, 0.0)
+	}
+
+	///Returns the 3-space right vector.
+	pub fn right() -> Vec3 {
+		Vec3::new(1.0, 0.0, 0.0)
+	}
+
+	///Returns the 3-space forward vector.
+	pub fn forward() -> Vec3 {
+		//TODO: This might be really wrong!
+		//Check that other libraries are RHS
+		Vec3::new(0.0, 0.0, -1.0)
+	}
+
+	///Returns the 3-space down vector.
+	pub fn down() -> Vec3 {
+		-(Vec3::up())
+	}
+
+	///Returns the 3-space left vector.
+	pub fn left() -> Vec3 {
+		-(Vec3::right())
+	}
+
+	///Returns the 3-space back vector.
+	pub fn back() -> Vec3 {
+		-(Vec3::forward())
+	}
 }
 
 impl Vec2Access<Vec3> for Vec3 {}

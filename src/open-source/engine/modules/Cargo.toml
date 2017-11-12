@@ -9,11 +9,14 @@ authors = [ "Me <me@me.me>" ]
 [dependencies]
 #The graphics wrapper.
 #Probably going to use gfx-rs since it provides a higher-level abstraction.
-gfx = "0.16"
+#gfx = "0.16"
+gfx = "*"
 gfx_core = "*"
 gfx_device_gl = "*"
-glutin = "0.8"
-gfx_window_glutin = "0.16"
+#glutin = "0.8"
+glutin = "*"
+#gfx_window_glutin = "0.16"
+gfx_window_glutin = "*"
 
 #SIMD operations.
 #Not available on release, need to use nightly compiler for this.

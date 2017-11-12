@@ -115,6 +115,26 @@ impl Vec2 {
 		*result.mut_y() = y;
 		result
 	}
+
+	///Returns the 2-space up vector.
+	pub fn up() -> Vec2 {
+		Vec2::new(0.0, 1.0)
+	}
+
+	///Returns the 2-space right vector.
+	pub fn right() -> Vec2 {
+		Vec2::new(1.0, 0.0)
+	}
+
+	///Returns the 2-space down vector.
+	pub fn down() -> Vec2 {
+		-(Vec2::up())
+	}
+
+	///Returns the 2-space left vector.
+	pub fn left() -> Vec2 {
+		-(Vec2::right())
+	}
 }
 
 impl Vec2Access<Vec2> for Vec2 {}
