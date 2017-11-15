@@ -3,9 +3,6 @@ name = "leek2"
 version = "0.0.1"
 authors = [ "Me <me@me.me>" ]
 
-#We're still defining basic functionality;
-#uncomment this once we're past making a
-#logger.
 [dependencies]
 #The graphics wrapper.
 #Probably going to use gfx-rs since it provides a higher-level abstraction.
@@ -17,6 +14,7 @@ gfx_device_gl = "*"
 glutin = "*"
 #gfx_window_glutin = "0.16"
 gfx_window_glutin = "*"
+failure = "*"
 
 #SIMD operations.
 #Not available on release, need to use nightly compiler for this.
