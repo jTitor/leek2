@@ -23,11 +23,11 @@ impl Game {
 		let mut running = true;
 		while running {
 			//Update our input.
-			let mut escPressed = false;
+			let mut esc_pressed = false;
 			//We do this by getting the window's events...
 			for event in self.window.poll_events() {
 				match *event {
-					EventType::Closed => escPressed = true,
+					EventType::Closed => esc_pressed = true,
 					_ => {}
 				}
 			}
@@ -36,7 +36,7 @@ impl Game {
 			self.clock.update();
 
 			//For now, quit on ESC.
-			running = !escPressed;
+			running = !esc_pressed;
 		}
 
 		Ok(())

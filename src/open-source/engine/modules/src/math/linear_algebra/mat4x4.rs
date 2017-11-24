@@ -3,6 +3,8 @@
 	and common matrix operations.
 */
 use std::ops;
+use std::cmp;
+use math;
 
 trait MatOps {
 	fn elem_at(&self, i: usize) -> f32;
@@ -105,3 +107,16 @@ impl ops::Div<Mat4x4> for f32 {
 		rhs / self
 	}
 }
+
+impl cmp::PartialEq for Mat4x4 {
+	fn eq(&self, other: &Mat4x4) -> bool {
+		let mut result = true;
+		for i in 0..16 {
+			result = result && math::scalar::nearly_equal(self.data[i] as f64, other.data[i] as f64);
+		}
+
+		result
+	}
+}
+
+impl Eq for Mat4x4 {}

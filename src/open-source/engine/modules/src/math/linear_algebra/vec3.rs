@@ -6,7 +6,9 @@
 //extern crate simd;
 //use simd::f32x4;
 use std::ops;
-use super::vec_base::{VecOps, Vec2Access, Vec3Access};
+use std::cmp;
+use math;
+pub use super::vec_base::{VecOps, Vec2Access, Vec3Access};
 
 ///Represents a 3-vector.
 trait Vec3Ops<T=Self> : VecOps<T> {
@@ -231,3 +233,16 @@ impl ops::Div<Vec3> for f32 {
 		rhs / self
 	}
 }
+
+impl cmp::PartialEq for Vec3 {
+	fn eq(&self, other: &Vec3) -> bool {
+		let mut result = true;
+		for i in 0..3 {
+			result = result && math::scalar::nearly_equal(self.data[i] as f64, other.data[i] as f64);
+		}
+
+		result
+	}
+}
+
+impl Eq for Vec3 {}
