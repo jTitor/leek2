@@ -19,18 +19,23 @@ pub fn nearly_equal(a: f64, b: f64) -> bool {
 	//to find significant differences in all other situations.
 	//Note that this relies on properties of IEEE floats.
 	let abs_diff = (a - b).abs();
-	if abs_diff <= f64::EPSILON
-	{
-		return true;
-	}
+	let epsilon_small_enough = abs_diff <= f64::EPSILON;
+	// if abs_diff <= f64::EPSILON
+	// {
+	// 	return true;
+	// }
+
 	//If signs are different and the difference is past epsilon,
 	//we can be pretty sure this isn't -0 and +0, so assume they're different.
 	//Int reintepretation won't work when signs differ, as the sign bit is the MOST significant bit
 	//and so the two values will appear to be billions of units apart.
-	if a.signum() != b.signum()
-	{
-		return false;
-	}
+	//NaN should fail here, since NaN != NaN
+	let signs_differ = a.signum() != b.signum();
+	// if a.signum() != b.signum()
+	// {
+	// 	return false;
+	// }
+
 	//Otherwise, there's a fairly large difference between floats.
 	//Reinterpret the floats as ints and get the integer difference to find how large that difference is
 	//Specifically, the absolute value of the integer difference = 
@@ -42,7 +47,10 @@ pub fn nearly_equal(a: f64, b: f64) -> bool {
 	let diff = a_as_int - b_as_int;
 	//the numbers are approximately equal if diff is less than the maximum tolerance value
 	const MAX_DIFF: i64 = 1;
-	return diff.abs() < MAX_DIFF;
+	let interpret_differs = diff.abs() < MAX_DIFF;
+	//return diff.abs() < MAX_DIFF;
+
+	abs_diff || (!signs_differ && interpret_differs)
 }
 
 /**
