@@ -1,4 +1,4 @@
-use leek2::ClockFactory;
+use leek2::time::ClockFactory;
 
 #[test]
 fn test_clock_factory() {

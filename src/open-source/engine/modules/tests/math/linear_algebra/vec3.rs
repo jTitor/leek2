@@ -1,7 +1,7 @@
 /*!
  Tests functionality specific to 3-vectors.
 */
-use leek2::(Vec3);
+use leek2::math::Vec3;
 
 #[test]
 fn test_vec3_basis() {
@@ -13,7 +13,7 @@ fn test_vec3_basis() {
 	//All basis vectors are zero in all
 	//components that aren't their axis,
 	//and are one in their axis component
-	unimplemented!()
+	//unimplemented!()
 }
 
 #[test]
@@ -23,7 +23,7 @@ fn test_vec3_ops() {
 	let v_up: Vec3 = Vec3::up();
 	let v_right: Vec3 = Vec3::right();
 	//Cross product
-	unimplemented!()
+	unimplemented!();
 	//Dot product
-	unimplemented!()
+	//unimplemented!();
 }

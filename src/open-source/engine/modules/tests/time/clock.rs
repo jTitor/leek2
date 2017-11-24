@@ -1,8 +1,8 @@
-use leek2::(ClockFactory, Clock, Timestamp);
+use leek2::time::{ClockFactory, Clock, TimeStamp};
 
 #[test]
 fn test_clock_update() {
-	let clock: mut Clock = ClockFactory::new()
+	let mut clock = ClockFactory::new()
 		.build().unwrap();
 	clock.update();
 	let now_ts = clock.now_timestamp();
@@ -12,18 +12,17 @@ fn test_clock_update() {
 		now_ts, prev_ts);
 
 	let now_datetime = clock.now_datetime();
-	let prev_datetime = clock.prev_datetime();
+	let prev_datetime = clock.previous_datetime();
 }
 
 #[test]
 fn test_clock_init() {
-	unimplemented!()
 	//Test:
-	let clock: mut Clock = ClockFactory::new()
+	let mut clock = ClockFactory::new()
 		.build().unwrap();
 	let now_ts = clock.now_timestamp();
 	let prev_ts = clock.previous_timestamp();
-	let expected_ts: Timestamp = 0;
+	let expected_ts: TimeStamp = 0;
 	assert!(now_ts == expected_ts,
 		"Current timestamp immediately after ClockFactory.build is `{}`, expected {}",
 		now_ts, expected_ts);

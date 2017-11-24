@@ -1,8 +1,9 @@
 use std::sync::Arc;
-use self::leek2::logging::logger::{LoggerBuilder};
-use self::leek2::logging::log_element::LogSeverity;
-use self::leek2::logging::log_listener::file_listener::{FileListenerBuilder};
-use self::leek2::logging::log_listener::terminal_listener::{TerminalListenerBuilder};
+use std::convert::From;
+use leek2::logging::LoggerBuilder;
+use leek2::logging::LogSeverity;
+use leek2::logging::{FileListenerBuilder, TerminalListenerBuilder};
+use leek2::time::{ClockFactory, Clock};
 
 #[test]
 fn test_logging() {
@@ -10,8 +11,10 @@ fn test_logging() {
 	let log_path : &str = "./test.log";
 	let file_listener_path : &str = "./fileListenerTest.log";
 	{
+		let clock = ClockFactory::new()
+		.build().unwrap();
 		//Create and attach the logger.
-		let mut log = LoggerBuilder::new()
+		let mut log = LoggerBuilder::new(Arc::<Clock>::from(clock))
 			.level(LogSeverity::Debug)
 			.buffer_size(1024)
 			.build(log_path).unwrap();
