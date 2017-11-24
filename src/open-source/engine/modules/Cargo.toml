@@ -11,9 +11,10 @@ gfx = "*"
 gfx_core = "*"
 gfx_device_gl = "*"
 #glutin = "0.8"
-glutin = "*"
+glutin = "^0.9.0"
 #gfx_window_glutin = "0.16"
-gfx_window_glutin = "*"
+gfx_window_glutin = "^0.17.0"
+core-graphics = "^0.4.2"
 failure = "*"
 
 #SIMD operations.
