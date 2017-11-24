@@ -1,7 +1,9 @@
 use time::{Clock, TimeStamp, DateTime};
-//use winapi::{QueryPerformanceCounter, QueryPerformanceFrequency, LARGEINTEGER};
+#[cfg(windows)]
 use winapi::LARGE_INTEGER;
+#[cfg(windows)]
 use kernel32::{QueryPerformanceCounter, QueryPerformanceFrequency};
+#[cfg(windows)]
 type WinTimeStamp = LARGE_INTEGER;
 
 //From https://github.com/ajacksified/rusty/blob/master/src/libstd/sys/windows/time.rs
@@ -17,6 +19,7 @@ fn mul_div_i64(value: i64, numer: i64, denom: i64) -> i64 {
 	q * numer + r * numer / denom
 }
 
+#[cfg(windows)]
 pub struct WindowsClock {
 	origin_datetime: DateTime,
 	origin_timestamp: TimeStamp,
@@ -27,6 +30,7 @@ pub struct WindowsClock {
 	perfcounter_frequency: LARGE_INTEGER
 }
 
+#[cfg(windows)]
 fn queryPerformanceCounter(outTimestamp: &mut WinTimeStamp) {
 	unsafe {
 		//Might be better to actually return the result here
@@ -34,12 +38,14 @@ fn queryPerformanceCounter(outTimestamp: &mut WinTimeStamp) {
 	}
 }
 
+#[cfg(windows)]
 fn query_performance_counter_as_timestamp(inFrequency: LARGE_INTEGER) -> TimeStamp {
 	let mut tempWinTimeStamp: WinTimeStamp = 0;
 	queryPerformanceCounter(&mut tempWinTimeStamp);
 	mul_div_i64(tempWinTimeStamp, 1, inFrequency)
 }
 
+#[cfg(windows)]
 fn queryPerformanceFrequency(outFrequency: &mut LARGE_INTEGER) {
 	unsafe {
 		//Might be better to actually return the result here
@@ -47,6 +53,7 @@ fn queryPerformanceFrequency(outFrequency: &mut LARGE_INTEGER) {
 	}
 }
 
+#[cfg(windows)]
 impl WindowsClock {
 	pub fn new() -> WindowsClock {
 		let mut frequency : LARGE_INTEGER = 0;
@@ -62,6 +69,7 @@ impl WindowsClock {
 	}
 }
 
+#[cfg(windows)]
 impl Clock for WindowsClock {
 	fn now_timestamp(&self) -> TimeStamp {
 		self.now_timestamp
@@ -83,4 +91,29 @@ impl Clock for WindowsClock {
 	fn clock_start_datetime(&self) -> DateTime {
 		self.origin_datetime
 	}
+}
+
+//Begin dummy section.
+//If we're not on Win32, WindowsClock should build as a no-op.
+#[cfg(not(windows))]
+pub struct WindowsClock {}
+
+#[cfg(not(windows))]
+impl WindowsClock {
+	pub fn new() -> WindowsClock {
+		WindowsClock {}
+	}
+}
+
+#[cfg(not(windows))]
+impl Clock for WindowsClock {
+	fn now_timestamp(&self) -> TimeStamp { 0 }
+
+	fn previous_timestamp(&self) -> TimeStamp { 0 }
+
+	fn update(&mut self) {}
+
+	fn clock_start_timestamp(&self) -> TimeStamp { 0 }
+	
+	fn clock_start_datetime(&self) -> DateTime { DateTime::now() }
 }

@@ -2,6 +2,7 @@
 	Implements a window via Glutin+Gfx.
 */
 use glutin;
+use glutin::GlContext;
 
 use graphics;
 use graphics::{Window, Visibility, WindowError, EventType};
@@ -12,14 +13,14 @@ pub struct GlutinWindow {
 	The actual backend
 	implementation that manages the window.
 	*/
-	impl_window: glutin::Window,
+	impl_window: glutin::GlWindow,
 	visibility: Visibility
 }
 
 //TODO: impl Debug for GlutinWindow
 
 impl GlutinWindow {
-	pub fn new(glutin_window: glutin::Window) -> GlutinWindow {
+	pub fn new(glutin_window: glutin::GlWindow) -> GlutinWindow {
 		GlutinWindow {
 			impl_window: glutin_window,
 			visibility: Visibility::Closed

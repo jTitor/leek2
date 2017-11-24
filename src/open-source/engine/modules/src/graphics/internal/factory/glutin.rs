@@ -51,15 +51,17 @@ impl GlutinDeviceWindowBuilder {
 		let factory = dispatcher.factory.clone();
 		let window_request = factory.window_request.clone();
 		let device_request = factory.device_request;
-		let mut builder = glutin::WindowBuilder::new()
+		let window_builder = glutin::WindowBuilder::new()
 		.with_title(window_request.title.to_string())
 		.with_dimensions(window_request.dimensions.x() as u32, window_request.dimensions.y() as u32);
-		if window_request.vsync {
-			builder = builder.with_vsync();
-		}
+		
+		let context_builder = glutin::ContextBuilder::new()
+		.with_vsync(window_request.vsync);
+		//TODO: Going to need to box this!
+		let mut event_loop = glutin::EventsLoop::new();
 
-		let (window, mut device, mut factory, main_color, mut main_depth) =
-			gfx_window_glutin::init::<ColorFormat, DepthFormat>(builder, unimplemented!());
+		let (window, device, factory, main_color, main_depth) =
+			gfx_window_glutin::init::<ColorFormat, DepthFormat>(window_builder, context_builder, &event_loop);
 
 		let result_window = Box::new(GlutinWindow::new(window));
 		//Isn't device a reference?
