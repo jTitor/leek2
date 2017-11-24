@@ -1,5 +1,5 @@
 use std::time::{Instant, Duration};
-use time::{Clock, TimeStamp, DateTime};
+use time::{Clock, TimeStamp, DateTime, ClockType};
 
 pub struct PosixClock {
 	origin_datetime: DateTime,
@@ -50,5 +50,9 @@ impl Clock for PosixClock {
 	
 	fn clock_start_datetime(&self) -> DateTime {
 		self.origin_datetime
+	}
+	
+	fn clock_type(&self) -> ClockType {
+		ClockType::PosixClock
 	}
 }

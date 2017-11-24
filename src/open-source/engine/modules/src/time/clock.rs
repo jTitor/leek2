@@ -2,7 +2,7 @@
  Generic specification for time measurers.
  */
 use std::fmt;
-use time::{TimeStamp, TimeDuration, DateTime};
+use time::{TimeStamp, TimeDuration, DateTime, ClockType};
 
 pub trait Clock {
 	/**
@@ -34,6 +34,8 @@ pub trait Clock {
 	 by applying the elapsed timestamp as a duration.
 	 */
 	fn clock_start_datetime(&self) -> DateTime;
+
+	fn clock_type(&self) -> ClockType;
 
 	/**
 	 Returns the time elapsed between previous_time()

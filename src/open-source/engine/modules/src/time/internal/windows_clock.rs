@@ -1,4 +1,4 @@
-use time::{Clock, TimeStamp, DateTime};
+use time::{Clock, TimeStamp, DateTime, ClockType};
 #[cfg(windows)]
 use winapi::LARGE_INTEGER;
 #[cfg(windows)]
@@ -91,6 +91,10 @@ impl Clock for WindowsClock {
 	fn clock_start_datetime(&self) -> DateTime {
 		self.origin_datetime
 	}
+
+	fn clock_type(&self) -> ClockType {
+		ClockType::WindowsClock
+	}
 }
 
 //Begin dummy section.
@@ -116,4 +120,8 @@ impl Clock for WindowsClock {
 	fn clock_start_timestamp(&self) -> TimeStamp { 0 }
 	
 	fn clock_start_datetime(&self) -> DateTime { DateTime::now() }
+
+	fn clock_type(&self) -> ClockType {
+		ClockType::WindowsClock
+	}
 }

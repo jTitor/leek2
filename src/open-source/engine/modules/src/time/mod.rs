@@ -3,7 +3,7 @@
  */
 
 pub mod types;
-pub use self::types::{TimeDuration, TimeRange, TimeStamp, DateTime, TimeElement};
+pub use self::types::{TimeDuration, TimeRange, TimeStamp, DateTime, TimeElement, ClockType};
 
 pub mod clock;
 pub use self::clock::Clock;

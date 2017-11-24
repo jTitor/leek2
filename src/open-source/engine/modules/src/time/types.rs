@@ -83,3 +83,9 @@ impl fmt::Display for DateTime {
 		write!(f, "{}", DateTimeInternalFactory::normalize(self.origin, self.offset))
 	}
 }
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum ClockType {
+	WindowsClock,
+	PosixClock
+}
