@@ -20,10 +20,6 @@ pub fn nearly_equal(a: f64, b: f64) -> bool {
 	//Note that this relies on properties of IEEE floats.
 	let abs_diff = (a - b).abs();
 	let epsilon_small_enough = abs_diff <= f64::EPSILON;
-	// if abs_diff <= f64::EPSILON
-	// {
-	// 	return true;
-	// }
 
 	//If signs are different and the difference is past epsilon,
 	//we can be pretty sure this isn't -0 and +0, so assume they're different.
@@ -31,12 +27,9 @@ pub fn nearly_equal(a: f64, b: f64) -> bool {
 	//and so the two values will appear to be billions of units apart.
 	//NaN should fail here, since NaN != NaN
 	let signs_differ = a.signum() != b.signum();
-	// if a.signum() != b.signum()
-	// {
-	// 	return false;
-	// }
+
 	//Try to early out here if possible,
-	//since the interpret test can overflow if the numbers are too big
+	//since the interpret test can overflow if the numbers are too big.
 	if epsilon_small_enough || signs_differ {
 		return epsilon_small_enough || !signs_differ;
 	}
@@ -53,7 +46,6 @@ pub fn nearly_equal(a: f64, b: f64) -> bool {
 	//the numbers are approximately equal if diff is less than the maximum tolerance value
 	const MAX_DIFF: i64 = 1;
 	let interpret_differs = diff.abs() <= MAX_DIFF;
-	//return diff.abs() < MAX_DIFF;
 
 	epsilon_small_enough || (!signs_differ && interpret_differs)
 }
