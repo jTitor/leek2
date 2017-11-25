@@ -5,8 +5,10 @@
 
 //extern crate simd;
 //use simd::f32x4;
-use std::ops;
 use std::cmp;
+use std::fmt;
+use std::ops;
+
 use math;
 pub use super::vec_base::{VecOps, Vec2Access};
 
@@ -137,6 +139,11 @@ impl Vec2 {
 	pub fn left() -> Vec2 {
 		-(Vec2::right())
 	}
+
+	///Returns the 2-space zero vector.
+	pub fn zero() -> Vec2 {
+		Vec2::new(0.0, 0.0)
+	}
 }
 
 impl Vec2Access<Vec2> for Vec2 {}
@@ -230,3 +237,9 @@ impl cmp::PartialEq for Vec2 {
 }
 
 impl Eq for Vec2 {}
+
+impl fmt::Display for Vec2 {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "<{}, {}>", self.x(), self.y())
+	}
+}

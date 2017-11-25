@@ -5,8 +5,10 @@
 
 //extern crate simd;
 //use simd::f32x4;
-use std::ops;
 use std::cmp;
+use std::fmt;
+use std::ops;
+
 use math;
 pub use super::vec_base::{VecOps, Vec2Access, Vec3Access};
 
@@ -58,7 +60,7 @@ impl VecOps<Vec3> for Vec3 {
 	///TODO: Again, can we have this return its underlying type?
 	fn as_normalized(&self) -> Vec3 {
 		let result = self.clone();
-		result / result.mag()
+		if result.sqr_mag() > 0.0 { result / result.mag() } else { result }
 	}
 	///Returns this vector with all elements set to their absolute value.
 	fn as_abs(&self) -> Vec3 {
@@ -151,6 +153,11 @@ impl Vec3 {
 	///Returns the 3-space back vector.
 	pub fn back() -> Vec3 {
 		-(Vec3::forward())
+	}
+
+	///Returns the 3-space zero vector.
+	pub fn zero() -> Vec3 {
+		Vec3::new(0.0, 0.0, 0.0)
 	}
 }
 
@@ -246,3 +253,9 @@ impl cmp::PartialEq for Vec3 {
 }
 
 impl Eq for Vec3 {}
+
+impl fmt::Display for Vec3 {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "<{}, {}, {}>", self.x(), self.y(), self.z())
+	}
+}

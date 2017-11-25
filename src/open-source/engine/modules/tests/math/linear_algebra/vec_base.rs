@@ -78,21 +78,60 @@ fn test_componentwise_operators() {
 
 #[test]
 fn test_geometric_methods() {
-	unimplemented!()
+	let zero_vec: Vec3 = Vec3::zero();
+	let nonzero_vecs = [Vec3::up(), Vec3::down(), Vec3::left(), Vec3::right(), Vec3::forward(), Vec3::back(), Vec3::new(1.0, 2.0, 3.0), Vec3::new(-4.0, -5.0, -6.0), Vec3::new(7.0, -8.0, -9.0)];
+	let mut all_vecs = nonzero_vecs.to_vec();
+	all_vecs.push(zero_vec);
 	//Test:
 	//dot product works
 	//	* All vectors
+	for i in 0..all_vecs.len() {
+		let mut j = (i + 1) % all_vecs.len();
+		while i != j {
+			let vec_a = all_vecs[i];
+			let vec_b = all_vecs[j];
+			let mut expected_dot: f32 = 0.0;
+			for x in 0..3 {
+				expected_dot += vec_a.elem_at(x) * vec_b.elem_at(x);
+			}
+			let actual_dot: f32 = vec_a.dot(&vec_b);
+			let actual_dot_reverse: f32 = vec_b.dot(&vec_a);
+			assert!(nearly_equal(actual_dot as f64, actual_dot_reverse as f64), "Dot product isn't transitive for {} and {}; a.b is {}, b.a is {}", vec_a, vec_b, actual_dot, actual_dot_reverse);
+			assert!(nearly_equal(actual_dot as f64, expected_dot as f64), "Dot product for {} and {} should be {}, got {}", vec_a, vec_b, expected_dot, actual_dot);
+
+			j = (j + 1) % all_vecs.len();
+		}
+	}
 	//magnitude works as expected
 	//	* All nonzero vectors return a positive float
 	//	that's not NaN
+	for v in &nonzero_vecs {
+		let v_mag = v.mag();
+		assert!(v_mag > 0.0, "Magnitude of nonzero vector should be > 0, was {}", v_mag);
+		assert!(!v_mag.is_nan(), "Magnitude of nonzero vector should not be NaN");
+	}
 	//	* Zero vector returns length 0
+	let zero_mag = zero_vec.mag() as f64;
+	assert!(nearly_equal(zero_mag, 0.0), "Magnitude of zero vector should be 0, was {}", zero_mag);
 	//square magnitude works
 	//	* That is, all nonzero vectors tested return a
 	//	positive float that's not NaN
+	for v in &nonzero_vecs {
+		let v_sqr_mag = v.sqr_mag();
+		assert!(v_sqr_mag > 0.0, "Square magnitude of nonzero vector should be > 0, was {}", v_sqr_mag);
+		assert!(!v_sqr_mag.is_nan(), "Square magnitude of nonzero vector should not be NaN");
+	}
 	//	* Zero vector is still 0
+	let zero_sqr_mag = zero_vec.sqr_mag() as f64;
+	assert!(nearly_equal(zero_sqr_mag, 0.0), "Square magnitude of zero vector should be 0, was {}", zero_sqr_mag);
 	//normalization works
 	//	* All nonzero vectors return
 	//	a vector with *length* 1 and
 	//	no components are NaN
+	for v in &nonzero_vecs {
+		let normalized_mag = v.as_normalized().mag();
+		assert!(nearly_equal(normalized_mag as f64, 1.0), "Magnitude of normalized vector should be 1, was {}", normalized_mag);
+	}
 	//	* Zero vector should return zero vector!!!
+	assert!(nearly_equal(zero_vec.as_normalized().sqr_mag() as f64, 0.0), "Zero vector should normalize to zero vector");
 }
