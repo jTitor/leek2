@@ -35,6 +35,11 @@ pub fn nearly_equal(a: f64, b: f64) -> bool {
 	// {
 	// 	return false;
 	// }
+	//Try to early out here if possible,
+	//since the interpret test can overflow if the numbers are too big
+	if epsilon_small_enough || signs_differ {
+		return epsilon_small_enough || !signs_differ;
+	}
 
 	//Otherwise, there's a fairly large difference between floats.
 	//Reinterpret the floats as ints and get the integer difference to find how large that difference is
@@ -42,12 +47,12 @@ pub fn nearly_equal(a: f64, b: f64) -> bool {
 	//1 + (number of representable floats between values)
 	//since IEEE floats have mantissa as least significant bits,
 	//and the exponent is the next significant bits past the mantissa
-	let a_as_int = unsafe { *(&a as *const f64 as *const i64) };
-	let b_as_int = unsafe { *(&b as *const f64 as *const i64) };
-	let diff = a_as_int - b_as_int;
+	let a_as_int: i64 = unsafe { *(&a as *const f64 as *const i64) };
+	let b_as_int: i64 = unsafe { *(&b as *const f64 as *const i64) };
+	let diff: i64 = a_as_int - b_as_int;
 	//the numbers are approximately equal if diff is less than the maximum tolerance value
 	const MAX_DIFF: i64 = 1;
-	let interpret_differs = diff.abs() < MAX_DIFF;
+	let interpret_differs = diff.abs() <= MAX_DIFF;
 	//return diff.abs() < MAX_DIFF;
 
 	epsilon_small_enough || (!signs_differ && interpret_differs)

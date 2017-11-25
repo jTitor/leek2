@@ -47,6 +47,7 @@ impl WindowsClock {
 	pub fn new() -> WindowsClock {
 		let mut frequency : LARGE_INTEGER = 0;
 		queryPerformanceFrequency(&mut frequency);
+		assert!(frequency > 0, "WindowsClock: Clock frequency isn't nonzero, can't get actual performance counter values");
 		let start_timestamp = query_performance_counter_as_timestamp(frequency);
 		WindowsClock {
 			origin_datetime: DateTime::now(),
@@ -61,16 +62,16 @@ impl WindowsClock {
 #[cfg(windows)]
 impl Clock for WindowsClock {
 	fn now_timestamp(&self) -> TimeStamp {
-		self.now_timestamp
+		self.now_timestamp - self.origin_timestamp
 	}
 
 	fn previous_timestamp(&self) -> TimeStamp {
-		self.previous_timestamp
+		self.previous_timestamp - self.origin_timestamp
 	}
 
 	fn update(&mut self) {
 		self.previous_timestamp = self.now_timestamp;
-		self.now_timestamp = query_performance_counter_as_timestamp(self.perfcounter_frequency)
+		self.now_timestamp = query_performance_counter_as_timestamp(self.perfcounter_frequency);
 	}
 
 	fn clock_start_timestamp(&self) -> TimeStamp {
