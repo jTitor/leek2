@@ -14,9 +14,7 @@ gfx_device_gl = "*"
 glutin = "^0.9.0"
 #gfx_window_glutin = "0.16"
 gfx_window_glutin = "^0.17.0"
-core-graphics = "^0.4.2"
 failure = "*"
-
 #SIMD operations.
 #Not available on release, need to use nightly compiler for this.
 #simd = { git = "https://github.com/huonw/simd" }
@@ -28,6 +26,9 @@ chrono = "*"
 #Platform-specific APIs.
 winapi = "*"
 kernel32-sys = "*"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+core-graphics = "^0.4.2"
 
 [[bin]]
 name = "leek2"

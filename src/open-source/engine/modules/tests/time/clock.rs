@@ -13,6 +13,7 @@ fn test_clock_update() {
 
 	let now_datetime = clock.now_datetime();
 	let prev_datetime = clock.previous_datetime();
+	unimplemented!();
 }
 
 #[test]

@@ -50,7 +50,7 @@ pub fn nearly_equal(a: f64, b: f64) -> bool {
 	let interpret_differs = diff.abs() < MAX_DIFF;
 	//return diff.abs() < MAX_DIFF;
 
-	abs_diff || (!signs_differ && interpret_differs)
+	epsilon_small_enough || (!signs_differ && interpret_differs)
 }
 
 /**

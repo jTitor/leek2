@@ -19,8 +19,8 @@ fn test_nearly_equal() {
 	positive_as_int += 1;
 	negative_as_int += 1;
 
-	let near_positive: f64 = unsafe { *(&positive_as_int as *const i64 as *const f64) }
-	let near_negative: f64 = unsafe { *(&negative_as_int as *const i64 as *const f64) }
+	let near_positive: f64 = unsafe { *(&positive_as_int as *const i64 as *const f64) };
+	let near_negative: f64 = unsafe { *(&negative_as_int as *const i64 as *const f64) };
 
 	//This should match
 	let should_match = [[POSITIVE, POSITIVE], [POS_ZERO, NEG_ZERO], [POSITIVE, near_positive], [NEGATIVE, near_negative]];
