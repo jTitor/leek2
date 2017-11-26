@@ -52,11 +52,12 @@ fn test_scalar_operators() {
 	//Arithmetic scalar operators work:
 	//divide, multiply, negation
 	let scalars = [-2f32, -1f32, -0.5f32, 0f32, 0.5f32, 1f32, 2f32];
-	for scalar in &scalars {
-		for x in -1..2 {
-			for y in -1..2 {
-				for z in -1..2 {
-					let test_vec = Vec3::new(x as f32, y as f32, z as f32);
+	for scalar_ref in &scalars {
+		let scalar = *scalar_ref;
+		for x in -1i16..2i16 {
+			for y in -1i16..2i16 {
+				for z in -1i16..2i16 {
+					let test_vec = Vec3::new(f32::from(x), f32::from(y), f32::from(z));
 					//	For all vectors V, scalars x, and
 					//	operations O(A, b), where A is a vector
 					//	and b a scalar:
@@ -67,19 +68,23 @@ fn test_scalar_operators() {
 					let mut expected_quotient = test_vec;
 					let mut expected_product = test_vec;
 					let mut expected_negation = test_vec;
-					for i in 0..2 {
+					for i in 0..3 {
 						*expected_quotient.mut_elem_at(i) /= scalar;
 						*expected_product.mut_elem_at(i) *= scalar;
-						*expected_quotient.mut_elem_at(i) = -expected_quotient.elem_at(i);
+						*expected_negation.mut_elem_at(i) = -expected_negation.elem_at(i);
 					}
 
 					let actual_quotient = test_vec / scalar;
 					let actual_product = test_vec * scalar;
 					let actual_negation = -test_vec;
 
-					assert!(actual_quotient == expected_quotient, "{} / {} should = {}, returned {}", test_vec, scalar, expected_quotient, actual_quotient);
-					assert!(actual_product == expected_product, "{} * {} should = {}, returned {}", test_vec, scalar, expected_product, actual_product);
-					assert!(actual_negation == expected_negation, "-{} should = {}, returned {}", test_vec, expected_negation, actual_negation);
+					//Don't test divide by 0, since that's invalid under
+					//all circumstances anyway
+					if scalar != 0f32 {
+						assert!(actual_quotient == expected_quotient, "{} / {} should == {}, returned {}", test_vec, scalar, expected_quotient, actual_quotient);
+					}
+					assert!(actual_product == expected_product, "{} * {} should == {}, returned {}", test_vec, scalar, expected_product, actual_product);
+					assert!(actual_negation == expected_negation, "-{} should == {}, returned {}", test_vec, expected_negation, actual_negation);
 				}
 			}
 		}
@@ -92,16 +97,16 @@ fn test_absolute_value() {
 	//Absolute value works
 	const MIN_COMPONENT_VALUE: f64 = 0.0f64;
 	//	For all vectors V:
-	for x in -1..2 {
-		for y in -1..2 {
-			for z in -1..2 {
-				let test_vec = Vec3::new(x as f32, y as f32, z as f32).as_abs();
+	for x in -1i16..2i16 {
+		for y in -1i16..2i16 {
+			for z in -1i16..2i16 {
+				let test_vec = Vec3::new(f32::from(x), f32::from(y), f32::from(z)).as_abs();
 
 				//Test that abs(V) returns a vector where all
 				//components are >= 0
-				for i in 0..2 {
+				for i in 0..3 {
 					let actual_component = test_vec.elem_at(i) as f64;
-					assert!(actual_component >= MIN_COMPONENT_VALUE, "Absolute value of {}.elem_at({}) should be >= {}, returned {}", test_vec, i, MIN_COMPONENT_VALUE, actual_quotient);	
+					assert!(actual_component >= MIN_COMPONENT_VALUE, "Absolute value of {}.elem_at({}) should be >= {}, returned {}", test_vec, i, MIN_COMPONENT_VALUE, actual_component);
 				}
 			}
 		}
@@ -119,19 +124,23 @@ fn test_componentwise_operators() {
 	//		is the scalar equivalent of O(A, B)
 
 	//...definitely stayed up too late
-	for v1_x in -1..2 {
-		for v1_y in -1..2 {
-			for v1_z in -1..2 {
-				for v2_x in -1..2 {
-					for v2_y in -1..2 {
-						for v2_z in -1..2 {
-							let test_vec1 = Vec3::new(v1_x as f32, v1_y as f32, v1_z as f32);
-							let test_vec2 = Vec3::new(v2_x as f32, v2_y as f32, v2_z as f32);
+	for v1_x in -1i16..2i16 {
+		for v1_y in -1i16..2i16 {
+			for v1_z in -1i16..2i16 {
+				for v2_x in -1i16..2i16 {
+					for v2_y in -1i16..2i16 {
+						for v2_z in -1i16..2i16 {
+							let test_vec1 = Vec3::new(f32::from(v1_x), f32::from(v1_y), f32::from(v1_z));
+							let test_vec2 = Vec3::new(f32::from(v2_x), f32::from(v2_y), f32::from(v2_z));
+							let mut divisor_has_zero = false;
+
 							let mut expected_sum = test_vec1;
 							let mut expected_difference = test_vec1;
 							let mut expected_quotient = test_vec1;
 							let mut expected_product = test_vec1;
-							for i in 0..2 {
+							for i in 0..3 {
+								divisor_has_zero |= test_vec2.elem_at(i) == 0f32;
+
 								*expected_sum.mut_elem_at(i) += test_vec2.elem_at(i);
 								*expected_difference.mut_elem_at(i) -= test_vec2.elem_at(i);
 								*expected_quotient.mut_elem_at(i) /= test_vec2.elem_at(i);
@@ -145,7 +154,10 @@ fn test_componentwise_operators() {
 
 							assert!(actual_sum == expected_sum, "{} / {} should = {}, returned {}", test_vec1, test_vec2, expected_sum, actual_sum);
 							assert!(actual_difference == expected_difference, "{} - {} should = {}, returned {}", test_vec1, test_vec2, expected_difference, actual_difference);
-							assert!(actual_quotient == expected_quotient, "{} / {} should = {}, returned {}", test_vec1, test_vec2, expected_quotient, actual_quotient);
+							//Again, skip test for division if any divisor component is 0
+							if !divisor_has_zero {
+								assert!(actual_quotient == expected_quotient, "{} / {} should = {}, returned {}", test_vec1, test_vec2, expected_quotient, actual_quotient);
+							}
 							assert!(actual_product == expected_product, "{} * {} should = {}, returned {}", test_vec1, test_vec2, expected_product, actual_product);
 						}
 					}

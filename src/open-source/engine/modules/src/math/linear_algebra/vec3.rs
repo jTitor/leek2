@@ -83,16 +83,17 @@ impl VecOps<Vec3> for Vec3 {
 	}
 	
 	///Performs a componentwise multiplication.
-	fn component_mul(&self, rhs: &Vec3) -> Vec3 {
+	fn component_mul(&self, rhs: Vec3) -> Vec3 {
 		let mut result = self.clone();
 		for i in 0..3 {
 			result.data[i] *= rhs.data[i];
 		}
 		result
 	}
+
 	///Performs a componentwise division.
-	fn component_div(&self, rhs: &Vec3) -> Vec3 {
-		self.component_mul(&rhs.as_reciprocal())
+	fn component_div(&self, rhs: Vec3) -> Vec3 {
+		self.component_mul(rhs.as_reciprocal())
 	}
 	
 	///Gets the maximum element in this vector.

@@ -29,10 +29,10 @@ pub trait VecOps<T=Self> {
 	///Returns a vector with all elements set to their respective element's reciprocal.
 	fn as_reciprocal(&self) -> T;
 	
-	///Performs a componentwise divtiplication.
-	fn component_mul(&self, rhs: &T) -> T;
+	///Performs a componentwise multiplication.
+	fn component_mul(&self, rhs: T) -> T;
 	///Performs componentwise division.
-	fn component_div(&self, rhs: &T) -> T;
+	fn component_div(&self, rhs: T) -> T;
 	
 	///Gets the maximum element in this vector.
 	fn max_elem(&self) -> f32;
