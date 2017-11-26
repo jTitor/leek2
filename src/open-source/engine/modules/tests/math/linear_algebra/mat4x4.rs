@@ -40,7 +40,7 @@ fn test_search_methods() {
 	assert!(nearly_equal(max as f64, EXPECTED_MAX), "Matrix maximum method failed to get actual maximum: should be {}, returned {}", EXPECTED_MAX, max);
 }
 
-fn iterate_on(matrix: mut Mat4x4&, seed: u64, start_idx: u16, end_idx: u16) {
+fn iterate_on(matrix: &mut Mat4x4, seed: u64, start_idx: u16, end_idx: u16) {
 	if start_idx >= end_idx {
 		return;
 	}
@@ -52,26 +52,30 @@ fn iterate_on(matrix: mut Mat4x4&, seed: u64, start_idx: u16, end_idx: u16) {
 	}
 
 	//recurse here
-	let mid_idx = start_idx + ((end_idx - start_idx) / 2);
+	let mut mid_idx = start_idx + ((end_idx - start_idx) / 2);
+	if mid_idx == start_idx {
+		mid_idx += 1;
+	}
+	unimplemented!("Recursive step bounds not implemented properly, fix this first");
 	iterate_on(matrix, seed, start_idx, mid_idx);
-	iterate_on(matrix, seed, mid_idx, end_idx)
+	iterate_on(matrix, seed, mid_idx, end_idx);
 }
 
 fn generate_test_matrix(seed: u64) -> Mat4x4 {
 	let mut result = Mat4x4::new();
-	iterate_on(result, seed, 0, 16);
+	iterate_on(&mut result, seed, 0, 16);
 
 	result
 }
 
 fn test_matrix_seed_range() -> Range<u64> {
 	//0..43046721u64
-	0..4304u64
+	//0..4304u64
+	0..100u64
 }
 
 #[test]
 fn test_scalar_operators() {
-	unimplemented!()
 	//Test:
 	//Arithmetic scalar operators work:
 	//divide, multiply, negation
@@ -107,7 +111,6 @@ fn test_scalar_operators() {
 
 #[test]
 fn test_componentwise_operators() {
-	unimplemented!()
 	//Test:
 	//Arithmetic componentwise operators work:
 	//addition, subtraction
@@ -115,20 +118,21 @@ fn test_componentwise_operators() {
 		let test_mat1 = generate_test_matrix(seed1);
 		for seed2 in test_matrix_seed_range() {
 			let test_mat2 = generate_test_matrix(seed2);
+		
+
+			let mut expected_sum = test_mat1;
+			let mut expected_difference = test_mat1;
+			for i in 0..16 {
+				*expected_sum.mut_elem_at(i) += test_mat2.elem_at(i);
+				*expected_difference.mut_elem_at(i) -= test_mat2.elem_at(i);
+			}
+
+			let actual_sum = test_mat1 + test_mat2;
+			let actual_difference = test_mat1 - test_mat2;
+
+			assert!(actual_sum == expected_sum, "{} / {} should = {}, returned {}", test_mat1, test_mat2, expected_sum, actual_sum);
+			assert!(actual_difference == expected_difference, "{} - {} should = {}, returned {}", test_mat1, test_mat2, expected_difference, actual_difference);
 		}
-
-		let mut expected_sum = test_mat1;
-		let mut expected_difference = test_mat1
-		for i in 0..16 {
-			*expected_sum.mut_elem_at(i) += test_mat2.elem_at(i);
-			*expected_difference.mut_elem_at(i) -= test_mat2.elem_at(i);
-		}
-
-		let actual_sum = test_mat1 + test_mat2;
-		let actual_difference = test_mat1 - test_mat2;
-
-		assert!(actual_sum == expected_sum, "{} / {} should = {}, returned {}", test_mat1, test_mat2, expected_sum, actual_sum);
-		assert!(actual_difference == expected_difference, "{} - {} should = {}, returned {}", test_mat1, test_mat2, expected_difference, actual_difference);
 	}
 }
 
