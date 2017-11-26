@@ -95,7 +95,7 @@ impl VecOps<Vec3> for Vec3 {
 	///Gets the maximum element in this vector.
 	fn max_elem(&self) -> f32 {
 		let mut result = self.data[0];
-		for i in 1..3 {
+		for i in 0..3 {
 			if self.data[i] > result {
 				result = self.data[i];
 			}
@@ -105,7 +105,7 @@ impl VecOps<Vec3> for Vec3 {
 	///Gets the minimum element in this vector.
 	fn min_elem(&self) -> f32 {
 		let mut result = self.data[0];
-		for i in 1..3 {
+		for i in 0..3 {
 			if self.data[i] < result {
 				result = self.data[i];
 			}

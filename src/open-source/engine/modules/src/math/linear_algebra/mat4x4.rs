@@ -6,11 +6,16 @@ use std::ops;
 use std::cmp;
 use math;
 
-trait MatOps {
+pub trait MatOps {
 	fn elem_at(&self, i: usize) -> f32;
 	fn mut_elem_at(&mut self, i: usize) -> &mut f32;
 
 	fn to_index(row: usize, col: usize) -> usize;
+
+	///Gets the maximum element in this vector.
+	fn max_elem(&self) -> f32;
+	///Gets the minimum element in this vector.
+	fn min_elem(&self) -> f32;
 }
 
 ///A 4x4 matrix.
@@ -29,6 +34,27 @@ impl MatOps for Mat4x4 {
 
 	fn to_index(row: usize, col: usize) -> usize {
 		(row * 4) + col
+	}
+
+	fn max_elem(&self) -> f32 {
+		let mut result = self.data[0];
+		for i in 0..16 {
+			if self.data[i] > result {
+				result = self.data[i];
+			}
+		}
+		
+		result
+	}
+
+	fn min_elem(&self) -> f32 {
+		let mut result = self.data[0];
+		for i in 0..16 {
+			if self.data[i] > result {
+				result = self.data[i];
+			}
+		}
+		result
 	}
 }
 
