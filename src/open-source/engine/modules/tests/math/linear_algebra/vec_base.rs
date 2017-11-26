@@ -39,10 +39,10 @@ fn test_search_methods() {
 	//For all nonzero vectors:
 	//	* Minimum returns the smallest component
 	//	in the vector
-	assert!(nearly_equal(a.min_elem() as f64, EXPECTED_MIN), "Vector minimum failed to get actual minimum");
+	assert!(nearly_equal(a.min_elem() as f64, EXPECTED_MIN), "Vector minimum method failed to get actual minimum");
 	//	* Maximum returns the largest component
 	//	in the vector
-	assert!(nearly_equal(a.max_elem() as f64, EXPECTED_MAX), "Vector maximum failed to get actual maximum");
+	assert!(nearly_equal(a.max_elem() as f64, EXPECTED_MAX), "Vector maximum method failed to get actual maximum");
 }
 
 #[test]
