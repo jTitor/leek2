@@ -1,6 +1,9 @@
 /*!
 	Base traits for vector operations.
 	Represents a generic vector.
+
+	#Implementing Equality
+	By default, vectors should use nearly_equal in their comparison operations.
 */
 pub trait VecOps<T=Self> {
 	///Gets the i'th element of this vector.

@@ -1,6 +1,9 @@
 /*!
 	Trait definitions for vector operations.
 	This module represents 2-vectors.
+
+	#Equality
+	By default, vectors use nearly_equal in their comparison operations.
 */
 
 //extern crate simd;
