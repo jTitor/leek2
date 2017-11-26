@@ -9,10 +9,10 @@ use leek2::math::MatOps;
 fn test_access() {
 	//Test:
 	//to_index accesses expected cells
-	const EXPECTED_DEFAULT_VALUE: f64 = 0;
-	const DEFAULT_VALUE_IDX: u32 = 6;
+	const EXPECTED_DEFAULT_VALUE: f64 = 0.0;
+	const DEFAULT_VALUE_IDX: usize = 6;
 
-	let mut a = Mat4x4{};
+	let mut a = Mat4x4::new();
 	let actual_default_value: f64 = a.elem_at(DEFAULT_VALUE_IDX) as f64;
 
 	assert!(nearly_equal(actual_default_value, EXPECTED_DEFAULT_VALUE), "Default value at matrix index {} should be {}, is actually {}", DEFAULT_VALUE_IDX, EXPECTED_DEFAULT_VALUE, actual_default_value);
@@ -24,17 +24,19 @@ fn test_search_methods() {
 	//minimum and maximum element methods work
 	const EXPECTED_MIN: f64 = -4.0;
 	const EXPECTED_MAX: f64 = 3.0;
-	let mut a = Mat4x4{};
-	*a.mut_elem_at(3) = EXPECTED_MIN;
-	*a.mut_elem_at(5) = EXPECTED_MAX;
+	let mut a = Mat4x4::new();
+	*a.mut_elem_at(3) = EXPECTED_MIN as f32;
+	*a.mut_elem_at(5) = EXPECTED_MAX as f32;
 	
 	//For all nonzero matrices:
 	//	* Minimum returns the smallest component
 	//	in the matrix
-	assert!(nearly_equal(a.min_elem() as f64, EXPECTED_MIN), "Matrix minimum method failed to get actual minimum");
+	let min = a.min_elem();
+	let max = a.max_elem();
+	assert!(nearly_equal(min as f64, EXPECTED_MIN), "Matrix minimum method failed to get actual minimum: should be {}, returned {}", EXPECTED_MIN, min);
 	//	* Maximum returns the largest component
 	//	in the matrix
-	assert!(nearly_equal(a.max_elem() as f64, EXPECTED_MAX), "Matrix maximum method failed to get actual maximum");
+	assert!(nearly_equal(max as f64, EXPECTED_MAX), "Matrix maximum method failed to get actual maximum: should be {}, returned {}", EXPECTED_MAX, max);
 }
 
 #[test]
@@ -60,13 +62,13 @@ fn test_mutability() {
 	//specified field
 	const EXPECTED_VALUE1: f64 = -4.0;
 	const EXPECTED_VALUE2: f64 = 3.0;
-	const VALUE1_IDX: u32 = 3;
-	const VALUE2_IDX: u32 = 5;
+	const VALUE1_IDX: usize = 3;
+	const VALUE2_IDX: usize = 5;
 
-	let mut a = Mat4x4{};
+	let mut a = Mat4x4::new();
 
-	*a.mut_elem_at(VALUE1_IDX) = EXPECTED_VALUE1;
-	*a.mut_elem_at(VALUE2_IDX) = EXPECTED_VALUE2;
+	*a.mut_elem_at(VALUE1_IDX) = EXPECTED_VALUE1 as f32;
+	*a.mut_elem_at(VALUE2_IDX) = EXPECTED_VALUE2 as f32;
 	
 	let actual_value1: f64 = a.elem_at(VALUE1_IDX) as f64;
 	let actual_value2: f64 = a.elem_at(VALUE2_IDX) as f64;

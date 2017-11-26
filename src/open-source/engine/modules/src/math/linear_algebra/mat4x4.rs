@@ -16,6 +16,8 @@ pub trait MatOps {
 	fn max_elem(&self) -> f32;
 	///Gets the minimum element in this vector.
 	fn min_elem(&self) -> f32;
+
+	fn new() -> Mat4x4;
 }
 
 ///A 4x4 matrix.
@@ -50,11 +52,17 @@ impl MatOps for Mat4x4 {
 	fn min_elem(&self) -> f32 {
 		let mut result = self.data[0];
 		for i in 0..16 {
-			if self.data[i] > result {
+			if self.data[i] < result {
 				result = self.data[i];
 			}
 		}
 		result
+	}
+
+	fn new() -> Mat4x4 {
+		Mat4x4 {
+			data: [0.0; 16]
+		}
 	}
 }
 
