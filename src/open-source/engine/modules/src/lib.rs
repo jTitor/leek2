@@ -12,6 +12,8 @@ extern crate kernel32;
 
 //Mathematics operations.
 pub mod math;
+//Import nearly_equal here since it's so commonly used.
+pub use self::math::scalar::nearly_equal;
 
 //Graphics functions and interfaces.
 pub mod graphics;
