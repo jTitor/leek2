@@ -4,6 +4,7 @@
 use leek2::nearly_equal;
 use leek2::math::Mat4x4;
 use leek2::math::MatOps;
+use std::ops::Range;
 
 #[test]
 fn test_access() {
@@ -39,12 +40,69 @@ fn test_search_methods() {
 	assert!(nearly_equal(max as f64, EXPECTED_MAX), "Matrix maximum method failed to get actual maximum: should be {}, returned {}", EXPECTED_MAX, max);
 }
 
+fn iterate_on(matrix: mut Mat4x4&, seed: u64, start_idx: u16, end_idx: u16) {
+	if start_idx >= end_idx {
+		return;
+	}
+
+	//Should be in range [-1, 1]
+	let fill_value = (((seed + start_idx as u64 + end_idx as u64) % 3) as f32) - 1f32;
+	for i in start_idx..end_idx {
+		*matrix.mut_elem_at(i as usize) = fill_value;
+	}
+
+	//recurse here
+	let mid_idx = start_idx + ((end_idx - start_idx) / 2);
+	iterate_on(matrix, seed, start_idx, mid_idx);
+	iterate_on(matrix, seed, mid_idx, end_idx)
+}
+
+fn generate_test_matrix(seed: u64) -> Mat4x4 {
+	let mut result = Mat4x4::new();
+	iterate_on(result, seed, 0, 16);
+
+	result
+}
+
+fn test_matrix_seed_range() -> Range<u64> {
+	//0..43046721u64
+	0..4304u64
+}
+
 #[test]
 fn test_scalar_operators() {
 	unimplemented!()
 	//Test:
 	//Arithmetic scalar operators work:
 	//divide, multiply, negation
+	let scalars = [-2f32, -1f32, -0.5f32, 0f32, 0.5f32, 1f32, 2f32];
+	for scalar_ref in &scalars {
+		let scalar = *scalar_ref;
+		for seed in test_matrix_seed_range() {
+			let test_mat = generate_test_matrix(seed);
+
+			let mut expected_quotient = test_mat;
+			let mut expected_product = test_mat;
+			let mut expected_negation = test_mat;
+			for i in 0..16 {
+				*expected_quotient.mut_elem_at(i) /= scalar;
+				*expected_product.mut_elem_at(i) *= scalar;
+				*expected_negation.mut_elem_at(i) = -expected_negation.elem_at(i);
+			}
+
+			let actual_quotient = test_mat / scalar;
+			let actual_product = test_mat * scalar;
+			let actual_negation = -test_mat;
+
+			//Don't test divide by 0, since that's invalid under
+			//all circumstances anyway
+			if scalar != 0f32 {
+				assert!(actual_quotient == expected_quotient, "{} / {} should == {}, returned {}", test_mat, scalar, expected_quotient, actual_quotient);
+			}
+			assert!(actual_product == expected_product, "{} * {} should == {}, returned {}", test_mat, scalar, expected_product, actual_product);
+			assert!(actual_negation == expected_negation, "-{} should == {}, returned {}", test_mat, expected_negation, actual_negation);
+		}
+	}
 }
 
 #[test]
@@ -53,6 +111,30 @@ fn test_componentwise_operators() {
 	//Test:
 	//Arithmetic componentwise operators work:
 	//addition, subtraction
+	for seed1 in test_matrix_seed_range() {
+		let test_mat1 = generate_test_matrix(seed1);
+		for seed2 in test_matrix_seed_range() {
+			let test_mat2 = generate_test_matrix(seed2);
+		}
+
+		let mut expected_sum = test_mat1;
+		let mut expected_difference = test_mat1
+		for i in 0..16 {
+			*expected_sum.mut_elem_at(i) += test_mat2.elem_at(i);
+			*expected_difference.mut_elem_at(i) -= test_mat2.elem_at(i);
+		}
+
+		let actual_sum = test_mat1 + test_mat2;
+		let actual_difference = test_mat1 - test_mat2;
+
+		assert!(actual_sum == expected_sum, "{} / {} should = {}, returned {}", test_mat1, test_mat2, expected_sum, actual_sum);
+		assert!(actual_difference == expected_difference, "{} - {} should = {}, returned {}", test_mat1, test_mat2, expected_difference, actual_difference);
+	}
+}
+
+#[test]
+fn test_multiplication() {
+	unimplemented!()
 }
 
 #[test]
