@@ -241,7 +241,7 @@ impl ops::Div<f32> for Vec3 {
 			result.data[i] /= rhs;
 		}
 
-		result	
+		result
 	}
 }
 

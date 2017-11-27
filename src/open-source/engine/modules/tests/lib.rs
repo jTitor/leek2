@@ -1,4 +1,4 @@
-extern crate log;
+#[macro_use] extern crate log;
 extern crate leek2;
 
 pub mod logging;

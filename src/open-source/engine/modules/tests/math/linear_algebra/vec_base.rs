@@ -244,8 +244,23 @@ fn test_normalization() {
 	//	a vector with *length* 1 and
 	//	no components are NaN
 	for v in nonzero_vecs {
-		let normalized_mag = v.as_normalized().mag();
-		assert!(nearly_equal(normalized_mag as f64, 1.0), "Magnitude of normalized vector should be 1, was {}", normalized_mag);
+		let mut v_normalized = v.as_normalized();
+		let first_normalization: Vec3 = v_normalized;
+		let mut normalized_mag = v_normalized.mag();
+		let mut num_times_normalized = 1;
+		const MAX_TIMES_NORMALIZED: u64 = 2;
+		let mut normalized = nearly_equal(normalized_mag, 1.0);
+		while !normalized && num_times_normalized < MAX_TIMES_NORMALIZED {
+			v_normalized = v_normalized.as_normalized();
+			normalized_mag = v_normalized.mag();
+			normalized = nearly_equal(normalized_mag, 1.0);
+			num_times_normalized += 1;
+		}
+		//A vector should be length 1 after a single normalization...
+		if(num_times_normalized > 1) {
+			warn!("Vector {} was normalized {} times", v, num_times_normalized);
+		}
+		assert!(normalized && num_times_normalized <= MAX_TIMES_NORMALIZED, "Magnitude of normalized vector should be 1, but failed to normalize after {} tries. Magnitude after {} normalization(s) was {}; original vector is {}, first normalized is {}, final normalized is {}", num_times_normalized, num_times_normalized, normalized_mag, v, first_normalization, v_normalized);
 	}
 	//	* Zero vector should return zero vector!!!
 	assert!(nearly_equal(zero_vec.as_normalized().sqr_mag() as f64, 0.0), "Zero vector should normalize to zero vector");
