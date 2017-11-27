@@ -59,3 +59,8 @@ pub trait Vec4Access<T=Self> : Vec3Access<T> {
 	fn w(&self) -> f32 { self.elem_at(3) }
 	fn mut_w(&mut self) -> &mut f32 { self.mut_elem_at(3) }
 }
+
+pub trait Vec3Ops<T=Self> : VecOps<T> where T: VecOps + Default {
+	///Performs the cross product between two 3-vectors.
+	fn cross(&self, rhs: &T) -> T;
+}

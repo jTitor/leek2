@@ -3,15 +3,34 @@
 	and common matrix operations.
 */
 use std::cmp;
+use std::default;
 use std::fmt;
 use std::ops;
 use math;
 
-pub trait MatOps {
-	fn elem_at(&self, i: usize) -> f32;
-	fn mut_elem_at(&mut self, i: usize) -> &mut f32;
+pub trait ToIndex {
+	fn to_index(self) -> usize;
+}
 
-	fn to_index(row: usize, col: usize) -> usize;
+impl ToIndex for usize {
+	fn to_index(self) -> usize {
+		self
+	}
+}
+
+impl ToIndex for (usize, usize) {
+	fn to_index(self) -> usize {
+		let (x, y) = self;
+		debug_assert!(x < 4 && y < 4, "Matrix indexing: X and Y index need to both be < 4, but x = {} and y = {}", x, y);
+		//TODO: if multiplication test fails,
+		//may need to reverse this
+		(y*4) + x
+	}
+}
+
+pub trait MatOps {
+	fn elem_at<T: ToIndex>(&self, i: T) -> f32;
+	fn mut_elem_at<T: ToIndex>(&mut self, i: T) -> &mut f32;
 
 	///Gets the maximum element in this vector.
 	fn max_elem(&self) -> f32;
@@ -19,6 +38,23 @@ pub trait MatOps {
 	fn min_elem(&self) -> f32;
 
 	fn new() -> Mat4x4;
+
+	///Returns the identity matrix.
+	fn identity() -> Mat4x4 {
+		let mut result: Mat4x4 = Default::default();
+
+		for i in 0..4 {
+			*result.mut_elem_at((i as usize, i as usize)) = 1f32;
+		}
+
+		result
+	}
+
+	///Returns the zero matrix.
+	fn zero() -> Mat4x4 {
+		let mut result: Mat4x4 = Default::default();
+		result
+	}
 }
 
 ///A 4x4 matrix.
@@ -28,15 +64,11 @@ pub struct Mat4x4 {
 }
 
 impl MatOps for Mat4x4 {
-	fn elem_at(&self, i: usize) -> f32 {
-		self.data[i]
+	fn elem_at<T: ToIndex>(&self, i: T) -> f32 {
+		self.data[i.to_index()]
 	}
-	fn mut_elem_at(&mut self, i: usize) -> &mut f32 {
-		&mut self.data[i]
-	}
-
-	fn to_index(row: usize, col: usize) -> usize {
-		(row * 4) + col
+	fn mut_elem_at<T: ToIndex>(&mut self, i: T) -> &mut f32 {
+		&mut self.data[i.to_index()]
 	}
 
 	fn max_elem(&self) -> f32 {
@@ -155,6 +187,18 @@ impl cmp::PartialEq for Mat4x4 {
 }
 
 impl Eq for Mat4x4 {}
+
+impl ops::Mul<Mat4x4> for Mat4x4 {
+	type Output = Mat4x4;
+
+	fn mul(self, rhs: Mat4x4) -> Mat4x4 {
+		let mut result: Mat4x4 = Default::default();
+
+
+
+		result
+	}
+}
 
 impl fmt::Display for Mat4x4 {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

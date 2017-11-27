@@ -72,7 +72,7 @@ fn generate_test_matrix(seed: u64) -> Mat4x4 {
 fn test_matrix_seed_range() -> Range<u64> {
 	//0..43046721u64
 	//0..4304u64
-	0..100u64
+	0..400u64
 }
 
 #[test]
