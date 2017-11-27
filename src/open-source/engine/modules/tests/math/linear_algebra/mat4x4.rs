@@ -52,13 +52,14 @@ fn iterate_on(matrix: &mut Mat4x4, seed: u64, start_idx: u16, end_idx: u16) {
 	}
 
 	//recurse here
-	let mut mid_idx = start_idx + ((end_idx - start_idx) / 2);
-	if mid_idx == start_idx {
-		mid_idx += 1;
+	let sub_idx1 = start_idx + ((end_idx - start_idx) / 2);
+	let mut sub_idx2 = sub_idx1;
+	if sub_idx2 == start_idx {
+		sub_idx2 += 1;
 	}
-	unimplemented!("Recursive step bounds not implemented properly, fix this first");
-	iterate_on(matrix, seed, start_idx, mid_idx);
-	iterate_on(matrix, seed, mid_idx, end_idx);
+	
+	iterate_on(matrix, seed, start_idx, sub_idx1);
+	iterate_on(matrix, seed, sub_idx2, end_idx);
 }
 
 fn generate_test_matrix(seed: u64) -> Mat4x4 {

@@ -17,10 +17,10 @@ use math;
 pub use super::vec_base::{VecOps, Vec2Access, Vec3Access};
 
 ///Represents a 3-vector.
-trait Vec3Ops<T=Self> : VecOps<T> where T: Default {
+pub trait Vec3Ops<T=Self> : VecOps<T> where T: VecOps + Default {
 	///Performs the cross product between two 3-vectors.
 	fn cross(&self, rhs: &T) -> T {
-		let result: T = Default::default();
+		let mut result: T = Default::default();
 		*result.mut_elem_at(0) = self.elem_at(1) * rhs.elem_at(2) - self.elem_at(2) * rhs.elem_at(1);
 		*result.mut_elem_at(1) = self.elem_at(2) * rhs.elem_at(0) - self.elem_at(0) * rhs.elem_at(2);
 		*result.mut_elem_at(2) = self.elem_at(0) * rhs.elem_at(1) - self.elem_at(1) * rhs.elem_at(0);
@@ -175,6 +175,7 @@ impl Vec3 {
 
 impl Vec2Access<Vec3> for Vec3 {}
 impl Vec3Access<Vec3> for Vec3 {}
+impl Vec3Ops<Vec3> for Vec3 {}
 
 //Begin operator implementation.
 

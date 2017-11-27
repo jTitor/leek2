@@ -4,6 +4,7 @@
 use leek2::nearly_equal;
 use leek2::math::Vec3;
 use leek2::math::VecOps;
+use leek2::math::Vec3Ops;
 
 #[test]
 fn test_vec3_basis() {
@@ -66,7 +67,7 @@ fn test_vec3_ops() {
 	}
 
 	//Cross product
-	let cross_test_tuples = [[Vec3::up(), Vec3::right(), Vec3::forward(), Vec3::back()], [Vec3::up(), Vec3::forward(), Vec3::right(), Vec3::left()], [Vec3::forward(), Vec3::right(), Vec3::up(), Vec3::down()]];
+	let cross_test_tuples = [[Vec3::up(), Vec3::right(), Vec3::forward(), Vec3::back()], [Vec3::up(), Vec3::forward(), Vec3::left(), Vec3::right()], [Vec3::forward(), Vec3::right(), Vec3::down(), Vec3::up()]];
 
 	for tuple in &cross_test_tuples {
 		let v1 = tuple[0];
@@ -77,16 +78,16 @@ fn test_vec3_ops() {
 		let actual_inverse_result = v2.cross(&v1);
 
 		//v1 x v2 should == expected_result
-		!assert(actual_result == expected_result, "{} x {} should == {}, is actually {}", v1, v2, expected_result, actual_result);
+		assert!(actual_result == expected_result, "{} x {} should == {}, is actually {}", v1, v2, expected_result, actual_result);
 		
 		//v2 x v1 should == -expected_result
-		!assert(actual_inverse_result == -expected_result, "{} x {} should == {}, is actually {}", v2, v1, -expected_result, actual_inverse_result);
+		assert!(actual_inverse_result == -expected_result, "{} x {} should == {}, is actually {}", v2, v1, -expected_result, actual_inverse_result);
 		
 		//v1 x v2 should == -(v2 x v1)
-		!assert(actual_result == -actual_inverse_result, "{} x {} should == -({} x {}), but ({} == -{}) returned false", v1, v2, v2, v1, actual_result, actual_inverse_result);
+		assert!(actual_result == -actual_inverse_result, "{} x {} should == -({} x {}), but ({} == -{}) returned false", v1, v2, v2, v1, actual_result, actual_inverse_result);
 
 		//the specified negation should be
 		//== -expected_result
-		!assert(expected_result == -expected_inverse_result, "({} == -{}) should be true but returned false", expected_result, expected_inverse_result);
+		assert!(expected_result == -expected_inverse_result, "({} == -{}) should be true but returned false", expected_result, expected_inverse_result);
 	}
 }

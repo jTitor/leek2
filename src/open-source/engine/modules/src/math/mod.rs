@@ -9,7 +9,7 @@ pub mod linear_algebra;
 pub use self::linear_algebra::vec_base;
 pub use self::linear_algebra::vec_base::{VecOps, Vec2Access, Vec3Access, Vec4Access};
 pub use self::linear_algebra::vec2::Vec2;
-pub use self::linear_algebra::vec3::Vec3;
+pub use self::linear_algebra::vec3::{Vec3, Vec3Ops};
 //pub use linear_algebra::vec4::Vec4 as math::Vec4;
 pub use self::linear_algebra::mat4x4::{Mat4x4, MatOps};
 //pub use linear_algebra::quaternion::Quaternion as math::Quaternion;

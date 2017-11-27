@@ -22,6 +22,7 @@ log = "*"
 
 #Chrono for timekeeping.
 chrono = "*"
+num-traits = "*"
 
 #Platform-specific APIs.
 winapi = "*"

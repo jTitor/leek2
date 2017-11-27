@@ -1,7 +1,5 @@
-/*!
- Handles scalar operations, such as float equality.
-*/
 use std::f64;
+use num_traits::Float;
 
 /**
 Returns true if `a` and `b` are reasonably
@@ -11,7 +9,7 @@ In general, when testing floats for equality
 you want to use this instead of ==, since
 that only returns true when they're exactly the same.
  */
-pub fn nearly_equal(a: f64, b: f64) -> bool {
+pub fn nearly_equal<T: Into<f64> + Float>(a: T, b: T) -> bool where f64: From<T> {
 	//Testing difference against absolute epsilon can't handle error between very small values;
 	//see http://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
 	//Instead, combine a quick epsilon test for differences very close to zero,
@@ -19,7 +17,7 @@ pub fn nearly_equal(a: f64, b: f64) -> bool {
 	//to find significant differences in all other situations.
 	//Note that this relies on properties of IEEE floats.
 	let abs_diff = (a - b).abs();
-	let epsilon_small_enough = abs_diff <= f64::EPSILON;
+	let epsilon_small_enough = f64::from(abs_diff) <= f64::EPSILON;
 
 	//If signs are different and the difference is past epsilon,
 	//we can be pretty sure this isn't -0 and +0, so assume they're different.
@@ -40,27 +38,12 @@ pub fn nearly_equal(a: f64, b: f64) -> bool {
 	//1 + (number of representable floats between values)
 	//since IEEE floats have mantissa as least significant bits,
 	//and the exponent is the next significant bits past the mantissa
-	let a_as_int: i64 = unsafe { *(&a as *const f64 as *const i64) };
-	let b_as_int: i64 = unsafe { *(&b as *const f64 as *const i64) };
+	let a_as_int: i64 = unsafe { *(&a as *const T as *const i64) };
+	let b_as_int: i64 = unsafe { *(&b as *const T as *const i64) };
 	let diff: i64 = a_as_int - b_as_int;
 	//the numbers are approximately equal if diff is less than the maximum tolerance value
 	const MAX_DIFF: i64 = 1;
 	let interpret_differs = diff.abs() <= MAX_DIFF;
 
 	epsilon_small_enough || (!signs_differ && interpret_differs)
-}
-
-/**
-From https://github.com/ajacksified/rusty/blob/master/src/libstd/sys/windows/time.rs
-Computes (value*numer)/denom without overflow, as long as both
-(numer*denom) and the overall result fit into i64 (which is the case
-for our time conversions).
-*/
-pub fn mul_div_i64(value: i64, numer: i64, denom: i64) -> i64 {
-	let q = value / denom;
-	let r = value % denom;
-	// Decompose value as (value/denom*denom + value%denom),
-	// substitute into (value*numer)/denom and simplify.
-	// r < denom, so (denom*numer) is the upper bound of (r*numer)
-	q * numer + r * numer / denom
 }
