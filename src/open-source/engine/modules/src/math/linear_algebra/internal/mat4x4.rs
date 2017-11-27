@@ -87,6 +87,24 @@ impl MatOps<Mat4x4> for Mat4x4 {
 	}
 }
 
+impl Mat4x4 {
+	///Returns the zero matrix.
+	pub fn zero() -> Mat4x4 {
+		Mat4x4::new()
+	}
+
+	///Returns the identity matrix.
+	pub fn identity() -> Mat4x4 {
+		let mut result = Mat4x4::new();
+
+		for i in 0..4 {
+			*result.mut_elem_at((i, i)) = 1f32;
+		}
+
+		result
+	}
+}
+
 //Operator implementations.
 impl ops::Neg for Mat4x4 {
 	type Output = Mat4x4;

@@ -7,7 +7,7 @@ use leek2::math::Mat4x4;
 use leek2::math::MatOps;
 use std::ops::Range;
 use super::internal::{generate_test_matrix, test_matrix_seed_range};
-use super::internal::{multiplication_test_matrices, MulTestGroup};
+use super::internal::{multiplication_test_groups, MulTestGroup};
 
 #[test]
 fn test_access() {

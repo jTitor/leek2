@@ -10,17 +10,17 @@ use leek2::math::{Mat4x4, MatOps};
  * and their expected reversed result B*A.
 */
 pub struct MulTestGroup {
-	m1: Mat4x4,
-	m2: Mat4x4,
-	expected_m1m2: Mat4x4,
-	expected_m2m1: Mat4x4
+	pub m1: Mat4x4,
+	pub m2: Mat4x4,
+	pub expected_m1m2: Mat4x4,
+	pub expected_m2m1: Mat4x4
 }
 
 /// Returns a list of matrices used in
 /// the multiplication test, and
 /// their expected results when
 /// multiplied forwards and backwards.
-fn multiplication_test_matrices() -> Vec<MulTestGroup> {
+pub fn multiplication_test_groups() -> Vec<MulTestGroup> {
 	let result = vec![
 		//0 * 0 == 0
 		MulTestGroup {
@@ -44,6 +44,6 @@ fn multiplication_test_matrices() -> Vec<MulTestGroup> {
 		//TODO: A * B == AB, B * A == BA
 		 ];
 
-	unimplemented!("Not all test groups have been defined")
+	unimplemented!("Not all test groups have been defined");
 	result
 }
