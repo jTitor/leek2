@@ -1,10 +1,13 @@
 /*!
- Tests 4x4 matrices.
+ Implementation of 4x4 matrix
+ tests.
 */
 use leek2::nearly_equal;
 use leek2::math::Mat4x4;
 use leek2::math::MatOps;
 use std::ops::Range;
+use super::internal::{generate_test_matrix, test_matrix_seed_range};
+use super::internal::{multiplication_test_matrices, MulTestGroup};
 
 #[test]
 fn test_access() {
@@ -38,41 +41,6 @@ fn test_search_methods() {
 	//	* Maximum returns the largest component
 	//	in the matrix
 	assert!(nearly_equal(max as f64, EXPECTED_MAX), "Matrix maximum method failed to get actual maximum: should be {}, returned {}", EXPECTED_MAX, max);
-}
-
-fn iterate_on(matrix: &mut Mat4x4, seed: u64, start_idx: u16, end_idx: u16) {
-	if start_idx >= end_idx {
-		return;
-	}
-
-	//Should be in range [-1, 1]
-	let fill_value = (((seed + start_idx as u64 + end_idx as u64) % 3) as f32) - 1f32;
-	for i in start_idx..end_idx {
-		*matrix.mut_elem_at(i as usize) = fill_value;
-	}
-
-	//recurse here
-	let sub_idx1 = start_idx + ((end_idx - start_idx) / 2);
-	let mut sub_idx2 = sub_idx1;
-	if sub_idx2 == start_idx {
-		sub_idx2 += 1;
-	}
-	
-	iterate_on(matrix, seed, start_idx, sub_idx1);
-	iterate_on(matrix, seed, sub_idx2, end_idx);
-}
-
-fn generate_test_matrix(seed: u64) -> Mat4x4 {
-	let mut result = Mat4x4::new();
-	iterate_on(&mut result, seed, 0, 16);
-
-	result
-}
-
-fn test_matrix_seed_range() -> Range<u64> {
-	//0..43046721u64
-	//0..4304u64
-	0..400u64
 }
 
 #[test]
@@ -139,7 +107,18 @@ fn test_componentwise_operators() {
 
 #[test]
 fn test_multiplication() {
-	unimplemented!()
+	//For all test groups:
+	for test_group in multiplication_test_groups() {
+		//	Test that:
+		//		* A * B == AB
+		let actual_m1m2 = test_group.m1 * test_group.m2;
+		assert!(test_group.expected_m1m2 == actual_m1m2, "Matrix multiplication: {} * {} should == {}, but got {} instead", test_group.m1, test_group.m2, test_group.expected_m1m2, actual_m1m2);
+		//		* B * A == BA
+		let actual_m2m1 = test_group.m2 * test_group.m1;
+		assert!(test_group.expected_m2m1 == actual_m2m1, "Matrix multiplication: {} * {} should == {}, but got {} instead", test_group.m2, test_group.m1, test_group.expected_m2m1, actual_m2m1);
+		//	It's not necessarily true that AB != BA
+		//	(identity, zero matrix), so don't assert for that
+	}
 }
 
 #[test]
