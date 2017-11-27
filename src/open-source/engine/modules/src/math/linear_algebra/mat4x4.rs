@@ -18,13 +18,17 @@ impl ToIndex for usize {
 	}
 }
 
+macro_rules! matrix_index {
+	//TODO: if multiplication test fails,
+	//may need to reverse this
+	($x:expr, $y:expr) => (($y*4) + $x);
+}
+
 impl ToIndex for (usize, usize) {
 	fn to_index(self) -> usize {
 		let (x, y) = self;
 		debug_assert!(x < 4 && y < 4, "Matrix indexing: X and Y index need to both be < 4, but x = {} and y = {}", x, y);
-		//TODO: if multiplication test fails,
-		//may need to reverse this
-		(y*4) + x
+		matrix_index!(x, y)
 	}
 }
 
@@ -52,7 +56,7 @@ pub trait MatOps {
 
 	///Returns the zero matrix.
 	fn zero() -> Mat4x4 {
-		let mut result: Mat4x4 = Default::default();
+		let result: Mat4x4 = Default::default();
 		result
 	}
 }
