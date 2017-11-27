@@ -39,28 +39,3 @@ pub trait VecOps<T=Self> {
 	///Gets the minimum element in this vector.
 	fn min_elem(&self) -> f32;
 }
-
-///Represents access to 2 elements in a vector.
-pub trait Vec2Access<T=Self> : VecOps<T> {
-	fn x(&self) -> f32 { self.elem_at(0) }
-	fn y(&self) -> f32 { self.elem_at(1) }
-	fn mut_x(&mut self) -> &mut f32 { self.mut_elem_at(0) }
-	fn mut_y(&mut self) -> &mut f32 { self.mut_elem_at(1) }
-}
-
-///Represents access to 3 elements in a vector.
-pub trait Vec3Access<T=Self> : Vec2Access<T> {
-	fn z(&self) -> f32 { self.elem_at(2) }
-	fn mut_z(&mut self) -> &mut f32 { self.mut_elem_at(2) }
-}
-
-///Represents access to 4 elements in a vector.
-pub trait Vec4Access<T=Self> : Vec3Access<T> {
-	fn w(&self) -> f32 { self.elem_at(3) }
-	fn mut_w(&mut self) -> &mut f32 { self.mut_elem_at(3) }
-}
-
-pub trait Vec3Ops<T=Self> : VecOps<T> where T: VecOps + Default {
-	///Performs the cross product between two 3-vectors.
-	fn cross(&self, rhs: &T) -> T;
-}

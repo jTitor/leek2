@@ -9,7 +9,7 @@ use graphics::GraphicsPayload;
 use super::FactoryDispatcher;
 use super::super::window::GlutinWindow;
 use super::super::device::gl::GLDevice;
-use math::vec_base::Vec2Access;
+use math::Vec2Access;
 
 pub type ColorFormat = gfx::format::Rgba8;
 pub type DepthFormat = gfx::format::DepthStencil;
