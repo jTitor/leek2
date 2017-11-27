@@ -66,5 +66,27 @@ fn test_vec3_ops() {
 	}
 
 	//Cross product
-	unimplemented!("Cross product unimplemented, can't test");
+	let cross_test_tuples = [[Vec3::up(), Vec3::right(), Vec3::forward(), Vec3::back()], [Vec3::up(), Vec3::forward(), Vec3::right(), Vec3::left()], [Vec3::forward(), Vec3::right(), Vec3::up(), Vec3::down()]];
+
+	for tuple in &cross_test_tuples {
+		let v1 = tuple[0];
+		let v2 = tuple[1];
+		let expected_result = tuple[2];
+		let expected_inverse_result = tuple[3];
+		let actual_result = v1.cross(&v2);
+		let actual_inverse_result = v2.cross(&v1);
+
+		//v1 x v2 should == expected_result
+		!assert(actual_result == expected_result, "{} x {} should == {}, is actually {}", v1, v2, expected_result, actual_result);
+		
+		//v2 x v1 should == -expected_result
+		!assert(actual_inverse_result == -expected_result, "{} x {} should == {}, is actually {}", v2, v1, -expected_result, actual_inverse_result);
+		
+		//v1 x v2 should == -(v2 x v1)
+		!assert(actual_result == -actual_inverse_result, "{} x {} should == -({} x {}), but ({} == -{}) returned false", v1, v2, v2, v1, actual_result, actual_inverse_result);
+
+		//the specified negation should be
+		//== -expected_result
+		!assert(expected_result == -expected_inverse_result, "({} == -{}) should be true but returned false", expected_result, expected_inverse_result);
+	}
 }

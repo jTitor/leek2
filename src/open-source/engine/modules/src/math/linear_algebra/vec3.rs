@@ -9,6 +9,7 @@
 //extern crate simd;
 //use simd::f32x4;
 use std::cmp;
+use std::default::Default;
 use std::fmt;
 use std::ops;
 
@@ -16,9 +17,16 @@ use math;
 pub use super::vec_base::{VecOps, Vec2Access, Vec3Access};
 
 ///Represents a 3-vector.
-trait Vec3Ops<T=Self> : VecOps<T> {
+trait Vec3Ops<T=Self> : VecOps<T> where T: Default {
 	///Performs the cross product between two 3-vectors.
-	fn cross(&self, rhs: &T) -> T;
+	fn cross(&self, rhs: &T) -> T {
+		let result: T = Default::default();
+		*result.mut_elem_at(0) = self.elem_at(1) * rhs.elem_at(2) - self.elem_at(2) * rhs.elem_at(1);
+		*result.mut_elem_at(1) = self.elem_at(2) * rhs.elem_at(0) - self.elem_at(0) * rhs.elem_at(2);
+		*result.mut_elem_at(2) = self.elem_at(0) * rhs.elem_at(1) - self.elem_at(1) * rhs.elem_at(0);
+
+		result
+	}
 }
 
 ///A struct guaranteed to hold 3 f32s.

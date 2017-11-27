@@ -49,7 +49,7 @@ pub trait Vec2Access<T=Self> : VecOps<T> {
 }
 
 ///Represents access to 3 elements in a vector.
-pub trait Vec3Access<T=Self> : Vec2Access<T> {
+pub trait Vec3Access<T=Self> : Vec2Access<T> where T: Default {
 	fn z(&self) -> f32 { self.elem_at(2) }
 	fn mut_z(&mut self) -> &mut f32 { self.mut_elem_at(2) }
 }
