@@ -8,7 +8,7 @@ use std::fmt;
 use std::ops;
 use math;
 use super::super::MatOps;
-use super::super::mat4x4::ToIndex;
+use super::super::mat4x4::{ToIndex, ToMatrixArray};
 
 //ToIndex is implemented here so that
 //we don't have to duplicate matrix_index!(),
@@ -31,6 +31,12 @@ impl ToIndex for (usize, usize) {
 		let (x, y) = self;
 		debug_assert!(x < 4 && y < 4, "Matrix indexing: X and Y index need to both be < 4, but x = {} and y = {}", x, y);
 		matrix_index!(x, y)
+	}
+}
+
+impl ToMatrixArray for [f32; 16] {
+	fn to_matrix_array(self) -> [f32; 16] {
+		self
 	}
 }
 
@@ -71,6 +77,13 @@ impl MatOps<Mat4x4> for Mat4x4 {
 
 	fn new() -> Mat4x4 {
 		Default::default()
+	}
+
+	fn from_floats<M>(floats: M) -> Mat4x4 where M: ToMatrixArray {
+		let mut result = Mat4x4::new();
+		result.data = floats.to_matrix_array();
+
+		result
 	}
 }
 
