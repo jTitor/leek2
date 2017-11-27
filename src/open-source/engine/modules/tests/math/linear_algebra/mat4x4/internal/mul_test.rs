@@ -39,11 +39,20 @@ pub fn multiplication_test_groups() -> Vec<MulTestGroup> {
 		m1: Mat4x4::identity(),
 		m2: Mat4x4::identity(),
 		expected_m1m2: Mat4x4::identity(),
-		expected_m2m1: Mat4x4::identity() }
-		//TODO: A * 1 == A, 1 * A == A
-		//TODO: A * B == AB, B * A == BA
-		 ];
+		expected_m2m1: Mat4x4::identity() },
+		//A * 1 == A, 1 * A == A
+		MulTestGroup {
+		m1: Mat4x4::from_floats([17, 5, 2, 1, 1, 3, 3, 4, 9, 1, 1, 4, 7, 1, 5, 4]),
+		m2: Mat4x4::identity(),
+		expected_m1m2: Mat4x4::from_floats([17, 5, 2, 1, 1, 3, 3, 4, 9, 1, 1, 4, 7, 1, 5, 4]),
+		expected_m2m1: Mat4x4::from_floats([17, 5, 2, 1, 1, 3, 3, 4, 9, 1, 1, 4, 7, 1, 5, 4]) },
+		//A * B == AB, B * A == BA
+		//Matrix values from misc/matrix_gen_literals.rs
+		MulTestGroup {
+		m1: Mat4x4::from_floats([17, 5, 2, 1, 1, 3, 3, 4, 9, 1, 1, 4, 7, 1, 5, 4]),
+		m2: Mat4x4::from_floats([5, 4, 1, 3, 1, 4, 7, 7, 2, 7, 2, 4, 4, 4, 2, 8]),
+		expected_m1m2: Mat4x4::from_floats([98, 106, 58, 102, 30, 53, 36, 68, 64, 63, 26, 70, 62, 83, 32, 80]),
+		expected_m2m1: Mat4x4::from_floats([119, 41, 38, 37, 133, 31, 56, 73, 87, 37, 47, 54, 146, 42, 62, 60]) }];
 
-	unimplemented!("Not all test groups have been defined");
 	result
 }

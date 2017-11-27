@@ -18,7 +18,7 @@ In these cases, the first index should be
 by row, the second/vector component by column.
 */
 pub trait ToMatrixArray {
-	fn to_matrix_array(self) -> [f32; 16];
+	fn to_matrix_array(&self) -> [f32; 16];
 }
 
 pub trait MatOps<T=Self> {

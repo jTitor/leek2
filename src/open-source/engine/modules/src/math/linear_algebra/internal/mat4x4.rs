@@ -9,6 +9,21 @@ use std::ops;
 use math;
 use super::super::MatOps;
 use super::super::mat4x4::{ToIndex, ToMatrixArray};
+use num_traits::PrimInt;
+
+///Indicator that a type can be converted to f32
+///but is not itself f32
+pub trait MatrixCellValue {}
+
+impl MatrixCellValue for i8 {}
+impl MatrixCellValue for i16 {}
+impl MatrixCellValue for i32 {}
+impl MatrixCellValue for i64 {}
+impl MatrixCellValue for u8 {}
+impl MatrixCellValue for u16 {}
+impl MatrixCellValue for u32 {}
+impl MatrixCellValue for u64 {}
+impl MatrixCellValue for f64 {}
 
 //ToIndex is implemented here so that
 //we don't have to duplicate matrix_index!(),
@@ -23,7 +38,7 @@ impl ToIndex for usize {
 macro_rules! matrix_index {
 	//TODO: if multiplication test fails,
 	//may need to reverse this
-	($x:expr, $y:expr) => (($y*4) + $x);
+	($x:expr, $y:expr) => (($x*4) + $y);
 }
 
 impl ToIndex for (usize, usize) {
@@ -35,8 +50,18 @@ impl ToIndex for (usize, usize) {
 }
 
 impl ToMatrixArray for [f32; 16] {
-	fn to_matrix_array(self) -> [f32; 16] {
-		self
+	fn to_matrix_array(&self) -> [f32; 16] {
+		*self
+	}
+}
+
+impl<T> ToMatrixArray for [T; 16] where T: Into<f64> + Copy + Clone + MatrixCellValue, f64: From<T> {
+	fn to_matrix_array(&self) -> [f32; 16] {
+		let mut result: [f32; 16] = Default::default();
+		for i in 0..16 {
+			result[i] = f64::from(self[i]) as f32;
+		}
+		result
 	}
 }
 
