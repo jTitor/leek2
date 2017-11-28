@@ -9,7 +9,6 @@
 //extern crate simd;
 //use simd::f32x4;
 use std::cmp;
-use std::f32;
 use std::fmt;
 use std::ops;
 
@@ -92,11 +91,23 @@ impl VecOps<Vec2> for Vec2 {
 	
 	///Gets the maximum element in this vector.
 	fn max_elem(&self) -> f32 {
-		self.data.iter().cloned().fold(f32::NEG_INFINITY, f32::max)
+		let mut result = self.data[0];
+		for i in 0..2 {
+			if self.data[i] > result {
+				result = self.data[i];
+			}
+		}
+		result
 	}
 	///Gets the minimum element in this vector.
 	fn min_elem(&self) -> f32 {
-		self.data.iter().cloned().fold(f32::INFINITY, f32::min)
+		let mut result = self.data[0];
+		for i in 0..2 {
+			if self.data[i] < result {
+				result = self.data[i];
+			}
+		}
+		result
 	}
 }
 
