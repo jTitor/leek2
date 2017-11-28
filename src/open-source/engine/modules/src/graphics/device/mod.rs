@@ -41,3 +41,20 @@ pub fn available_backends_for_platform(platform: PlatformCode) -> Vec<BackendTyp
 pub fn available_backends() -> Vec<BackendType> {
 	available_backends_for_platform(current_platform())
 }
+
+pub fn default_backend_for_platform(platform: PlatformCode) -> BackendType {
+	match platform {
+		PlatformCode::Windows => {
+			return BackendType::OpenGL; //DirectX not implemented yet
+		},
+		PlatformCode::Linux |
+		PlatformCode::MacOS => {
+			return BackendType::OpenGL;
+		},
+		_ => { return BackendType::Other; }
+	}
+}
+
+pub fn default_backend() -> BackendType {
+	default_backend_for_platform(current_platform())
+}
