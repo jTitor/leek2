@@ -257,7 +257,7 @@ fn test_normalization() {
 			num_times_normalized += 1;
 		}
 		//A vector should be length 1 after a single normalization...
-		if(num_times_normalized > 1) {
+		if num_times_normalized > 1 {
 			warn!("Vector {} was normalized {} times", v, num_times_normalized);
 		}
 		assert!(normalized && num_times_normalized <= MAX_TIMES_NORMALIZED, "Magnitude of normalized vector should be 1, but failed to normalize after {} tries. Magnitude after {} normalization(s) was {}; original vector is {}, first normalized is {}, final normalized is {}", num_times_normalized, num_times_normalized, normalized_mag, v, first_normalization, v_normalized);

@@ -1,6 +1,8 @@
+use std::error::Error;
+use std::panic;
 use leek2::graphics;
 use leek2::graphics::GraphicsFactory;
-use leek2::platform::current_platform;
+use leek2::platform::{current_platform, PlatformCode};
 use log;
 
 /**
@@ -21,9 +23,30 @@ fn test_default_backend_is_actually_available() {
  */
 #[test]
 fn test_default_backend_can_be_created() {
-	let backend = GraphicsFactory::new()
-		.build()
-		.unwrap();
+	let mut error_msg: &str = "";
+	let backend_result = panic::catch_unwind(|| {
+		GraphicsFactory::new().build()
+	});
+	let mut did_pass = error_msg != "";
 
-	debug!("Backend type: {}", backend.device.backend_type());
+	if let Err(error) = backend_result {
+		did_pass = false;
+		if let Some(error_msg_raw) = error.downcast_ref::<&'static str>() {
+			error_msg = *error_msg_raw;
+		}
+		//Match the error type.
+		match current_platform() {
+			PlatformCode::MacOS => {
+				//If it complained about not being able to open a window,
+				//that's ok for this test; that
+				//means the graphics backend
+				//did build properly at least
+				did_pass = error_msg == "Windows can only be created on the main thread on macOS";
+				},
+			_ => {}
+		}
+	}
+
+	//Report any failure.
+	assert!(did_pass, "{}", error_msg);
 }
