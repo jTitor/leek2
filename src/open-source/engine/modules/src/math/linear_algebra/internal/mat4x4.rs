@@ -4,6 +4,7 @@
 */
 use std::cmp;
 use std::default::Default;
+use std::f32;
 use std::fmt;
 use std::ops;
 use math;
@@ -80,24 +81,11 @@ impl MatOps<Mat4x4> for Mat4x4 {
 	}
 
 	fn max_elem(&self) -> f32 {
-		let mut result = self.data[0];
-		for i in 0..16 {
-			if self.data[i] > result {
-				result = self.data[i];
-			}
-		}
-		
-		result
+		self.data.iter().cloned().fold(f32::NEG_INFINITY, f32::max)
 	}
 
 	fn min_elem(&self) -> f32 {
-		let mut result = self.data[0];
-		for i in 0..16 {
-			if self.data[i] < result {
-				result = self.data[i];
-			}
-		}
-		result
+		self.data.iter().cloned().fold(f32::INFINITY, f32::min)
 	}
 
 	fn new() -> Mat4x4 {
