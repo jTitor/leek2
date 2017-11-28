@@ -1,7 +1,8 @@
-use super::GraphicsPayload;
 use super::{BackendType, BackendError};
-use math::Vec2;
+use super::default_backend;
+use super::GraphicsPayload;
 use super::internal::FactoryDispatcher;
+use math::Vec2;
 
 #[derive(Debug, Copy, Clone)]
 pub struct DeviceRequest {
@@ -25,7 +26,7 @@ pub struct GraphicsFactory {
 impl GraphicsFactory {
 	pub fn new() -> GraphicsFactory {
 		let device = DeviceRequest {
-			device_type: BackendType::Other
+			device_type: default_backend()
 		};
 		let window = WindowRequest {
 			title: String::from("Default Title"),
