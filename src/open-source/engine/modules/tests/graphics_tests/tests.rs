@@ -1,4 +1,4 @@
-use leek2::graphics::Device;
+use leek2::graphics;
 use leek2::graphics::GraphicsFactory;
 use leek2::platform::current_platform;
 use log;
@@ -10,9 +10,9 @@ use log;
 #[test]
 fn test_default_backend_is_actually_available() {
 	let platform = current_platform();
-	let all_backends = Device::available_backends();
-	let default_backend = Device::default_backend();
-	assert!(all_backends.contains(&default_backend), "Current platform {} has default backend type {}, which doesn't appear to be supported by said platform; supported backends are {}", platform, default_backend, all_backends);
+	let all_backends = graphics::available_backends();
+	let default_backend = graphics::default_backend();
+	assert!(all_backends.contains(&default_backend), "Current platform {} has default backend type {}, which doesn't appear to be supported by said platform; supported backends are {:?}", platform, default_backend, all_backends);
 }
 
 /**
