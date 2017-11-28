@@ -5,6 +5,11 @@ use leek2::logging::LogSeverity;
 use leek2::logging::{FileListenerBuilder, TerminalListenerBuilder};
 use leek2::time::{ClockFactory, Clock};
 
+/**
+ * Currently just tests that logging methods
+ * don't panic when used; this doesn't
+ * currently validate screen output.
+ */
 #[test]
 fn test_logging() {
 	println!("Testing logging operations...");
