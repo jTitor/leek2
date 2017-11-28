@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "src\\open-source\\engine\\modules"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {}
+}

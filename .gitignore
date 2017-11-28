@@ -46,3 +46,7 @@ _ReSharper*/
 
 #Visual Studio Code per-folder configuration.
 **/.vscode/*
+
+#Engine is in Rust; ignore any
+#generated documentation folder
+/src/open-source/engine/modules/target/*

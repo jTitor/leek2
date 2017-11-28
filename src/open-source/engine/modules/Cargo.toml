@@ -33,3 +33,4 @@ core-graphics = "^0.4.2"
 
 [[bin]]
 name = "leek2"
+doc = false
