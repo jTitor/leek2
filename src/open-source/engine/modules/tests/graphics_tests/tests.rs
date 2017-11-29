@@ -27,7 +27,7 @@ fn test_default_backend_can_be_created() {
 	let backend_result = panic::catch_unwind(|| {
 		GraphicsFactory::new().build()
 	});
-	let mut did_pass = error_msg != "";
+	let mut did_pass = true;
 
 	if let Err(error) = backend_result {
 		did_pass = false;
