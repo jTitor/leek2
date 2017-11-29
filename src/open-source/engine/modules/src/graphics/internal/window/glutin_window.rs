@@ -5,7 +5,7 @@ use glutin;
 use glutin::GlContext;
 
 use graphics;
-use graphics::{Window, Visibility, WindowError, EventType};
+use graphics::{Visibility, WindowError, EventType};
 use math::Vec2;
 
 pub struct GlutinWindow {

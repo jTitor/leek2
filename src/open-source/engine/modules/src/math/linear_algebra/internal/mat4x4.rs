@@ -9,7 +9,6 @@ use std::ops;
 use math;
 use super::super::MatOps;
 use super::super::mat4x4::{ToIndex, ToMatrixArray};
-use num_traits::PrimInt;
 
 ///Indicator that a type can be converted to f32
 ///but is not itself f32

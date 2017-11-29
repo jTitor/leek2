@@ -29,7 +29,7 @@ pub struct TimeRange {
 }
 
 impl TimeRange {
-	fn duration(&self) -> TimeDuration {
+	pub fn duration(&self) -> TimeDuration {
 		self.end - self.start
 	}
 }

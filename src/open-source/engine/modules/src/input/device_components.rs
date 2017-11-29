@@ -39,10 +39,10 @@ impl DeviceComponentList for Buttons {
 	since an axis basically does the same thing.
 */
 pub struct MultiStateButtons {
-	num_buttons: u32,
-	min_values: Vec<i32>,
-	max_values: Vec<i32>,
-	current_values: Vec<i32>
+	pub num_buttons: u32,
+	pub min_values: Vec<i32>,
+	pub max_values: Vec<i32>,
+	pub current_values: Vec<i32>
 }
 
 impl DeviceComponentList for MultiStateButtons {
@@ -55,11 +55,11 @@ impl DeviceComponentList for MultiStateButtons {
 	A control with a continuous range of values.
 */
 pub struct Axii {
-	num_axii: u32,
-	min_values: Vec<f32>,
-	max_values: Vec<f32>,
-	current_values: Vec<f32>,
-	normalized_values: Vec<f32>
+	pub num_axii: u32,
+	pub min_values: Vec<f32>,
+	pub max_values: Vec<f32>,
+	pub current_values: Vec<f32>,
+	pub normalized_values: Vec<f32>
 }
 
 impl DeviceComponentList for Axii {
@@ -69,16 +69,16 @@ impl DeviceComponentList for Axii {
 }
 
 pub struct KeyfieldLayout {
-	layout_type: KeyfieldLayoutType,
-	characters_to_keys: HashMap<CharacterCode, KeyCode>
+	pub layout_type: KeyfieldLayoutType,
+	pub characters_to_keys: HashMap<CharacterCode, KeyCode>
 }
 
 impl KeyfieldLayout {
-	fn has_character_code(&self, character: CharacterCode) -> bool {
+	pub fn has_character_code(&self, character: CharacterCode) -> bool {
 		self.characters_to_keys.contains_key(&character)
 	}
 
-	fn get_key(&self, character: CharacterCode) -> Result<KeyCode, InputError> {
+	pub fn get_key(&self, character: CharacterCode) -> Result<KeyCode, InputError> {
 		if self.has_character_code(character) {
 			return Ok(self.characters_to_keys[&character]);
 		}
@@ -87,9 +87,9 @@ impl KeyfieldLayout {
 }
 
 pub struct SingleKeyfield {
-	current_blocks: Vec<KeyfieldBlock>,
-	prev_blocks: Vec<KeyfieldBlock>,
-	layout: KeyfieldLayout,
+	pub current_blocks: Vec<KeyfieldBlock>,
+	pub prev_blocks: Vec<KeyfieldBlock>,
+	pub layout: KeyfieldLayout,
 }
 
 impl SingleKeyfield {
@@ -159,5 +159,5 @@ impl SingleKeyfield {
 	A control that represents a keyboard or similarly large and uniform cluster of keys.
 */
 pub struct Keyfields {
-	keyfields: Vec<SingleKeyfield>
+	pub keyfields: Vec<SingleKeyfield>
 }

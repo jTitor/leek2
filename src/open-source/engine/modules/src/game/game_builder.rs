@@ -1,7 +1,6 @@
 use game::Game;
 use game::GameError;
 use graphics::GraphicsFactory;
-use graphics::Window;
 use time::ClockFactory;
 
 /**
@@ -24,7 +23,7 @@ impl GameBuilder {
 		//on graphics calls?
 		let graphics_payload = GraphicsFactory::new()
 			.build()?;
-		let clock = ClockFactory::new()
+		let _clock = ClockFactory::new()
 			.build()?;
 		//Open the window here.
 		graphics_payload.window.open();
@@ -33,7 +32,7 @@ impl GameBuilder {
 		Ok(Game {
 			graphics: graphics_payload.device,
 			window: graphics_payload.window,
-			clock: clock
+			clock: _clock
 		})
 	}
 }

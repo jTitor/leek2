@@ -34,15 +34,28 @@ pub enum GameError {
 
 impl fmt::Display for GameError {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "Game error: {}", self.description())
+		let mut details: String = String::from(self.description());
+
+		//Get a more elaborate description if possible.
+		match *self {
+			GameError::DeviceError{ref cause} => { details = format!("a device had a fatal error: '{}'", cause) },
+			GameError::WindowBuildFailed{ref cause} => { details = format!("a window could not be built, reported cause: '{}'", cause) },
+			_ => {}
+		}
+
+		write!(f, "Game error: {}", details)
 	}
 }
 
 impl Error for GameError {
 	fn description(&self) -> &str {
 		match *self {
-			GameError::DeviceError{ref cause} => { "a device had a fatal error" },
-			GameError::WindowBuildFailed{ref cause} => { "a window could not be built" },
+			GameError::DeviceError{ref cause} => {
+				"a device had a fatal error"
+			},
+			GameError::WindowBuildFailed{ref cause} => {
+				"a window could not be built"
+			},
 			GameError::PlatformUnsupported => { "this platform doesn't support the requested command" },
 			GameError::InvalidRequest => { "a window could not be built" },
 			_ => { "unknown error" }

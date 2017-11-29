@@ -20,13 +20,23 @@ pub enum InputError {
 impl Error for InputError {
 	fn description(&self) -> &str {
 		match *self {
-			InputError::CharacterCodeUnsupported(layout_type, code) => "layout doesn't have a key code for character code"
+			InputError::CharacterCodeUnsupported(_layout_type, _code) => "current layout doesn't have a key code for given character code"
 		}
 	}
 }
 
 impl fmt::Display for InputError {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "Input handler error: {}", self.description())
+		#![allow()]
+		let mut details: String = String::from(self.description());
+		
+		//Get a more elaborate description if possible.
+		match *self {
+			InputError::CharacterCodeUnsupported(layout_type, code) => {
+				details = format!("current layout '{}' doesn't have a key code for given character code '{}'", layout_type, code);
+			}
+		}
+
+		write!(f, "Input handler error: {}", details)
 	}
 }

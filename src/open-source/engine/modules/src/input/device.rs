@@ -16,8 +16,8 @@ Generally this represents a physical
 input device.
 */
 pub struct Device {
-	device_type: DeviceType,
-	axii: Axii,
-	buttons: Buttons,
-	keys: SingleKeyfield
+	pub device_type: DeviceType,
+	pub axii: Axii,
+	pub buttons: Buttons,
+	pub keys: SingleKeyfield
 }

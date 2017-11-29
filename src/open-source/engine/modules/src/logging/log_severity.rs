@@ -26,7 +26,7 @@ impl fmt::Display for LogSeverity {
 }
 
 impl LogSeverity {
-	fn long_name(self) -> &'static str {
+	pub fn long_name(self) -> &'static str {
 		let disp_text;
 		match self {
 			LogSeverity::Verbose => { disp_text = "verbose"; },
@@ -39,7 +39,7 @@ impl LogSeverity {
 		disp_text
 	}
 
-	fn as_prefix(self) -> &'static str {
+	pub fn as_prefix(self) -> &'static str {
 		let disp_text;
 		match self {
 			LogSeverity::Verbose => { disp_text = "(verbose) "; },

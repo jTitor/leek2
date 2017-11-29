@@ -21,7 +21,13 @@ pub enum BackendError {
 
 impl fmt::Display for BackendError {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "Device backend error: {}", self.description())
+		let mut details: String = String::from(self.description());
+
+		if let BackendError::BackendUnavailable(backend_type, platform_code) = *self {
+			details = format!("backend '{}' isn't available on current platform '{}'", backend_type, platform_code);
+		}
+
+		write!(f, "Device backend error: {}", details)
 	}
 }
 
@@ -29,7 +35,7 @@ impl Error for BackendError {
 	fn description(&self) -> &str {
 		match *self {
 			BackendError::NoneAvailable => "no suitable backend available",
-			BackendError::BackendUnavailable(backend_type, platform_code) => "backend isn't available on this platform"
+			BackendError::BackendUnavailable(_backend_type, _platform_code) => "backend isn't available on current platform"
 		}
 	}
 }
