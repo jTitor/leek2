@@ -8,6 +8,8 @@ extern crate glutin;
 extern crate winapi;
 extern crate kernel32;
 extern crate num_traits;
+extern crate rand;
+extern crate remotery;
 
 //Define our base level pub modules.
 

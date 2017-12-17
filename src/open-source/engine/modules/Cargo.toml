@@ -19,10 +19,13 @@ failure = "*"
 #Not available on release, need to use nightly compiler for this.
 #simd = { git = "https://github.com/huonw/simd" }
 log = "*"
+rand = "*"
 
 #Chrono for timekeeping.
 chrono = "*"
 num-traits = "*"
+#Remotery provides profiling data.
+remotery = "*"
 
 #Platform-specific APIs.
 winapi = "*"
