@@ -8,6 +8,15 @@ use leek2::math::scalar::nearly_equal;
 use std::ops;
 
 #[test]
+#[should_panic]
+fn test_invalid_access() {
+	//Test:
+	//Accessing out of range element panics.
+	let a = Vec3::new(1.0, 1.0, 1.0);
+	println!("{}", a.elem_at(4));
+}
+
+#[test]
 fn test_equality() {
 	//Test:
 	//Vector equality is reasonably close.

@@ -18,6 +18,10 @@ pub mod math;
 //Import nearly_equal here since it's so commonly used.
 pub use self::math::scalar::nearly_equal;
 
+//Data and spatial organization structures.
+//Generally agnostic about the data they store.
+pub mod structures;
+
 //Graphics functions and interfaces.
 pub mod graphics;
 

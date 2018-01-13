@@ -21,3 +21,6 @@ pub mod random;
 pub mod scalar;
 //Import nearly_equal here since it's so commonly used.
 pub use self::scalar::nearly_equal;
+
+pub mod transform;
+pub use self::transform::{Transform, TransformOps};
