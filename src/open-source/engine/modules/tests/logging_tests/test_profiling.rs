@@ -35,6 +35,6 @@ fn outside_fn() {
 [test]
 fn test_profiling() {
 	//Setup profiler here.
-
+	let _remotery = Remotery::create_global_instance()
 	//Now run the profiling itself.
 }

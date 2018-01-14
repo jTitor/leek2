@@ -16,9 +16,9 @@ pub trait TransformOps<T> {
 	fn rotate(&self) -> RotationType;
 	fn position(&self) -> PositionType;
 
-	fn mut_scale(mut& self) -> &ScaleType;
-	fn mut_rotate(mut& self) -> &RotationType;
-	fn mut_position(mut& self) -> &PositionType;
+	fn mut_scale(&mut self) -> &ScaleType;
+	fn mut_rotate(&mut self) -> &RotationType;
+	fn mut_position(&mut self) -> &PositionType;
 
 	fn concatenate(&self, other: &T) -> T;
 	fn as_matrix(&self) -> Mat4x4;
@@ -43,15 +43,15 @@ impl TransformOps<Transform> for Transform {
 		self.position_val
 	}
 
-	fn mut_scale(mut& self) -> &ScaleType {
+	fn mut_scale(&mut self) -> &ScaleType {
 		&self.scale_val
 	}
 
-	fn mut_rotate(mut& self) -> &RotationType {
+	fn mut_rotate(&mut self) -> &RotationType {
 		&self.rotate_val
 	}
 
-	fn mut_position(mut& self) -> &PositionType {
+	fn mut_position(&mut self) -> &PositionType {
 		&self.position_val
 	}
 

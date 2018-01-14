@@ -8,7 +8,7 @@ pub struct ProfileScope {
 }
 
 impl ProfileScope {
-	pub fn new(scope_name: str&) -> ProfileScope {
+	pub fn new(scope_name: &str) -> ProfileScope {
 		ProfileScope {
 			scope_impl: RemoteryScope::new(scope_name.clone, SampleFlags::Default)
 		}
@@ -19,11 +19,11 @@ pub struct ProfilerError {
 }
 
 impl Error for ProfilerError {
-	unimplemented!()
+	unimplemented!();
 }
 
 impl From<RemoteryError> for ProfilerError {
-	unimplemented!()
+	unimplemented!();
 }
 
 pub struct Profiler {
@@ -36,16 +36,17 @@ impl Profiler {
 
 		//Profiler should be static to this module.
 		unimplemented!()
+		Profiler{profiler_impl: Remotery{}}
 	}
 
 	/**
 	 * Logs raw text to the profiler.
 	 */
-	pub fn log_text(&self, text: str&) {
+	pub fn log_text(&self, text: &str) {
 		Remotery::log_text(text);
 	}
 
-	pub fn begin_cpu_sample(&self, text: str&) {
+	pub fn begin_cpu_sample(&self, text: &str) {
 		Remotery::begin_cpu_sample(text, SampleFlags::Default);
 	}
 
