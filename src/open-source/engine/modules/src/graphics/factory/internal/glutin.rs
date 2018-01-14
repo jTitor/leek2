@@ -7,8 +7,8 @@ use gfx_window_glutin;
 
 use graphics::GraphicsPayload;
 use super::FactoryDispatcher;
-use super::super::window::GlutinWindow;
-use super::super::device::gl::GLDevice;
+use graphics::window::internal::glutin_window::GlutinWindow;
+use graphics::device::internal::gl::GLDevice;
 use math::Vec2Access;
 
 pub type ColorFormat = gfx::format::Rgba8;

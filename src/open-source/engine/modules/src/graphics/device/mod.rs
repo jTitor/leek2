@@ -1,8 +1,9 @@
 /*!
 	The generic specification for a graphics wrapper.
 */
-mod device;
-mod types;
+pub mod device;
+pub mod types;
+pub mod internal;
 
 pub use self::device::Device;
 pub use self::types::BackendType;
