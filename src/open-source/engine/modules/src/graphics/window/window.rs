@@ -10,6 +10,7 @@
 use std::fmt;
 use math::Vec2;
 use graphics::{EventType, Visibility};
+use input::Device;
 use super::WindowError;
 
 /**
@@ -97,6 +98,13 @@ pub trait Window {
 	to this input device.
 	*/
 	fn connect_input_device(&self, device_id: u32, type_id: u32);
+
+	/**
+	 Returns a list of all of the input devices.
+	 This specifes the device's ID, its type,
+	 and info on the inputs on the device.
+	 */
+	fn get_input_devices(&self) -> Vec<unimplemented!()>;
 }
 
 impl fmt::Debug for Window {
