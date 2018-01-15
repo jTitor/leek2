@@ -1,5 +1,5 @@
-use super::{BackendType, BackendError};
-use super::default_backend;
+use graphics::{BackendType, BackendError};
+use graphics::default_backend;
 use super::GraphicsPayload;
 use super::internal::FactoryDispatcher;
 use math::Vec2;

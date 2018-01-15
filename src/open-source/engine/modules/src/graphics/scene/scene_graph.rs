@@ -3,9 +3,9 @@
  */
 use super::SceneNode;
 
-pub trait SceneGraph {
-	fn add_node(&self, node: &SceneNode);
-	fn remove_node(&self, node: &SceneNode);
+pub trait SceneGraph<NodeT> where NodeT : Sized + SceneNode {
+	fn add_node(&self, node: &NodeT);
+	fn remove_node(&self, node: &NodeT);
 
 	/**
 	 * Given a viewing volume, return
@@ -13,5 +13,5 @@ pub trait SceneGraph {
 	 The nodes should be able to be rendered
 	 in the order specified.
 	 */
-	fn get_renderable_nodes(&self) -> Vec<SceneNode>;
+	fn get_renderable_nodes(&self) -> Vec<NodeT>;
 }

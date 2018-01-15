@@ -27,13 +27,13 @@ impl LogError {
 		match result {
 			Ok(value) => { Ok(value) },
 			_ => { Err(LogError::LoggerOutputNotReady) }
-		}	
+		}
 	}
 
 	pub fn from_log_result(result: Result<(), log::SetLoggerError>) -> Result<(), LogError> {
 		match result {
 			Ok(()) => { Ok(()) },
 			_ => { Err(LogError::LoggerInitFailed) }
-		}	
+		}
 	}
 }

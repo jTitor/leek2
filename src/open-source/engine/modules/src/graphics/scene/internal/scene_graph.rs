@@ -1,27 +1,28 @@
 /*!
  * Implementation of the scene graph.
  */
+use std::marker::PhantomData;
 
 use graphics::scene::SceneGraph;
 use graphics::scene::SceneNode;
 
-pub struct SceneGraphInternal {
-
+pub struct SceneGraphInternal<NodeT> where NodeT : Sized + SceneNode {
+	node_type: PhantomData<NodeT>
 }
 
-impl SceneGraphInternal {
+impl<NodeT> SceneGraphInternal<NodeT> where NodeT : Sized + SceneNode {
 }
 
-impl SceneGraph for SceneGraphInternal {
-	fn add_node(&self, node: &SceneNode) {
+impl<NodeT> SceneGraph<NodeT> for SceneGraphInternal<NodeT> where NodeT : Sized + SceneNode {
+	fn add_node(&self, node: &NodeT) {
 		unimplemented!();
 	}
 
-	fn remove_node(&self, node: &SceneNode) {
+	fn remove_node(&self, node: &NodeT) {
 		unimplemented!();
 	}
 
-	fn get_renderable_nodes(&self) -> Vec<SceneNode> {
+	fn get_renderable_nodes(&self) -> Vec<NodeT> {
 		unimplemented!();
 	}
 }

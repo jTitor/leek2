@@ -10,10 +10,10 @@ pub enum DebugRenderLevel {
 	Verbose
 }
 
-pub type DebugRenderTag = &str;
+pub type DebugRenderTag = String;
 
 pub trait DebugPrimitive {
 	fn transform(&self) -> Transform;
-	fn level -> DebugRenderLevel;
-	fn tag -> DebugRenderTag;
+	fn level() -> DebugRenderLevel;
+	fn tag() -> DebugRenderTag;
 }
