@@ -10,8 +10,8 @@ authors = [ "Me <me@me.me>" ]
 gfx = "*"
 gfx_core = "*"
 gfx_device_gl = "*"
-#glutin = "0.8"
-glutin = { git = "https://github.com/jTitor/glutin" }
+glutin = "^0.8"
+#glutin = { git = "https://github.com/jTitor/glutin" }
 #gfx_window_glutin = "0.16"
 gfx_window_glutin = "^0.17.0"
 failure = "*"
