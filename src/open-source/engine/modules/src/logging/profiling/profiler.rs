@@ -5,8 +5,13 @@
 use logging::profiling::ProfilerError;
 use logging::Logger;
 use std::sync::Arc;
+use std::fmt;
 
 use remotery::{Remotery, SampleFlags};
+
+impl fmt::Debug for Remotery {
+	//TODO
+}
 
 /**
  * The profiling manager.
@@ -16,7 +21,7 @@ use remotery::{Remotery, SampleFlags};
  * is read via connecting to it as a
  * local HTTP service.
  */
-#[deriv(Debug)]
+#[derive(Debug)]
 pub struct Profiler {
 	profiler_impl: Remotery,
 	logger: Arc<Logger>
@@ -35,7 +40,7 @@ impl Profiler {
 	 * Logs raw text to the profiler.
 	 */
 	fn log_text(&self, text: &str) {
-		self.logger.log_d(text);
+		self.logger.log_d(text, "profiler");
 		Remotery::log_text(text);
 	}
 

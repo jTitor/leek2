@@ -3,6 +3,11 @@
  */
 
 use remotery::{Remotery, RemoteryScope, SampleFlags};
+use std::fmt;
+
+impl fmt::Debug for RemoteryScope {
+	//TODO
+}
 
 /**
  * A scoped profiling section. When this struct is created

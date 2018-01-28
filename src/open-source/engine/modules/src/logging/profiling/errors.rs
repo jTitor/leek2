@@ -1,5 +1,7 @@
-use remotery::error::RemoteryError;
 use std::error::Error;
+use std::fmt;
+
+use remotery::error::RemoteryError;
 
 #[derive(Debug, Copy, Clone)]
 pub struct ProfilerError {
@@ -35,5 +37,4 @@ impl From<RemoteryError> for ProfilerError {
 			_ => ProfilerError{}
 		}
 	}
-Add a comment to this line
 }
