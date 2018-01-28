@@ -5,10 +5,6 @@
 use remotery::{Remotery, RemoteryScope, SampleFlags};
 use std::fmt;
 
-impl fmt::Debug for RemoteryScope {
-	//TODO
-}
-
 /**
  * A scoped profiling section. When this struct is created
  * with new(), it starts a profiling section as if
@@ -16,9 +12,15 @@ impl fmt::Debug for RemoteryScope {
  * struct is dropped, it ends the section as if
  * Profiler::end_cpu_sample() were called.
  */
-#[derive(Debug)]	//Don't think it makes sense for this to be Copy/Clone
+//Don't think it makes sense for this to be Copy/Clone
 pub struct ProfileScope {
 	scope_impl: RemoteryScope
+}
+
+impl fmt::Debug for ProfileScope {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "ProfileScope {{ }}")//, self.scope_impl)
+	}
 }
 
 impl ProfileScope {

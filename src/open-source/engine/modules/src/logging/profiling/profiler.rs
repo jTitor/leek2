@@ -4,14 +4,10 @@
  */
 use logging::profiling::ProfilerError;
 use logging::Logger;
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 use std::fmt;
 
 use remotery::{Remotery, SampleFlags};
-
-impl fmt::Debug for Remotery {
-	//TODO
-}
 
 /**
  * The profiling manager.
@@ -21,15 +17,13 @@ impl fmt::Debug for Remotery {
  * is read via connecting to it as a
  * local HTTP service.
  */
-#[derive(Debug)]
 pub struct Profiler {
 	profiler_impl: Remotery,
-	logger: Arc<Logger>
+	logger: Arc<Mutex<Logger>>
 }
 
 impl Profiler {
-	fn create_global_instance(logger: Arc<Logger>) -> Result<Profiler, ProfilerError> {
-		unimplemented!();
+	fn create_global_instance(logger: Arc<Mutex<Logger>>) -> Result<Profiler, ProfilerError> {
 		let profiler_instance = Remotery::create_global_instance()?;
 
 		//Profiler should be static to this module.
@@ -39,8 +33,8 @@ impl Profiler {
 	/**
 	 * Logs raw text to the profiler.
 	 */
-	fn log_text(&self, text: &str) {
-		self.logger.log_d(text, "profiler");
+	fn log_text(&mut self, text: &str) {
+		self.logger.lock().unwrap().log_d(text, "profiler");
 		Remotery::log_text(text);
 	}
 
@@ -61,5 +55,11 @@ impl Profiler {
 	 */
 	pub fn end_cpu_sample(&self) {
 		Remotery::end_cpu_sample();
+	}
+}
+
+impl fmt::Debug for Profiler {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "Device {{ logger: {:?} }}", self.logger)
 	}
 }

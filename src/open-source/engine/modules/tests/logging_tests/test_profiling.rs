@@ -32,7 +32,7 @@ fn test_profiling() {
 		.build().unwrap());
 	let _ = log.attach(term_listener);
 
-	let profiler = Remotery::create_global_instance(Arc::<Logger>::from(log)).unwrap_or_else(|e| {
+	let profiler = Remotery::create_global_instance(Arc::<Mutex<Logger>>::from(Mutex::new(log)).unwrap_or_else(|e| {
 		panic!(e);
 	});
 
