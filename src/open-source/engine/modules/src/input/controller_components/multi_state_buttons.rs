@@ -1,4 +1,4 @@
-use super::DeviceComponentList;
+use super::ControllerComponentList;
 
 /**
 	A control with more than two discrete states.
@@ -12,7 +12,7 @@ pub struct MultiStateButtons {
 	pub current_values: Vec<i32>
 }
 
-impl DeviceComponentList for MultiStateButtons {
+impl ControllerComponentList for MultiStateButtons {
 	fn num_components(&self) -> u32 {
 		self.num_buttons
 	}

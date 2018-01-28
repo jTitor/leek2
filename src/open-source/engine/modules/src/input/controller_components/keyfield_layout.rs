@@ -1,6 +1,6 @@
 use std::collections::HashMap;
-use graphics::errors::InputError;
-use graphics::types::{CharacterCode, KeyCode, KeyfieldLayoutType};
+use input::InputError;
+use input::{CharacterCode, KeyCode, KeyfieldLayoutType};
 
 pub struct KeyfieldLayout {
 	pub layout_type: KeyfieldLayoutType,

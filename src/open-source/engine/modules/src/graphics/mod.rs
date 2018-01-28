@@ -7,7 +7,7 @@ pub mod device;
 pub mod window;
 
 pub use self::device::Device;
-pub use self::device::{BackendType, available_backends, default_backend};
+pub use self::device::{BackendType, BackendRequestType, available_backends, default_backend};
 
 pub use self::window::Window;
 pub use self::window::Visibility;

@@ -3,6 +3,8 @@
  * that manages all profiler logging state.
  */
 use logging::profiling::ProfilerError;
+use logging::Logger;
+use std::Arc;
 
 use remotery::{Remotery, SampleFlags};
 
@@ -16,24 +18,24 @@ use remotery::{Remotery, SampleFlags};
  */
 #[define(Debug)]
 pub struct Profiler {
-	profiler_impl: Remotery
+	profiler_impl: Remotery,
+	logger: Arc<Logger>
 }
 
 impl Profiler {
-	fn create_global_instance() -> Result<Profiler, ProfilerError> {
+	fn create_global_instance(logger: Arc<Logger>) -> Result<Profiler, ProfilerError> {
 		unimplemented!();
 		let profiler_instance = Remotery::create_global_instance()?;
 
 		//Profiler should be static to this module.
-		Ok(Profiler{profiler_impl: profiler_instance})
+		Ok(Profiler{profiler_impl: profiler_instance, logger: logger})
 	}
 
 	/**
 	 * Logs raw text to the profiler.
 	 */
 	fn log_text(&self, text: &str) {
-		//TODO: have this also log to the central logger
-		unimplemented!();
+		self.logger.log_d(text);
 		Remotery::log_text(text);
 	}
 

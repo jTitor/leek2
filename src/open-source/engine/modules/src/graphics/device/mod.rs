@@ -6,7 +6,7 @@ pub mod types;
 pub mod internal;
 
 pub use self::device::Device;
-pub use self::types::BackendType;
+pub use self::types::{BackendType, BackendRequestType};
 
 use platform::{PlatformCode, current_platform};
 

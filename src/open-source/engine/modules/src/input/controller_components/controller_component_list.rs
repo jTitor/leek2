@@ -1,4 +1,4 @@
-pub trait DeviceComponentList {
+pub trait ControllerComponentList {
 	/**
 		Returns the number of components of this type.
 	*/

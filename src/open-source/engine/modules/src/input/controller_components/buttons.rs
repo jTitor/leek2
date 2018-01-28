@@ -1,4 +1,4 @@
-use super::DeviceComponentList;
+use super::ControllerComponentList;
 
 /**
 	A two-state control; it can only ever be pressed or released.
@@ -9,7 +9,7 @@ pub struct Buttons {
 	current_values: Vec<bool>
 }
 
-impl DeviceComponentList for Buttons {
+impl ControllerComponentList for Buttons {
 	fn num_components(&self) -> u32 {
 		self.current_values.len() as u32
 	}

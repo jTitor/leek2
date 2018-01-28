@@ -1,4 +1,4 @@
-use graphics::types::{KeyCode, KeyfieldBlock, KeyfieldLayout};
+use input::{KeyCode, KeyfieldBlock, KeyfieldLayout};
 
 pub struct SingleKeyfield {
 	pub current_blocks: Vec<KeyfieldBlock>,

@@ -1,4 +1,4 @@
-use super::DeviceComponentList;
+use super::ControllerComponentList;
 
 /**
 	A control with a continuous range of values.
@@ -11,7 +11,7 @@ pub struct Axii {
 	pub normalized_values: Vec<f32>
 }
 
-impl DeviceComponentList for Axii {
+impl ControllerComponentList for Axii {
 	fn num_components(&self) -> u32 {
 		self.num_axii
 	}

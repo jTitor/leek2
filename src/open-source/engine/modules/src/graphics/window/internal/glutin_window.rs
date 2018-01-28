@@ -6,6 +6,7 @@ use glutin::GlContext;
 
 use graphics;
 use graphics::{Visibility, WindowError, EventType};
+use input::Controller;
 use math::Vec2;
 
 pub struct GlutinWindow {
@@ -92,4 +93,7 @@ impl graphics::Window for GlutinWindow {
 		unimplemented!()
 	}
 
+	fn get_input_devices(&self) -> Vec<Controller> {
+		unimplemented!()
+	}
 }

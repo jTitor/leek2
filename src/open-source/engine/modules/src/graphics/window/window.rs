@@ -10,7 +10,7 @@
 use std::fmt;
 use math::Vec2;
 use graphics::{EventType, Visibility};
-use input::Device;
+use input::Controller;
 use super::WindowError;
 
 /**
@@ -104,7 +104,7 @@ pub trait Window {
 	 This specifes the device's ID, its type,
 	 and info on the inputs on the device.
 	 */
-	fn get_input_devices(&self) -> Vec<unimplemented!()>;
+	fn get_input_devices(&self) -> Vec<Controller>;
 }
 
 impl fmt::Debug for Window {

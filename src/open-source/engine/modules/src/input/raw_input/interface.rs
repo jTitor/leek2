@@ -3,7 +3,7 @@ Generic description of a raw input handler.
 */
 
 use super::super::graphics::Window;
-use super::super::device_components::{Device, DeviceType, DeviceIdentifier};
+use super::super::controller_components::{Device, DeviceType, DeviceIdentifier};
 
 /**
 Handles raw input events,

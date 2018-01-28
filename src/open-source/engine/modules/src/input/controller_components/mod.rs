@@ -1,5 +1,5 @@
-mod device_component_list;
-pub use self::device_component_list::DeviceComponentList;
+mod controller_component_list;
+pub use self::controller_component_list::ControllerComponentList;
 
 mod axii;
 pub use self::axii::Axii;
