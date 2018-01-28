@@ -4,7 +4,7 @@
  */
 use logging::profiling::ProfilerError;
 use logging::Logger;
-use std::Arc;
+use std::sync::Arc;
 
 use remotery::{Remotery, SampleFlags};
 
@@ -16,7 +16,7 @@ use remotery::{Remotery, SampleFlags};
  * is read via connecting to it as a
  * local HTTP service.
  */
-#[define(Debug)]
+#[deriv(Debug)]
 pub struct Profiler {
 	profiler_impl: Remotery,
 	logger: Arc<Logger>
