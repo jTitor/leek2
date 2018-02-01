@@ -93,13 +93,6 @@ pub trait Window {
 	fn poll_events(&self) -> Box<Iterator<Item=&EventType>>;
 
 	/**
-	Links the given input device to the window.
-	The window will receive all input events relating
-	to this input device.
-	*/
-	fn connect_input_device(&self, device_id: u32, type_id: u32);
-
-	/**
 	 Returns a list of all of the input devices.
 	 This specifes the device's ID, its type,
 	 and info on the inputs on the device.

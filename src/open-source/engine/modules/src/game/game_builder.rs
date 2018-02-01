@@ -23,16 +23,19 @@ impl GameBuilder {
 		//on graphics calls?
 		let graphics_payload = GraphicsFactory::new()
 			.build()?;
-		let _clock = ClockFactory::new()
+		let clock = ClockFactory::new()
 			.build()?;
+
 		//Open the window here.
 		graphics_payload.window.open();
+		
 		//Devices ready, assign them to the game.
-		unimplemented!();
+		//TODO: no extra steps available to insert here yet
+
 		Ok(Game {
 			graphics: graphics_payload.device,
 			window: graphics_payload.window,
-			clock: _clock
+			clock: clock
 		})
 	}
 }

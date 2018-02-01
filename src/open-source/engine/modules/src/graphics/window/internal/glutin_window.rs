@@ -88,11 +88,6 @@ impl graphics::Window for GlutinWindow {
 		unimplemented!()
 	}
 
-
-	fn connect_input_device(&self, device_id: u32, type_id: u32) {
-		unimplemented!()
-	}
-
 	fn get_input_devices(&self) -> Vec<Controller> {
 		unimplemented!()
 	}

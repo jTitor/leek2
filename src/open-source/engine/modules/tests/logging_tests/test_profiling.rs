@@ -33,15 +33,19 @@ fn test_profiling() {
 	let _ = log.attach(term_listener);
 
 	let profiler = Remotery::create_global_instance(Arc::<Mutex<Logger>>::from(Mutex::new(log)).unwrap_or_else(|e| {
+		log.log_e("Failed to init profiler");
 		panic!(e);
 	});
 
+	log.log_d("Beginning profiling test");
+
 	//Now run the profiling itself.
 	for _ in 0..1000 {
-		profiler.log_text("Doing profiling!");
 		profiler.begin_cpu_sample("test", SampleFlags::Default);
 		thread::sleep(Duration::from_millis(20));
 		outside_fn();
 		profiler.end_cpu_sample();
 	}
+
+	log.log_d("Profiling test complete");
 }
