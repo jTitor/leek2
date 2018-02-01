@@ -2,6 +2,7 @@
 Specifies enums and types used by the other
 modules in this module.
 */
+use winit;
 
 /**
 Specifies the window's state on screen.
@@ -46,7 +47,26 @@ pub enum EventType {
 	Focused(bool),
 	Refresh,
 	Suspended(bool),
+	//TODO: replace these with input-generic
+	//events
+	Keyboard(),
+	MouseMoved((u32, u32)),
 	//Touch(Touch)
+	Unknown
+}
+
+fn convert_winit_event(event: winit::Event) -> EventType {
+	winit::Event::Resized(new_width, new_height) => { return EventType::Resized(new_width, new_height); },
+	winit::Event::Moved(x, y) => { return EventType::Moved(x, y); },
+	winit::Event::Closed => { return EventType::Closed; },
+	winit::Event::ReceivedCharacter(char_received) => { return EventType::ReceivedCharacter(char_received); },
+	winit::Event::Focused(is_focused) => { return EventType::Focused(is_focused); },
+	winit::Event::KeyboardInput(key_state, scan_code, virtual_key) => { return EventType::KeyboardInput(key_state, scan_code, virtual_key); },
+	winit::Event::MouseMoved((x, y)) => { return EventType::MouseMoved((x, y)); },
+	winit::Event::Awakened => { return EventType::Awakened; },
+	winit::Event::Refresh => { return EventType::Refresh; },
+	winit::Event::Suspended(is_suspended) => { return EventType::Suspended(is_suspended); },
+	_ = { return EventType::Unknown; }
 }
 
 /**

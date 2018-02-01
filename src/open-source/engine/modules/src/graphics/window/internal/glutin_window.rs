@@ -85,7 +85,7 @@ impl graphics::Window for GlutinWindow {
 
 
 	fn poll_events(&self) -> Box<Iterator<Item=&EventType>> {
-		unimplemented!()
+		self.impl_window.poll_events()
 	}
 
 	fn get_input_devices(&self) -> Vec<Controller> {
