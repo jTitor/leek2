@@ -3,6 +3,7 @@
 */
 use glutin;
 use glutin::GlContext;
+use winit::Window;
 
 use graphics;
 use graphics::{Visibility, WindowError, EventType};
@@ -85,7 +86,8 @@ impl graphics::Window for GlutinWindow {
 
 
 	fn poll_events(&self) -> Box<Iterator<Item=&EventType>> {
-		self.impl_window.poll_events()
+		//self.impl_window.poll_events()
+		unimplemented!()
 	}
 
 	fn get_input_devices(&self) -> Vec<Controller> {

@@ -2,7 +2,8 @@
 Specifies enums and types used by the other
 modules in this module.
 */
-use winit;
+use glutin;
+use glutin::WindowEvent;
 
 /**
 Specifies the window's state on screen.
@@ -49,27 +50,24 @@ pub enum EventType {
 	Suspended(bool),
 	//TODO: replace these with input-generic
 	//events
-	Keyboard(),
-	MouseMoved((u32, u32)),
+	ReceivedCharacter(char),
+	MouseMoved((f64, f64)),
 	//Touch(Touch)
 	Unknown
 }
 
-fn convert_winit_event(event: winit::Event) -> EventType {
-	winit::Event::Resized(new_width, new_height) => { return EventType::Resized(new_width, new_height); },
-	winit::Event::Moved(x, y) => { return EventType::Moved(x, y); },
-	winit::Event::Closed => { return EventType::Closed; },
-	winit::Event::ReceivedCharacter(char_received) => { return EventType::ReceivedCharacter(char_received); },
-	winit::Event::Focused(is_focused) => { return EventType::Focused(is_focused); },
-	winit::Event::KeyboardInput(key_state, scan_code, virtual_key) => { return EventType::KeyboardInput(key_state, scan_code, virtual_key); },
-	winit::Event::MouseMoved((x, y)) => { return EventType::MouseMoved((x, y)); },
-	winit::Event::Awakened => { return EventType::Awakened; },
-	winit::Event::Refresh => { return EventType::Refresh; },
-	winit::Event::Suspended(is_suspended) => { return EventType::Suspended(is_suspended); },
-	_ = { return EventType::Unknown; }
+pub fn convert_winit_event(event: glutin::WindowEvent) -> EventType {
+	match event {
+		glutin::WindowEvent::Resized(new_width, new_height) => { return EventType::Resized(new_width, new_height); },
+		glutin::WindowEvent::Moved(x, y) => { return EventType::Moved(x, y); },
+		glutin::WindowEvent::Closed => { return EventType::Closed; },
+		glutin::WindowEvent::ReceivedCharacter(char_received) => { return EventType::ReceivedCharacter(char_received); },
+		glutin::WindowEvent::Focused(is_focused) => { return EventType::Focused(is_focused); },
+		//glutin::WindowEvent::KeyboardInput(key_state, scan_code, virtual_key) => { return EventType::KeyboardInput(key_state, scan_code, virtual_key); },
+		glutin::WindowEvent::MouseMoved{ device_id, position } => { return EventType::MouseMoved(position); },
+		//glutin::WindowEvent::Awakened => { return EventType::Awakened; },
+		glutin::WindowEvent::Refresh => { return EventType::Refresh; },
+		glutin::WindowEvent::Suspended(is_suspended) => { return EventType::Suspended(is_suspended); },
+		_ => { return EventType::Unknown; }
+	}
 }
-
-/**
-Windows call their callback whenever they get a window event.
-*/
-type WindowEventCallback = fn(EventType);
