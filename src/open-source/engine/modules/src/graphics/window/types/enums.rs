@@ -1,9 +1,7 @@
 /*!
-Specifies enums and types used by the other
+Specifies enums used by the other
 modules in this module.
 */
-use glutin;
-use glutin::WindowEvent;
 
 /**
 Specifies the window's state on screen.
@@ -54,20 +52,4 @@ pub enum EventType {
 	MouseMoved((f64, f64)),
 	//Touch(Touch)
 	Unknown
-}
-
-pub fn convert_winit_event(event: glutin::WindowEvent) -> EventType {
-	match event {
-		glutin::WindowEvent::Resized(new_width, new_height) => { return EventType::Resized(new_width, new_height); },
-		glutin::WindowEvent::Moved(x, y) => { return EventType::Moved(x, y); },
-		glutin::WindowEvent::Closed => { return EventType::Closed; },
-		glutin::WindowEvent::ReceivedCharacter(char_received) => { return EventType::ReceivedCharacter(char_received); },
-		glutin::WindowEvent::Focused(is_focused) => { return EventType::Focused(is_focused); },
-		//glutin::WindowEvent::KeyboardInput(key_state, scan_code, virtual_key) => { return EventType::KeyboardInput(key_state, scan_code, virtual_key); },
-		glutin::WindowEvent::MouseMoved{ device_id, position } => { return EventType::MouseMoved(position); },
-		//glutin::WindowEvent::Awakened => { return EventType::Awakened; },
-		glutin::WindowEvent::Refresh => { return EventType::Refresh; },
-		glutin::WindowEvent::Suspended(is_suspended) => { return EventType::Suspended(is_suspended); },
-		_ => { return EventType::Unknown; }
-	}
 }
