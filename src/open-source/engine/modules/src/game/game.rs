@@ -25,12 +25,12 @@ impl Game {
 			//Update our input.
 			let mut esc_pressed = false;
 			//We do this by getting the window's events...
-			for event in self.window.poll_events() {
-				match *event {
+			self.window.poll_events(&mut |event| {
+				match event {
 					EventType::Closed => esc_pressed = true,
 					_ => {}
 				}
-			}
+			});
 
 			//Do update and render here.
 			self.clock.update();

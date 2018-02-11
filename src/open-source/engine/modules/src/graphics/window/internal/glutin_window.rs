@@ -7,10 +7,12 @@ use winit::Window;
 
 use graphics;
 use graphics::{Visibility, WindowError, EventType};
+use graphics::window::convert_winit_event;
 use input::Controller;
 use math::Vec2;
 
 pub struct GlutinWindow {
+	impl_events_loop: glutin::EventsLoop,
 	/**
 	The actual backend
 	implementation that manages the window.
@@ -22,8 +24,9 @@ pub struct GlutinWindow {
 //TODO: impl Debug for GlutinWindow
 
 impl GlutinWindow {
-	pub fn new(glutin_window: glutin::GlWindow) -> GlutinWindow {
+	pub fn new(glutin_window: glutin::GlWindow, events_loop: glutin::EventsLoop) -> GlutinWindow {
 		GlutinWindow {
+			impl_events_loop: events_loop,
 			impl_window: glutin_window,
 			visibility: Visibility::Closed
 		}
@@ -80,27 +83,13 @@ impl graphics::Window for GlutinWindow {
 		}
 	}
 
-	fn set_callback(&self, callback: fn(EventType)) {
-		unimplemented!()
-	}
-
-
-	fn poll_events(&self) -> Box<Iterator<Item=&EventType>> {
-		self.impl_window.poll_events().map(|event| {
-			match event {
-				glutin::WindowEvent::Resized(new_width, new_height) => { return EventType::Resized(new_width, new_height); },
-				glutin::WindowEvent::Moved(x, y) => { return EventType::Moved(x, y); },
-				glutin::WindowEvent::Closed => { return EventType::Closed; },
-				glutin::WindowEvent::ReceivedCharacter(char_received) => { return EventType::ReceivedCharacter(char_received); },
-				glutin::WindowEvent::Focused(is_focused) => { return EventType::Focused(is_focused); },
-				//glutin::WindowEvent::KeyboardInput(key_state, scan_code, virtual_key) => { return EventType::KeyboardInput(key_state, scan_code, virtual_key); },
-				glutin::WindowEvent::MouseMoved{ device_id, position } => { return EventType::MouseMoved(position); },
-				//glutin::WindowEvent::Awakened => { return EventType::Awakened; },
-				glutin::WindowEvent::Refresh => { return EventType::Refresh; },
-				glutin::WindowEvent::Suspended(is_suspended) => { return EventType::Suspended(is_suspended); },
-				_ => { return EventType::Unknown; }
-			}
-		})
+	fn poll_events(&mut self, callback: &mut FnMut(EventType)) {
+		self.impl_events_loop.poll_events(|event| {
+			//Wrap the glutin event in the engine event type
+			let converted_event = convert_winit_event(event);
+			//And run the callback on it
+			callback(converted_event);
+		});
 	}
 
 	fn get_input_devices(&self) -> Vec<Controller> {

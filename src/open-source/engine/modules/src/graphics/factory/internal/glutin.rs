@@ -63,7 +63,7 @@ impl GlutinDeviceWindowBuilder {
 		let (window, device, factory, main_color, main_depth) =
 			gfx_window_glutin::init::<ColorFormat, DepthFormat>(window_builder, context_builder, &event_loop);
 
-		let result_window = Box::new(GlutinWindow::new(window));
+		let result_window = Box::new(GlutinWindow::new(window, event_loop));
 		//Isn't device a reference?
 		let result_device = Box::new(GLDevice::new(device, factory, main_color, main_depth));
 

@@ -77,20 +77,10 @@ pub trait Window {
 	fn swap_buffers(&self) -> Result<(), WindowError>;
 
 	/**
-	Sets the callback that handles window events
-	sent to this window.
-	To actually have this callback be run,
-	the window needs to be told to get events
-	with poll_events().
-	
-	The default callback does nothing.
+	Takes all pending events and applies the given callback to them.
+	Use this to get feedback from the window.
 	*/
-	fn set_callback(&self, callback: fn(EventType));
-
-	/**
-	Retrieves any window events sent to this window.
-	*/
-	fn poll_events(&self) -> Box<Iterator<Item=&EventType>>;
+	fn poll_events(&mut self, callback: &mut FnMut(EventType));
 
 	/**
 	 Returns a list of all of the input devices.
