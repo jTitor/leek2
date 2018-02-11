@@ -3,16 +3,16 @@
 */
 use glutin;
 use glutin::GlContext;
-use winit::Window;
+use winit::{Window, EventsLoop};
 
 use graphics;
 use graphics::{Visibility, WindowError, EventType};
-use graphics::window::convert_winit_event;
 use input::Controller;
+use graphics::window::convert_winit_event;
 use math::Vec2;
 
 pub struct GlutinWindow {
-	impl_events_loop: glutin::EventsLoop,
+	impl_events_loop: EventsLoop,
 	/**
 	The actual backend
 	implementation that manages the window.
@@ -24,7 +24,7 @@ pub struct GlutinWindow {
 //TODO: impl Debug for GlutinWindow
 
 impl GlutinWindow {
-	pub fn new(glutin_window: glutin::GlWindow, events_loop: glutin::EventsLoop) -> GlutinWindow {
+	pub fn new(glutin_window: glutin::GlWindow, events_loop: EventsLoop) -> GlutinWindow {
 		GlutinWindow {
 			impl_events_loop: events_loop,
 			impl_window: glutin_window,

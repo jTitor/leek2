@@ -1,43 +1,17 @@
 /*!
 Builds a Device and Window via Gfx and Glutin.
 */
-use gfx;
+use gfx_hal::Instance;
+use gfx_hal::format::{Rgba8Srgb, AsFormat};
 use gfx_backend_gl;
 use glutin;
-use gfx_window_glutin;
+use winit;
 
 use graphics::GraphicsPayload;
 use super::FactoryDispatcher;
 use graphics::window::internal::glutin_window::GlutinWindow;
 use graphics::device::internal::gl::GLDevice;
 use math::Vec2Access;
-
-pub type ColorFormat = gfx::format::Rgba8;
-pub type DepthFormat = gfx::format::DepthStencil;
-
-/*
-An example of a Glutin event loop.
-
-pub fn main() {
-	let builder = glutin::WindowBuilder::new()
-		.with_title("Triangle example".to_string())
-		.with_dimensions(1024, 768)
-		.with_vsync();
-	let (window, mut device, mut factory, main_color, mut main_depth) =
-		gfx_window_glutin::init::<ColorFormat, DepthFormat>(builder);
-	'main: loop {
-		for event in window.poll_events() {
-			match event {
-				glutin::Event::KeyboardInput(_, _, Some(glutin::VirtualKeyCode::Escape)) |
-				glutin::Event::Closed => break 'main,
-				_ => {}
-			}
-		}
-		window.swap_buffers().unwrap();
-		device.cleanup();
-	}
-}
-*/
 
 #[derive(Debug)]
 pub struct GlutinDeviceWindowBuilder {
@@ -52,23 +26,36 @@ impl GlutinDeviceWindowBuilder {
 		let factory = dispatcher.factory.clone();
 		let window_request = factory.window_request.clone();
 		let device_request = factory.device_request;
-		let window_builder = glutin::WindowBuilder::new()
+
+		//The window builder just specifies the
+		//window's physical properties.
+		let window_builder = winit::WindowBuilder::new()
 		.with_title(window_request.title.to_string())
 		.with_dimensions(window_request.dimensions.x() as u32, window_request.dimensions.y() as u32);
-		
-		let context_builder = glutin::ContextBuilder::new()
-		.with_vsync(window_request.vsync);
-		//TODO: Going to need to box this!
-		let mut event_loop = glutin::EventsLoop::new();
 
-		let (window, device, factory, main_color, main_depth) =
-			gfx_window_glutin::init::<ColorFormat, DepthFormat>(window_builder, context_builder, &event_loop);
+		//The event loop is the access point into
+		//the window's events, such as when it gets
+		//a keypress or the window is resized.
+		let mut event_loop = winit::EventsLoop::new();
 
-		let result_window = Box::new(GlutinWindow::new(window, event_loop));
+		//Now build the actual window.
+		let window = {
+			//The OpenGL context never gets directly accessed,
+			//so we can keep it in this block.
+			let context_builder = gfx_backend_gl::config_context(
+				gfx_backend_gl::glutin::ContextBuilder::new(),
+				Rgba8Srgb::SELF,
+				None,).with_vsync(true);
 
-		let surface = gfx_backend_gl::Surface::from_window(result_window);
+			gfx_backend_gl::glutin::GlWindow::new(window_builder, context_builder, &event_loop).unwrap()
+		};
+
+		let surface = gfx_backend_gl::Surface::from_window(window);
 		let adapters = surface.enumerate_adapters();
-		//Isn't device a reference?
+
+		//These are the result stucts to be packed
+		//in the return payload.
+		let result_window = Box::new(GlutinWindow::new(window, event_loop));
 		let result_device = Box::new(GLDevice::new(surface, adapters));
 
 		GraphicsPayload {

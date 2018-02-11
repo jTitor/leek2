@@ -36,10 +36,9 @@ pub fn convert_window_event(_id: winit::WindowId, event: winit::WindowEvent) -> 
 		winit::WindowEvent::ReceivedCharacter(char_received) => { return EventType::ReceivedCharacter(char_received); },
 		winit::WindowEvent::Focused(is_focused) => { return EventType::Focused(is_focused); },
 		//winit::WindowEvent::KeyboardInput(key_state, scan_code, virtual_key) => { return EventType::KeyboardInput(key_state, scan_code, virtual_key); },
-		winit::WindowEvent::MouseMoved{ device_id, position } => { return EventType::MouseMoved(position); },
+		//winit::WindowEvent::MouseMoved{ device_id, position } => { return EventType::MouseMoved(position); },
 		//winit::WindowEvent::Awakened => { return EventType::Awakened; },
 		winit::WindowEvent::Refresh => { return EventType::Refresh; },
-		winit::WindowEvent::Suspended(is_suspended) => { return EventType::Suspended(is_suspended); },
 		_ => { return EventType::Unknown; }
 	}
 }
