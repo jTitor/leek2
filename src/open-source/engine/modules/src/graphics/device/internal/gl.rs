@@ -1,9 +1,11 @@
 /*!
 	Implements OpenGL graphics operations.
 */
-use gfx_core;
-use gfx_core::Device;
-use gfx_device_gl;
+//Now that gfx-rs is using a generic
+//API under gfx::hal, we don't have
+//to use this gross super-specific type anymore
+use gfx_hal;
+use gfx_backend_gl;
 
 use graphics;
 use graphics::BackendType;
@@ -15,13 +17,10 @@ type GfxDepthStencilView = gfx_core::handle::DepthStencilView<gfx_device_gl::Res
 
 pub struct GLDevice {
 	/**
-	The actual backend
-	implementation that runs the graphics calls.
+	The backend destination for rendering calls.
 	*/
-	impl_device: GfxGlDevice,
-	_impl_factory: GfxGlDeviceFactory,
-	_impl_render_target_view: GfxRenderTargetView,
-	_impl_depth_stencil_view: GfxDepthStencilView
+	impl_surface: gfx_backend_gl::Surface,
+	impl_adapters: Vec<gfx_hal::Adapter>
 }
 
 //TODO: impl Debug for GLDevice
@@ -32,17 +31,15 @@ impl graphics::Device for GLDevice {
 	}
 	
 	fn end_frame(&mut self) {
-		self.impl_device.cleanup()
+		//Meant to be empty
 	}
 }
 
 impl GLDevice {
-	pub fn new(device: GfxGlDevice, factory: GfxGlDeviceFactory, render_view: GfxRenderTargetView, depth_stencil_view: GfxDepthStencilView) -> GLDevice {
+	pub fn new(surface: gfx_backend_gl::Surface, adapters: Vec<gfx_hal::Adapter>) -> GLDevice {
 		GLDevice {
-			impl_device: device,
-			_impl_factory: factory,
-			_impl_render_target_view: render_view,
-			_impl_depth_stencil_view: depth_stencil_view
+			impl_surface: surface,
+			impl_adapters: adapters
 		}
 	}
 }

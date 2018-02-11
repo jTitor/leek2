@@ -2,6 +2,7 @@
 Builds a Device and Window via Gfx and Glutin.
 */
 use gfx;
+use gfx_backend_gl;
 use glutin;
 use gfx_window_glutin;
 
@@ -64,8 +65,11 @@ impl GlutinDeviceWindowBuilder {
 			gfx_window_glutin::init::<ColorFormat, DepthFormat>(window_builder, context_builder, &event_loop);
 
 		let result_window = Box::new(GlutinWindow::new(window, event_loop));
+
+		let surface = gfx_backend_gl::Surface::from_window(result_window);
+		let adapters = surface.enumerate_adapters();
 		//Isn't device a reference?
-		let result_device = Box::new(GLDevice::new(device, factory, main_color, main_depth));
+		let result_device = Box::new(GLDevice::new(surface, adapters));
 
 		GraphicsPayload {
 			device: result_device,

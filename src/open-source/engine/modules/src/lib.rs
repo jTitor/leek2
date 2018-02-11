@@ -1,9 +1,23 @@
 //Crate root for the engine.
+
+//This would require one of the feature modes to be set;
+//since we default to GL anyway this isn't enabled yet.
+// #![cfg_attr(
+// 	not(any(feature = "vulkan", feature = "dx12", feature = "metal", feature = "gl")),
+// 	allow(dead_code, unused_extern_crates, unused_imports)
+// )]
+
 extern crate chrono;
-extern crate gfx;
-extern crate gfx_core;
-extern crate gfx_device_gl;
-extern crate gfx_window_glutin;
+//extern crate gfx;
+extern crate gfx_hal;
+//#[cfg(feature = "dx12")]
+//extern crate gfx_backend_dx12;
+//#[cfg(feature = "vulkan")]
+//extern crate gfx_backend_vulkan;
+//#[cfg(feature = "metal")]
+//extern crate gfx_backend_metal;
+//#[cfg(feature = "gl")]
+extern crate gfx_backend_gl;
 extern crate glutin;
 extern crate winapi;
 extern crate kernel32;
