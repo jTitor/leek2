@@ -19,6 +19,8 @@ impl Game {
 	Initializes the game and enters the game loop.
 	*/
 	pub fn run(&mut self) -> Result<(), GameError> {
+		self.window.open();
+		
 		//Enter the game loop here.
 		let mut running = true;
 		while running {
@@ -58,6 +60,6 @@ impl Drop for Game {
 		self.window.hide();
 		//Disconnect the window.
 		//Disconnect the graphics device.
-		unimplemented!()
+		//unimplemented!()
 	}
 }
