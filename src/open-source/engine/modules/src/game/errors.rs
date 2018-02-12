@@ -48,12 +48,15 @@ impl fmt::Display for GameError {
 }
 
 impl Error for GameError {
+	#[allow(dead_code)]
 	fn description(&self) -> &str {
 		match *self {
 			GameError::DeviceError{ref cause} => {
+				let _unused = cause;
 				"a device had a fatal error"
 			},
 			GameError::WindowBuildFailed{ref cause} => {
+				let _unused = cause;
 				"a window could not be built"
 			},
 			GameError::PlatformUnsupported => { "this platform doesn't support the requested command" },

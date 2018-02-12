@@ -2,7 +2,7 @@
  * Defines scoped profiling structs.
  */
 
-use remotery::{Remotery, RemoteryScope, SampleFlags};
+use remotery::{RemoteryScope, SampleFlags};
 use std::fmt;
 
 /**
@@ -14,7 +14,7 @@ use std::fmt;
  */
 //Don't think it makes sense for this to be Copy/Clone
 pub struct ProfileScope {
-	scope_impl: RemoteryScope
+	_scope_impl: RemoteryScope
 }
 
 impl fmt::Debug for ProfileScope {
@@ -26,7 +26,7 @@ impl fmt::Debug for ProfileScope {
 impl ProfileScope {
 	pub fn new(scope_name: &str) -> ProfileScope {
 		ProfileScope {
-			scope_impl: RemoteryScope::new(scope_name.clone(), SampleFlags::Default)
+			_scope_impl: RemoteryScope::new(scope_name.clone(), SampleFlags::Default)
 		}
 	}
 }

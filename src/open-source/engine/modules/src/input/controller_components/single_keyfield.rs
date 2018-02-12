@@ -11,6 +11,7 @@ impl SingleKeyfield {
 		If true, `key` is down in the current frame.
 	*/
 	pub fn curr_key_down(&self, key: KeyCode) -> bool {
+		let _unimplemented = key;
 		unimplemented!()
 	}
 
@@ -18,6 +19,7 @@ impl SingleKeyfield {
 		If true, `key` is down in the previous frame.
 	*/
 	pub fn prev_key_down(&self, key: KeyCode) -> bool {
+		let _unimplemented = key;
 		unimplemented!()
 	}
 

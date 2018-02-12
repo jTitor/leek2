@@ -4,8 +4,7 @@
 //Now that gfx-rs is using a generic
 //API under gfx::hal, we don't have
 //to use this gross super-specific type anymore
-use gfx_hal;
-use gfx_hal::{Adapter};
+use gfx_hal::Adapter;
 use gfx_backend_gl::{Surface, Backend};
 
 use graphics;
@@ -15,8 +14,8 @@ pub struct GLDevice {
 	/**
 	The backend destination for rendering calls.
 	*/
-	impl_surface: Surface,
-	impl_adapters: Vec<Adapter<Backend>>
+	_impl_surface: Surface,
+	_impl_adapters: Vec<Adapter<Backend>>
 }
 
 //TODO: impl Debug for GLDevice
@@ -34,8 +33,8 @@ impl graphics::Device for GLDevice {
 impl GLDevice {
 	pub fn new(surface: Surface, adapters: Vec<Adapter<Backend>>) -> GLDevice {
 		GLDevice {
-			impl_surface: surface,
-			impl_adapters: adapters
+			_impl_surface: surface,
+			_impl_adapters: adapters
 		}
 	}
 }

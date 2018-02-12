@@ -27,7 +27,7 @@ impl Error for InputError {
 
 impl fmt::Display for InputError {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		#![allow()]
+		#![allow(unused_assignments)]
 		let mut details: String = String::from(self.description());
 		
 		//Get a more elaborate description if possible.

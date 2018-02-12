@@ -15,10 +15,12 @@ impl<NodeT> SceneGraphInternal<NodeT> where NodeT : Sized + SceneNode {
 
 impl<NodeT> SceneGraph<NodeT> for SceneGraphInternal<NodeT> where NodeT : Sized + SceneNode {
 	fn add_node(&self, node: &NodeT) {
+		let _unimplemented = node;
 		unimplemented!();
 	}
 
 	fn remove_node(&self, node: &NodeT) {
+		let _unimplemented = node;
 		unimplemented!();
 	}
 

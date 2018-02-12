@@ -2,9 +2,9 @@
  * Defines the transform object that provides a
  * basic scale/rotation/translation for an object.
  */
-use math::{Vec3, Vec3Ops};
-use math::{Vec4, Vec4Ops};
-use math::{Mat4x4, MatOps};
+use math::{Vec3/*, Vec3Ops*/};
+use math::{Vec4/*, Vec4Ops*/};
+use math::{Mat4x4/*, MatOps*/};
 // use math::Quaternion;
 
 pub type ScaleType = Vec3;
@@ -56,6 +56,7 @@ impl TransformOps<Transform> for Transform {
 	}
 
 	fn concatenate(&self, other: &Transform) -> Transform {
+		let _unimplemented = other;
 		unimplemented!()
 	}
 

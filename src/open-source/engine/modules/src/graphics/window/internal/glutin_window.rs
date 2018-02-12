@@ -1,10 +1,7 @@
 /*!
 	Implements a window via Glutin+Gfx.
 */
-// use std::rc::Rc;
-
-use gfx_backend_gl;
-use gfx_backend_gl::glutin::{EventsLoop, Window, GlWindow, GlContext};
+use gfx_backend_gl::glutin::EventsLoop;
 
 use graphics;
 use graphics::{Visibility, WindowError, EventType};

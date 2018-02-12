@@ -18,22 +18,22 @@ use remotery::{Remotery, SampleFlags};
  * local HTTP service.
  */
 pub struct Profiler {
-	profiler_impl: Remotery,
+	_profiler_impl: Remotery,
 	logger: Arc<Mutex<Logger>>
 }
 
 impl Profiler {
-	fn create_global_instance(logger: Arc<Mutex<Logger>>) -> Result<Profiler, ProfilerError> {
+	pub fn create_global_instance(logger: Arc<Mutex<Logger>>) -> Result<Profiler, ProfilerError> {
 		let profiler_instance = Remotery::create_global_instance()?;
 
 		//Profiler should be static to this module.
-		Ok(Profiler{profiler_impl: profiler_instance, logger: logger})
+		Ok(Profiler{_profiler_impl: profiler_instance, logger: logger})
 	}
 
 	/**
 	 * Logs raw text to the profiler.
 	 */
-	fn log_text(&mut self, text: &str) {
+	pub fn log_text(&mut self, text: &str) {
 		self.logger.lock().unwrap().log_d(text, "profiler");
 		Remotery::log_text(text);
 	}
@@ -45,7 +45,7 @@ impl Profiler {
 	 * Parameters:
 	 *  * text: A readable description of the profiling section.
 	 */
-	fn begin_cpu_sample(&self, text: &str) {
+	pub fn begin_cpu_sample(&self, text: &str) {
 		Remotery::begin_cpu_sample(text, SampleFlags::Default);
 	}
 

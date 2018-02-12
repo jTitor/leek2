@@ -1,14 +1,9 @@
 /*!
 Builds a Device and Window via Gfx and Glutin.
 */
-use std::sync::Arc;
-use std::rc::Rc;
-
 use gfx_hal::Instance;
 use gfx_hal::format::{Rgba8Srgb, AsFormat};
 use gfx_backend_gl;
-use glutin;
-use winit;
 
 use graphics::GraphicsPayload;
 use super::FactoryDispatcher;
@@ -28,7 +23,7 @@ impl GlutinDeviceWindowBuilder {
 	pub fn build(&self, dispatcher: &FactoryDispatcher) -> GraphicsPayload {
 		let factory = dispatcher.factory.clone();
 		let window_request = factory.window_request.clone();
-		let device_request = factory.device_request;
+		let _device_request = factory.device_request;
 
 		//The window builder just specifies the
 		//window's physical properties.
@@ -39,7 +34,7 @@ impl GlutinDeviceWindowBuilder {
 		//The event loop is the access point into
 		//the window's events, such as when it gets
 		//a keypress or the window is resized.
-		let mut event_loop = gfx_backend_gl::glutin::EventsLoop::new();
+		let event_loop = gfx_backend_gl::glutin::EventsLoop::new();
 
 		//Now build the actual window.
 		let window = {

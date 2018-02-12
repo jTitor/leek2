@@ -14,11 +14,6 @@ use input::Controller;
 use super::WindowError;
 
 /**
-A dummy callback that does nothing.
-*/
-fn default_callback(_: EventType) {}
-
-/**
 Generic specification for a window.
 Through this you can modify window parameters.
 */

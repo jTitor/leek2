@@ -25,7 +25,7 @@ impl Error for ProfilerError {
 
 impl fmt::Display for ProfilerError {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		let mut details: String = String::from(self.description());
+		let details: String = String::from(self.description());
 
 		write!(f, "Profiler error: {}", details)
 	}
