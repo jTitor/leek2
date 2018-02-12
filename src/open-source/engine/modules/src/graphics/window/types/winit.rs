@@ -4,7 +4,7 @@
 use super::EventType;
 
 //Alias gfx's glutin alias to the necessary structs.
-use gfx_backend_gl::glutin::{Event, WindowId, WindowEvent, DeviceId, DeviceEvent};
+use gfx_backend_gl::glutin::{Event, WindowId, WindowEvent, DeviceId, DeviceEvent, KeyboardInput};
 
 pub fn convert_winit_event(winit_event: Event) -> EventType {
 	match winit_event {
@@ -43,7 +43,13 @@ pub fn convert_window_event(_id: WindowId, event: WindowEvent) -> EventType {
 	}
 }
 
-pub fn convert_device_event(_id: DeviceId, _event: DeviceEvent) -> EventType {
+pub fn convert_device_event(_id: DeviceId, event: DeviceEvent) -> EventType {
 	//TODO: winit device events need implementing
-	EventType::Unknown
+	match event {
+		DeviceEvent::Key(keyboard_input) => {
+			//TODO
+			return EventType::ReceivedCharacter('A');
+		}
+		_ => { return EventType::Unknown; }
+	}
 }

@@ -27,7 +27,11 @@ impl Game {
 			//We do this by getting the window's events...
 			self.window.poll_events(&mut |event| {
 				match event {
-					EventType::Closed => esc_pressed = true,
+					EventType::Closed => { esc_pressed = true; },
+					EventType::ReceivedCharacter(char_received) => {
+						//TODO: match on Esc key specifically
+						esc_pressed = true;
+					},
 					_ => {}
 				}
 			});
