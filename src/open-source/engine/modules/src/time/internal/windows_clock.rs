@@ -1,5 +1,6 @@
-use std::mem;
 use time::{Clock, TimeStamp, DateTime, ClockType};
+#[cfg(windows)]
+use std::mem;
 #[cfg(windows)]
 use math::scalar::mul_div_i64;
 #[cfg(windows)]
