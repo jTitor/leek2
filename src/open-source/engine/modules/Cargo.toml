@@ -12,11 +12,14 @@ authors = [ "jTitor <me@me.me>" ]
 #the subcrates aren't published on Cargo.io;
 #for the moment you refer to them via the git repo,
 #and Cargo will pull the subcrates as needed.
+#
 #Note - if you're getting failure trying
 #to build these subcrates, delete Cargo.lock and your
 #target folder, `cargo clean` won't do the job
-gfx-hal = { version = "0.1.0", features = ["mint", "serde"], git = "https://github.com/gfx-rs/gfx/" }
-gfx-backend-gl = { git = "https://github.com/gfx-rs/gfx/", version = "*" }
+#
+#2/12: Pointing at custom fork so RI is available
+gfx-hal = { version = "0.1.0", features = ["mint", "serde"], git = "https://github.com/jTitor/gfx/" }
+gfx-backend-gl = { git = "https://github.com/jTitor/gfx/", version = "*" }
 glutin = "^0.9.0"
 winit = "*" #Will need to make this the custom fork later
 
