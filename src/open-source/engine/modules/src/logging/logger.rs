@@ -142,7 +142,8 @@ impl Logger {
 		let result = self.listener_next_id;
 		//Update the listener id.
 		self.listener_next_id += 1;
-		Ok((result))
+		
+		Ok(result)
 	}
 	
 	/**

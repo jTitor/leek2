@@ -34,7 +34,7 @@ num-traits = "*"
 remotery = "*"
 
 #Platform-specific APIs.
-winapi = "*"
+winapi = { version = "*", features = ["winnt"] }
 kernel32-sys = "*"
 
 [[bin]]

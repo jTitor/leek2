@@ -1,12 +1,11 @@
+use std::mem;
 use time::{Clock, TimeStamp, DateTime, ClockType};
 #[cfg(windows)]
 use math::scalar::mul_div_i64;
 #[cfg(windows)]
-use winapi::LARGE_INTEGER;
+use winapi::um::winnt::LARGE_INTEGER;
 #[cfg(windows)]
 use kernel32::{QueryPerformanceCounter, QueryPerformanceFrequency};
-#[cfg(windows)]
-type WinTimeStamp = LARGE_INTEGER;
 
 #[cfg(windows)]
 pub struct WindowsClock {
@@ -20,34 +19,46 @@ pub struct WindowsClock {
 }
 
 #[cfg(windows)]
-fn queryPerformanceCounter(outTimestamp: &mut WinTimeStamp) {
+/**
+ * Stores the performance counter's current value
+ * in the given LARGE_INTEGER.
+ */
+fn query_performance_counter(out_timestamp: &mut LARGE_INTEGER) {
 	unsafe {
 		//Might be better to actually return the result here
-		QueryPerformanceCounter(outTimestamp);
+		QueryPerformanceCounter(out_timestamp.QuadPart_mut());
 	}
 }
 
 #[cfg(windows)]
-fn query_performance_counter_as_timestamp(inFrequency: LARGE_INTEGER) -> TimeStamp {
-	let mut tempWinTimeStamp: WinTimeStamp = 0;
-	queryPerformanceCounter(&mut tempWinTimeStamp);
-	mul_div_i64(tempWinTimeStamp, 1, inFrequency)
+fn query_performance_counter_as_timestamp(in_frequency: LARGE_INTEGER) -> TimeStamp {
+	let mut temp_timestamp: LARGE_INTEGER = unsafe { mem::zeroed() };
+	query_performance_counter(&mut temp_timestamp);
+	
+	//A little gross since the UNION! macro
+	//makes getters/setters methods, but
+	//this matches the actual Win32 fields
+	//on a LARGE_INTEGER
+	let perf_counter = unsafe { *temp_timestamp.QuadPart() };
+	let perf_frequency = unsafe { *in_frequency.QuadPart() };
+
+	mul_div_i64(perf_counter, 1, perf_frequency)
 }
 
 #[cfg(windows)]
-fn queryPerformanceFrequency(outFrequency: &mut LARGE_INTEGER) {
+fn query_performance_frequency(out_frequency: &mut LARGE_INTEGER) {
 	unsafe {
 		//Might be better to actually return the result here
-		QueryPerformanceFrequency(outFrequency);
+		QueryPerformanceFrequency(out_frequency.QuadPart_mut());
 	}
 }
 
 #[cfg(windows)]
 impl WindowsClock {
 	pub fn new() -> WindowsClock {
-		let mut frequency : LARGE_INTEGER = 0;
-		queryPerformanceFrequency(&mut frequency);
-		assert!(frequency > 0, "WindowsClock: Clock frequency isn't nonzero, can't get actual performance counter values");
+		let mut frequency : LARGE_INTEGER = unsafe { mem::zeroed() };
+		query_performance_frequency(&mut frequency);
+		assert!(unsafe { *frequency.QuadPart() } > 0, "WindowsClock: Clock frequency isn't nonzero, can't get actual performance counter values");
 		let start_timestamp = query_performance_counter_as_timestamp(frequency);
 		WindowsClock {
 			origin_datetime: DateTime::now(),

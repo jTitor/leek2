@@ -29,6 +29,7 @@ impl Game {
 				match event {
 					EventType::Closed => { esc_pressed = true; },
 					EventType::ReceivedCharacter(char_received) => {
+						let _unused = char_received;
 						//TODO: match on Esc key specifically
 						esc_pressed = true;
 					},
