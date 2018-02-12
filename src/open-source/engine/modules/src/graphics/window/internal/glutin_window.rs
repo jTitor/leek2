@@ -1,9 +1,10 @@
 /*!
 	Implements a window via Glutin+Gfx.
 */
-use glutin;
-use glutin::GlContext;
-use winit::{Window, EventsLoop};
+// use std::rc::Rc;
+
+use gfx_backend_gl;
+use gfx_backend_gl::glutin::{EventsLoop, Window, GlWindow, GlContext};
 
 use graphics;
 use graphics::{Visibility, WindowError, EventType};
@@ -17,17 +18,17 @@ pub struct GlutinWindow {
 	The actual backend
 	implementation that manages the window.
 	*/
-	impl_window: glutin::GlWindow,
+	// impl_window: Rc<GlWindow>,
 	visibility: Visibility
 }
 
 //TODO: impl Debug for GlutinWindow
 
 impl GlutinWindow {
-	pub fn new(glutin_window: glutin::GlWindow, events_loop: EventsLoop) -> GlutinWindow {
+	pub fn new(/*glutin_window: Rc<GlWindow>, */ events_loop: EventsLoop) -> GlutinWindow {
 		GlutinWindow {
 			impl_events_loop: events_loop,
-			impl_window: glutin_window,
+			// impl_window: glutin_window,
 			visibility: Visibility::Closed
 		}
 	}
@@ -43,16 +44,16 @@ impl graphics::Window for GlutinWindow {
 	}
 
 	fn position(&self) -> Vec2 {
-		if let Some(position) = self.impl_window.get_position() {
-			return Vec2::new(position.0 as f32, position.1 as f32);
-		}
+		// if let Some(position) = self.impl_window.get_position() {
+		// 	return Vec2::new(position.0 as f32, position.1 as f32);
+		// }
 		Vec2::default()
 	}
 
 	fn dimensions(&self) -> Vec2 {
-		if let Some(dimensions) = self.impl_window.get_inner_size_pixels() {
-			return Vec2::new(dimensions.0 as f32, dimensions.1 as f32);
-		}
+		// if let Some(dimensions) = self.impl_window.get_inner_size_pixels() {
+		// 	return Vec2::new(dimensions.0 as f32, dimensions.1 as f32);
+		// }
 		Vec2::default()
 	}
 
@@ -69,18 +70,19 @@ impl graphics::Window for GlutinWindow {
 	}
 
 	fn open(&self) {
-		self.impl_window.show();
+		//self.impl_window.show();
 	}
 
 	fn hide(&self) {
-		self.impl_window.hide();
+		//self.impl_window.hide();
 	}
 
 	fn swap_buffers(&self) -> Result<(), WindowError> {
-		match self.impl_window.swap_buffers() {
-			Ok(_) => Ok(()),
-			_ => Err(WindowError::BackendOperationFailed)
-		}
+		// match self.impl_window.swap_buffers() {
+		// 	Ok(_) => Ok(()),
+		// 	_ => Err(WindowError::BackendOperationFailed)
+		// }
+		Ok(())
 	}
 
 	fn poll_events(&mut self, callback: &mut FnMut(EventType)) {
