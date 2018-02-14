@@ -46,8 +46,9 @@ fn main() {
 	let _ = GameBuilder::new()
 		.build().unwrap()
 		.run(&mut |_game|{
+			ProfileScope::new("scope_test");
 			for _ in 0..3 {
-				profiler.begin_cpu_sample("test");
+				profiler.begin_cpu_sample("explicit_test");
 				thread::sleep(Duration::from_millis(1));
 				profiler.end_cpu_sample();
 			}
