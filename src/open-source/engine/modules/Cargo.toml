@@ -40,6 +40,6 @@ remotery = "*"
 winapi = { version = "*", features = ["winnt"] }
 kernel32-sys = "*"
 
-[[bin]]
-name = "leek2"
-doc = false
+# [[bin]]
+# name = "leek2"
+# doc = false

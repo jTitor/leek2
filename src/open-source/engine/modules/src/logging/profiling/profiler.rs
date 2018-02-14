@@ -17,14 +17,14 @@ use remotery::{Remotery, SampleFlags};
  * is read via connecting to it as a
  * local HTTP service.
  */
-pub struct Profiler {
-	_profiler_impl: Remotery,
-	logger: Arc<Mutex<Logger>>
+pub struct Profiler<'a> {
+	_profiler_impl: Box<Remotery>,
+	logger: Arc<Mutex<&'a mut Logger>>
 }
 
-impl Profiler {
-	pub fn create_global_instance(logger: Arc<Mutex<Logger>>) -> Result<Profiler, ProfilerError> {
-		let profiler_instance = Remotery::create_global_instance()?;
+impl<'a> Profiler<'a> {
+	pub fn create_global_instance(logger: Arc<Mutex<&'a mut Logger>>) -> Result<Profiler, ProfilerError> {
+		let profiler_instance = Box::new(Remotery::create_global_instance()?);
 
 		//Profiler should be static to this module.
 		Ok(Profiler{_profiler_impl: profiler_instance, logger: logger})
@@ -58,7 +58,7 @@ impl Profiler {
 	}
 }
 
-impl fmt::Debug for Profiler {
+impl<'a> fmt::Debug for Profiler<'a> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f, "Device {{ logger: {:?} }}", self.logger)
 	}

@@ -30,7 +30,7 @@ impl GraphicsFactory {
 		};
 		let window = WindowRequest {
 			title: String::from("Default Title"),
-			dimensions: Vec2::new(1.0, 1.0),
+			dimensions: Vec2::new(800.0, 600.0),
 			position: Vec2::new(0.0, 0.0),
 			vsync: true
 		};

@@ -18,7 +18,7 @@ impl Game {
 	/**
 	Initializes the game and enters the game loop.
 	*/
-	pub fn run(&mut self) -> Result<(), GameError> {
+	pub fn run(&mut self, update_callback: &mut FnMut(&mut Game), render_callback: &mut FnMut(&mut Game)) -> Result<(), GameError> {
 		self.window.open();
 		
 		//Enter the game loop here.
@@ -42,6 +42,9 @@ impl Game {
 			//Do update and render here.
 			self.clock.update();
 
+			update_callback(self);
+			render_callback(self);
+
 			//For now, quit on ESC.
 			running = !esc_pressed;
 		}
@@ -63,3 +66,9 @@ impl Drop for Game {
 		//unimplemented!()
 	}
 }
+
+// impl fmt::Debug for Game {
+// 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+// 		write!(f, "Device {{ graphics: {:?}, window: {:?}, clock: {:?}, }}", self.graphics, self.window, self.clock)
+// 	}
+// }

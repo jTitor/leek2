@@ -13,5 +13,5 @@ fn main() {
 	//and switch on the result value.
 	let _ = GameBuilder::new()
 		.build().unwrap()
-		.run();
+		.run(&mut |_game|{}, &mut |_game|{});
 }
