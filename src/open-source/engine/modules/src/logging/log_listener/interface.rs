@@ -23,7 +23,10 @@ pub struct ListenerBase<T> where T: Write + Send {
 	///If true, output is connected and we can write
 	///to it; otherwise the output is not connected
 	///and attempts to write will probably cause a panic.
-	pub output_ready: bool
+	pub output_ready: bool,
+	pub show_severity: bool,
+	pub show_tag: bool,
+	pub show_timestamp: bool
 }
 
 impl<T> fmt::Debug for ListenerBase<T> where T: Write + Send {
@@ -55,7 +58,8 @@ pub trait LogListen : Send + Sync {
 impl<T> LogListen for ListenerBase<T> where T: Write + Send {
 	fn on_log(&self, record: &LogElement) -> Result<(), ListenerError> {
 		//Format the entry into an output string.
-		let out_str = format!("{} {}: {}\n",
+		let out_str = format!("[{}, {}] {}: {}\n",
+			record.timestamp,
 			record.tag,
 			record.severity,
 			record.text);
@@ -74,7 +78,10 @@ impl<T> ListenerBase<T> where T: Write + Send {
 		ListenerBase {
 			output: Mutex::new(RefCell::new(output)),
 			level: level,
-			output_ready: false
+			output_ready: false,
+			show_severity: true,
+			show_tag: true,
+			show_timestamp: true
 		}
 	}
 }

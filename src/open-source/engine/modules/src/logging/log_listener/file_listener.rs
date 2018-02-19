@@ -44,7 +44,10 @@ impl FileListenerBuilder {
 				//Return the listener.
 				return Ok(FileListener { output: Mutex::new(RefCell::new(opened_file)),
 					level: self.level,
-					output_ready: true });
+					output_ready: true,
+					show_severity: true,
+					show_tag: true,
+					show_timestamp: true });
 			},
 			_ => {
 				return Err(());

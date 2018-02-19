@@ -37,6 +37,9 @@ impl TerminalListenerBuilder {
 		//Return the listener.
 		Ok(TerminalListener { output: Mutex::new(RefCell::new(io::stdout())),
 			level: self.level,
-			output_ready: true })
+			output_ready: true,
+			show_severity: true,
+			show_tag: true,
+			show_timestamp: true })
 	}
 }
