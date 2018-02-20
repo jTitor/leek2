@@ -47,11 +47,15 @@ fn test_random_is_random() {
 	}
 
 	let mut num_buckets_under_freq: i32 = 0i32;
+	let mut num_buckets_over_freq: i32 = 0i32;
 	for freq in bucket_frequencies.iter() {
-		if *freq >= MIN_FREQ && *freq <= MAX_FREQ {
+		if *freq < MIN_FREQ {
 			num_buckets_under_freq += 1;
+		}
+		if *freq > MAX_FREQ {
+			num_buckets_over_freq += 1;
 		}
 	}
 
-	assert!(num_buckets_under_freq == 0, "{} of buckets are outside of frequency range [{}, {}]", (bucket_frequencies.len() as f32) / (num_buckets_under_freq as f32), MIN_FREQ, MAX_FREQ);
+	assert!(num_buckets_under_freq == 0 && num_buckets_over_freq == 0, "{} of {} buckets are under minimum frequency {}, {} of {} are over maximum frequency {}", num_buckets_under_freq, bucket_frequencies.len(), MIN_FREQ, num_buckets_over_freq, bucket_frequencies.len(), MAX_FREQ);
 }

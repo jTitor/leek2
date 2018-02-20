@@ -50,7 +50,7 @@ fn test_profiling() {
 	//Now run the profiling itself.
 	for _ in 0..1000 {
 		profiler.begin_cpu_sample("test");
-		thread::sleep(Duration::from_millis(20));
+		thread::sleep(Duration::from_millis(1));
 		outside_fn();
 		profiler.end_cpu_sample();
 	}
