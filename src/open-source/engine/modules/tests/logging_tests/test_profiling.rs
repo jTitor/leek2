@@ -7,7 +7,7 @@ use leek2::logging::{Logger, LoggerBuilder, LogSeverity, TerminalListenerBuilder
 use leek2::time::{Clock, ClockFactory};
 use std::time::Duration;
 use std::thread;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, RwLock};
 
 /**
  * Inner function that tests scoped profiling.
@@ -29,7 +29,7 @@ fn test_profiling() {
 		.level(LogSeverity::Debug)
 		.buffer_size(1024)
 		.build(log_path).unwrap();
-	let log_arc = Arc::<Mutex<&mut Logger>>::from(Mutex::new(&mut log));
+	let log_arc = Arc::<RwLock<&mut Logger>>::from(RwLock::new(&mut log));
 
 	//Attach a terminal listener.
 	let term_listener = Arc::new(TerminalListenerBuilder::new()

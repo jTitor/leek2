@@ -5,7 +5,7 @@ extern crate log;
 
 use std::cell::RefCell;
 use std::io;
-use std::sync::Mutex;
+use std::sync::RwLock;
 use super::interface::ListenerBase;
 use logging::LogSeverity;
 
@@ -35,7 +35,7 @@ impl TerminalListenerBuilder {
 	///Builds a TerminalListener instance from the given settings.
 	pub fn build(&self) -> Result<TerminalListener, ()> {
 		//Return the listener.
-		Ok(TerminalListener { output: Mutex::new(RefCell::new(io::stdout())),
+		Ok(TerminalListener { output: RwLock::new(RefCell::new(io::stdout())),
 			level: self.level,
 			output_ready: true,
 			show_severity: true,

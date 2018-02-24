@@ -6,7 +6,7 @@ extern crate log;
 use std::cell::RefCell;
 use std::fmt;
 use std::io::Write;
-use std::sync::Mutex;
+use std::sync::RwLock;
 use super::listener_error::ListenerError;
 use logging::{LogSeverity, LogElement};
 
@@ -17,7 +17,7 @@ and a maximum acceptable log level for filtering.
 */
 pub struct ListenerBase<T> where T: Write + Send {
 	///The output file this listener is connected to.
-	pub output: Mutex<RefCell<T>>,
+	pub output: RwLock<RefCell<T>>,
 	///The minimum log level to record.
 	pub level: LogSeverity,
 	///If true, output is connected and we can write
@@ -76,7 +76,7 @@ impl<T> ListenerBase<T> where T: Write + Send {
 	*/
 	pub fn new(output: T, level: LogSeverity) -> ListenerBase<T> {
 		ListenerBase {
-			output: Mutex::new(RefCell::new(output)),
+			output: RwLock::new(RefCell::new(output)),
 			level: level,
 			output_ready: false,
 			show_severity: true,

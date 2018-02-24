@@ -5,7 +5,7 @@ extern crate log;
 
 use std::cell::RefCell;
 use std::fs::{File, OpenOptions};
-use std::sync::Mutex;
+use std::sync::RwLock;
 use super::interface::ListenerBase;
 use logging::LogSeverity;
 
@@ -42,7 +42,7 @@ impl FileListenerBuilder {
 		match file {
 			Ok(opened_file) => {
 				//Return the listener.
-				return Ok(FileListener { output: Mutex::new(RefCell::new(opened_file)),
+				return Ok(FileListener { output: RwLock::new(RefCell::new(opened_file)),
 					level: self.level,
 					output_ready: true,
 					show_severity: true,

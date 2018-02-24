@@ -1,36 +1,40 @@
 /*!
- * Performs the actual rendering for a Device.
- * A DeviceController uses this pipeline to decide what
- * draw calls must be executed.
+ * Default pipeline implementation.
+ * This generates a pipeline with one vertex shader
+ * and one fragment shader.
  */
-use gfx_hal as hal;
+use super::RenderPipeline;
 
 use failure::Error;
 
-pub struct RenderPipeline<B: hal::Backend> {
-	pipeline: B::GraphicsPipeline
-}
+struct DefaultPipeline {}
+impl RenderPipeline for DefaultPipeline {}
 
-pub struct RenderPipelineBuilder<B: hal::Backend>{}
-
-impl<B: hal::Backend> RenderPipelineBuilder<B> {
-	pub fn build() -> Result<RenderPipeline, Error> {
+struct DefaultPipelineBuilder {}
+impl DefaultPipelineBuilder {
+	fn build(device: mut& Device) -> Result<DefaultPipeline, Error> {
+		//Describe pipeline inputs:
+		//	First up are the uniforms,
+		//	the texture and texture sampler.
+		//	Both will be used by the frag shader
 		let set_layout = device.create_descriptor_set_layout(&[
-				pso::DescriptorSetLayoutBinding {
-					binding: 0,
-					ty: pso::DescriptorType::SampledImage,
-					count: 1,
-					stage_flags: ShaderStageFlags::FRAGMENT,
-				},
-				pso::DescriptorSetLayoutBinding {
-					binding: 1,
-					ty: pso::DescriptorType::Sampler,
-					count: 1,
-					stage_flags: ShaderStageFlags::FRAGMENT,
-				},
-			],
-		);
+					pso::DescriptorSetLayoutBinding {
+						binding: 0,
+						ty: pso::DescriptorType::SampledImage,
+						count: 1,
+						stage_flags: ShaderStageFlags::FRAGMENT,
+					},
+					pso::DescriptorSetLayoutBinding {
+						binding: 1,
+						ty: pso::DescriptorType::Sampler,
+						count: 1,
+						stage_flags: ShaderStageFlags::FRAGMENT,
+					},
+				],
+			);
 
+		//Next, the varying data. We're only expecting
+		//8 vertices.
 		let pipeline_layout = device.create_pipeline_layout(
 			Some(&set_layout),
 			&[
@@ -62,8 +66,8 @@ impl<B: hal::Backend> RenderPipelineBuilder<B> {
 			device.create_render_pass(&[attachment], &[subpass], &[dependency])
 		};
 
-		//
 		let pipeline = {
+			//Load the actual shader files here.
 			let vs_module = device
 				.create_shader_module(include_bytes!("data/vert.spv"))
 				.unwrap();
@@ -71,14 +75,7 @@ impl<B: hal::Backend> RenderPipelineBuilder<B> {
 				.create_shader_module(include_bytes!("data/frag.spv"))
 				.unwrap();
 
-			/*
-			#[cfg(all(feature = "metal", feature = "metal_argument_buffer"))]
-			let shader_lib = device.create_shader_library_from_source(
-					include_str!("shader/quad_indirect.metal"),
-					back::LanguageVersion::new(2, 0),
-				).expect("Error on creating shader lib");
-			*/
-
+			//Specify the pipeline internal layout here.
 			let pipeline = {
 				let (vs_entry, fs_entry) = (
 					pso::EntryPoint::<back::Backend> {
@@ -97,27 +94,6 @@ impl<B: hal::Backend> RenderPipelineBuilder<B> {
 						specialization: &[],
 					},
 				);
-
-				/*
-				#[cfg(all(feature = "metal", feature = "metal_argument_buffer"))]
-				let (vs_entry, fs_entry) = (
-					pso::EntryPoint {
-						entry: "vs_main",
-						module: &shader_lib,
-						specialization: &[
-							Specialization {
-								id: 0,
-								value: pso::Constant::F32(0.8),
-							}
-						],
-					},
-					pso::EntryPoint {
-						entry: "ps_main",
-						module: &shader_lib,
-						specialization: &[],
-					},
-				);
-				*/
 
 				let shader_entries = pso::GraphicsShaderSet {
 					vertex: vs_entry,
@@ -174,8 +150,8 @@ impl<B: hal::Backend> RenderPipelineBuilder<B> {
 			*/
 
 			pipeline
-		}?;
+		};
 
-		Ok(pipeline)
+		pipeline
 	}
 }

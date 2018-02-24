@@ -10,7 +10,7 @@ use leek2::logging::{Logger, LoggerBuilder, LogSeverity, TerminalListenerBuilder
 use leek2::time::{Clock, ClockFactory};
 use std::time::Duration;
 use std::thread;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, RwLock};
 
 fn main() {
 	let log_path : &str = "./test.log";
@@ -23,7 +23,7 @@ fn main() {
 		.level(LogSeverity::Debug)
 		.buffer_size(1024)
 		.build(log_path).unwrap();
-	let mut log_arc = Arc::<Mutex<&mut Logger>>::from(Mutex::new(&mut log));
+	let mut log_arc = Arc::<RwLock<&mut Logger>>::from(RwLock::new(&mut log));
 
 	//Attach a terminal listener.
 	let term_listener = Arc::new(TerminalListenerBuilder::new()
