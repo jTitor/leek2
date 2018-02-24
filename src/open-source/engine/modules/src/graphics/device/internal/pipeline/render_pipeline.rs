@@ -7,11 +7,13 @@ use gfx_hal as hal;
 
 use failure::Error;
 
-pub struct RenderPipeline {}
+pub struct RenderPipeline<B: hal::Backend> {
+	pipeline: B::GraphicsPipeline
+}
 
-pub struct RenderPipelineBuilder{}
+pub struct RenderPipelineBuilder<B: hal::Backend>{}
 
-impl RenderPipelineBuilder {
+impl<B: hal::Backend> RenderPipelineBuilder<B> {
 	pub fn build() -> Result<RenderPipeline, Error> {
 		let set_layout = device.create_descriptor_set_layout(&[
 				pso::DescriptorSetLayoutBinding {
@@ -172,7 +174,7 @@ impl RenderPipelineBuilder {
 			*/
 
 			pipeline
-		};
+		}?;
 
 		Ok(pipeline)
 	}
