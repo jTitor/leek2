@@ -194,6 +194,25 @@ impl DefaultPipelineBuilder {
 			pipeline
 		};
 
+		//Create external-facing descriptors
+		//the render calls can bind to.
+		// Descriptors
+		let mut desc_pool = device.create_descriptor_pool(
+			1, // sets
+			&[
+				pso::DescriptorRangeDesc {
+					ty: pso::DescriptorType::SampledImage,
+					count: 1,
+				},
+				pso::DescriptorRangeDesc {
+					ty: pso::DescriptorType::Sampler,
+					count: 1,
+				},
+			],
+		);
+		let desc_set = desc_pool.allocate_set(&set_layout);
+		//TODO_rust: make these part of result struct
+
 		pipeline
 	}
 }
