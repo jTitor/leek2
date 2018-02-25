@@ -7,6 +7,7 @@ use super::RenderPipeline;
 
 use failure::Error;
 
+//TODO: Make this a factory that just generates a Pipeline. 
 struct DefaultPipeline {}
 impl RenderPipeline for DefaultPipeline {}
 

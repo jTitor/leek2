@@ -5,7 +5,10 @@
 use failure::Error;
 
 pub struct MemoryBuffer {
+	buffer: ?,
+	buffer_memory: ?,
 	unimplemented!()
+	resources_destroyed: bool;
 }
 
 impl MemoryBuffer {

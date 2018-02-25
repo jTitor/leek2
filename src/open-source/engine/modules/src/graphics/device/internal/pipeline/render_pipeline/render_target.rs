@@ -4,6 +4,7 @@
  */
 pub struct RenderTarget {
 	//TODO_rust: impl fields
+	resources_destroyed: bool
 }
 
 impl RenderTarget {

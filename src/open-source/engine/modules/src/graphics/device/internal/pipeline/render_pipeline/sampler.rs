@@ -4,6 +4,7 @@
 
 pub struct Sampler {
 	unimplemented!()
+	resources_destroyed: bool
 }
 
 impl Sampler {

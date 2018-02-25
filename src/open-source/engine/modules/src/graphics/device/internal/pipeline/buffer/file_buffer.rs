@@ -23,4 +23,5 @@ impl FileBuffer {
 	}
 }
 
-//TODO_rust: make this into a factory instead?
+//TODO_rust: make this into a factory that outputs a specially-made MemoryBuffer instead?
+//Alternately - have this wrap a MemoryBuffer and implement Into<MemoryBuffer>.

@@ -53,6 +53,7 @@ fn main() {
 	.build();
 	let pipeline = DefaultPipelineBuilder::new()
 	.build();
+	//TODO_rust: the inputs/outputs should go to the pipeline here!
 	let sampler = Sampler::new();
 	let image = Image::new();
 	let vertex_buffer = MemoryBuffer::new();
@@ -66,12 +67,8 @@ fn main() {
 
 			//TODO_rust: perform any updating here
 		}, &mut |_game|{
-			device.start_frame();
-			//TODO_rust: assign the
-			//pipeline to the device
-			//controller here
-			unimplemented!();
-			device.end_frame();
+			device.render_with_pipeline(pipeline)
+;
 		});
 
 	//TODO_rust:

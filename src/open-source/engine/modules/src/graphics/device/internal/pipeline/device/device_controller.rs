@@ -25,7 +25,7 @@ impl DeviceController {
 	/**
 	 * Readies the device for a draw submission.
 	 */
-	pub fn begin_frame(&mut self) {
+	fn begin_frame(&mut self) {
 		debug_assert!(self.frame_can_begin, "begin_frame() already called before this begin_frame() call");
 
 		self.device.reset_fence(&self.frame_fence);
@@ -41,7 +41,7 @@ impl DeviceController {
 	 * and updates all render targets this device
 	 * is operating on.
 	 */
-	pub fn end_frame(&mut self) {
+	fn end_frame(&mut self) {
 		debug_assert!(!self.frame_can_begin, "begin_frame() wasn't called before end_frame()");
 		//Wait for the fence so we
 		//know the buffer's finished updating.
@@ -59,6 +59,15 @@ impl DeviceController {
 		unimplemented!();
 
 		self.frame_can_begin = true;
+	}
+
+	fn submit(&mut self, submission: ?) {
+		debug_assert!(!self.frame_can_begin, "begin_frame() wasn't called before this submit() call");
+
+		let submission = Submission::new()
+			.wait_on(&[(&frame_semaphore, PipelineStage::BOTTOM_OF_PIPE)])
+			.submit(Some(submit));
+		queue.submit(submission, Some(&mut frame_fence));
 	}
 
 	pub fn upload_to_buffer(&mut self) {
@@ -110,7 +119,18 @@ impl DeviceController {
 		device.wait_for_fence(&self.frame_fence, self.frame_wait_timeout_ms);
 	}
 
-	pub fn submit(&mut self) {
+	/**
+	 * Performs rendering with the given pipeline.
+	 */
+	pub fn render_with_pipeline(&mut self, pipeline: &Pipeline) {
+		self.start_frame();
+		//Ask the pipeline for a submission given a command buffer.
+		let mut cmd_buffer = command_pool.acquire_command_buffer(false);
+		let submission = pipeline.submission_with_cmd_buffer(cmd_buffer);
+		self.end_frame();
+	}
+
+	fn REMOVE_submit(&mut self) {
 		//TODO_rust: figure out how to *actually*
 		//split this up
 		let frame = self.swap_chain.acquire_frame(FrameSync::Semaphore(&mut self.frame_semaphore));

@@ -16,7 +16,11 @@ use failure::Error;
  * upload it with Image::write_buffer().
  */
 pub struct Image {
+	image_binding: ?,
+	image_render_view: ?,
+	image_memory: ?,
 	unimplemented!()
+	resources_destroyed: bool
 }
 
 impl Image {
@@ -46,10 +50,10 @@ impl Image {
 			// let image_memory = device.allocate_memory(device_type, image_req.size).unwrap();
 
 		//Create the binding...
-		let image_logo = device.bind_image_memory(&image_memory, 0, image_unbound)?;
+		let image_binding = device.bind_image_memory(&image_memory, 0, image_unbound)?;
 
 		//And make the render view.
-		let image_srv = device.create_image_view(&image_logo, ColorFormat::SELF, Swizzle::NO, COLOR_RANGE.clone())?;
+		let image_render_view = device.create_image_view(&image_binding, ColorFormat::SELF, Swizzle::NO, COLOR_RANGE.clone())?;
 
 		unimplemented!()
 	}
@@ -65,9 +69,9 @@ impl Image {
 			//TODO_rust: should be part of the write_buffer() call instead?
 			// self.device.destroy_buffer(self.image_upload_buffer);
 
-			self.device.destroy_image(self.image_logo);
+			self.device.destroy_image(self.image_binding);
 
-			self.device.destroy_image_view(self.image_srv);
+			self.device.destroy_image_view(self.image_render_view);
 
 			self.device.free_memory(image_memory);
 
