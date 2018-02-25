@@ -40,23 +40,38 @@ fn main() {
 		log_arc.lock().unwrap().log_d("Beginning graphics test", "Game");
 	}
 
-	unimplemented!();
-	//TODO_rust: Setup the graphics structs here.
-
 	//Both GameBuilder::build()
 	//and Game::run() are supposed to return Result,
 	//so this should really store the result
 	//and switch on the result value.
-	let _ = GameBuilder::new()
-		.build().unwrap()
-		.run(&mut |_game|{
+	let game = GameBuilder::new()
+		.build().unwrap();
+
+	unimplemented!();
+	//TODO_rust: Setup the graphics structs here.
+	let graphics_controller = DeviceControllerBuilder::new()
+	.build();
+	let pipeline = DefaultPipelineBuilder::new()
+	.build();
+	let sampler = Sampler::new();
+	let image = Image::new();
+	let vertex_buffer = MemoryBuffer::new();
+	//TODO_rust: copy image data to image buffer here
+	unimplemented!();
+	let viewport = Viewport::new();
+	//TODO_rust: setup submission here?
+
+	game.run(&mut |_game| {
 			unimplemented!();
 
 			//TODO_rust: perform any updating here
 		}, &mut |_game|{
+			device.start_frame();
+			//TODO_rust: assign the
+			//pipeline to the device
+			//controller here
 			unimplemented!();
-
-			//TODO_rust: submit the draw calls here
+			device.end_frame();
 		});
 
 	//TODO_rust:
