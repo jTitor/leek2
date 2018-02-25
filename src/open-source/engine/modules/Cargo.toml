@@ -5,7 +5,7 @@ authors = [ "jTitor <me@me.me>" ]
 
 [dependencies]
 #Simpler and easier-to-convert errors
-#failure = "0.1.1"
+failure = "*"#"0.1.1"
 
 #The graphics wrapper.
 #HAL isn't finalized for release, so

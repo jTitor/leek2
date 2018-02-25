@@ -8,6 +8,7 @@
 // )]
 
 extern crate chrono;
+extern crate failure;
 //extern crate gfx;
 extern crate gfx_hal;
 //#[cfg(feature = "dx12")]

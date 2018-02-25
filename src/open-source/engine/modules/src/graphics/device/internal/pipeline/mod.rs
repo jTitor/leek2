@@ -21,9 +21,3 @@ pub use self::buffer::{FileBuffer, MemoryBuffer};
 pub mod device;
 
 pub mod render_pipeline;
-
-pub mod image;
-
-pub mod render_target;
-
-pub mod sampler;

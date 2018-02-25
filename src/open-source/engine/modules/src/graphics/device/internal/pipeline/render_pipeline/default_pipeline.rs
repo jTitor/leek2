@@ -12,7 +12,7 @@ impl RenderPipeline for DefaultPipeline {}
 
 struct DefaultPipelineBuilder {}
 impl DefaultPipelineBuilder {
-	fn build(device: mut& Device) -> Result<DefaultPipeline, Error> {
+	fn build(device: &mut Device) -> Result<DefaultPipeline, Error> {
 		//Describe pipeline inputs:
 		//	First up are the uniforms,
 		//	the texture and texture sampler.
