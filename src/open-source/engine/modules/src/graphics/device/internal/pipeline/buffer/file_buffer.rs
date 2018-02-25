@@ -22,3 +22,5 @@ impl FileBuffer {
 		
 	}
 }
+
+//TODO_rust: make this into a factory instead?

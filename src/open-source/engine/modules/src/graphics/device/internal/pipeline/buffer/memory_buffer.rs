@@ -48,4 +48,23 @@ impl MemoryBuffer {
 		//Presumably this returns a Result as well.
 		device.release_mapping_writer(vertices)
 	}
+
+	pub fn destroy_resources(&mut self) {
+		debug_assert!(!self.resources_destroyed);
+
+		if !self.resources_destroyed {
+			self.device.destroy_buffer(self.buffer);
+			self.device.free_memory(self.buffer_memory);
+
+			self.resources_destroyed = true;
+		}
+	}
+}
+
+impl Drop for Sampler {
+	fn drop(&mut self) {
+		if !self.resources_destroyed {
+			self.destroy_resources();
+		}
+	}
 }

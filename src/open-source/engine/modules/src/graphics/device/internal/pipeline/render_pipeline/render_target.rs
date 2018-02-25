@@ -6,6 +6,32 @@ pub struct RenderTarget {
 	//TODO_rust: impl fields
 }
 
+impl RenderTarget {
+	fn destroy_resources(&mut self) {
+		debug_assert!(!self.resources_destroyed);
+		if !self.resources_destroyed {
+			for framebuffer in self.framebuffers {
+				self.device.destroy_framebuffer(framebuffer);
+			}
+
+			for (image, rtv) in self.frame_images {
+				self.device.destroy_image_view(rtv);
+				self.device.destroy_image(image);
+			}
+
+			self.resources_destroyed = true;
+		}
+	}
+}
+
+impl Drop for RenderTarget {
+	fn drop(&mut self) {
+		if !self.resources_destroyed {
+			self.destroy_resources();
+		}
+	}
+}
+
 pub struct RenderTargetBuilder {}
 impl RenderTargetBuilder {
 	pub fn build() -> RenderTarget {

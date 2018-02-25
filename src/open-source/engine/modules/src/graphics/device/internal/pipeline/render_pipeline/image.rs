@@ -57,4 +57,29 @@ impl Image {
 	pub fn write_buffer(&mut self, data: ?) -> Result<(), Error> {
 		unimplemented!()
 	}
+
+	pub fn destroy_resources(&mut self) {
+		debug_assert!(!self.resources_destroyed);
+
+		if !self.resources_destroyed {
+			//TODO_rust: should be part of the write_buffer() call instead?
+			// self.device.destroy_buffer(self.image_upload_buffer);
+
+			self.device.destroy_image(self.image_logo);
+
+			self.device.destroy_image_view(self.image_srv);
+
+			self.device.free_memory(image_memory);
+
+			self.resources_destroyed = true;
+		}
+	}
+}
+
+impl Drop for Image {
+	fn drop(&mut self) {
+		if !self.resources_destroyed {
+			self.destroy_resources();
+		}
+	}
 }

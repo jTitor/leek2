@@ -143,3 +143,12 @@ impl DeviceController {
 		self.queue.submit(submission, Some(&mut self.frame_fence));
 	}
 }
+
+impl Drop for DeviceController {
+	fn drop(&mut self){
+		self.device.destroy_command_pool(self.command_pool.downgrade());
+		self.device.destroy_fence(self.frame_fence);
+		self.device.destroy_semaphore(self.frame_semaphore);
+		//destroy all the unpacked framebuffers.
+	}
+}
