@@ -33,8 +33,8 @@ impl DefaultPipelineBuilder {
 				],
 			);
 
-		//Next, the varying data. We're only expecting
-		//8 vertices.
+		//Next, the varying data in a push block.
+		//We're only expecting 
 		let pipeline_layout = device.create_pipeline_layout(
 			Some(&set_layout),
 			&[
