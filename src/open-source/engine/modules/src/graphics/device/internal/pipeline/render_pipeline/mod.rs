@@ -29,9 +29,13 @@ mod default_pipeline;
 pub use self::default_pipeline::{DefaultPipeline, DefaultPipelineBuilder};
 
 mod image;
+pub use self::image::Image;
 
 mod render_target;
+pub use self::render_target::{RenderTarget, RenderTargetBuilder};
 
 mod sampler;
+pub use self::sampler::Sampler;
 
 mod descriptor_set;
+pub use self::descriptor_set::DescriptorSet;

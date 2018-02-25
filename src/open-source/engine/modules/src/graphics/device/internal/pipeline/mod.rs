@@ -15,9 +15,11 @@
  * these tasks.
  */
 
-pub mod buffer;
+mod buffer;
 pub use self::buffer::{FileBuffer, MemoryBuffer};
 
-pub mod device;
+mod device;
+pub use self::device::{DeviceController, DeviceControllerBuilder, DeviceInfo, Viewport};
 
-pub mod render_pipeline;
+mod render_pipeline;
+pub use self::render_pipeline::{DescriptorSet, Image, RenderPipeline, RenderTarget, RenderTargetBuilder, Sampler};
