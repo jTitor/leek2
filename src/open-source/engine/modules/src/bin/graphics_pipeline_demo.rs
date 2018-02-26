@@ -30,14 +30,14 @@ fn main() {
 	let term_listener = Arc::new(TerminalListenerBuilder::new()
 		.build().unwrap());
 	{
-		let _ = log_arc.lock().unwrap().attach(term_listener);
+		let _ = log_arc.write().unwrap().attach(term_listener);
 	}
 	//log_arc.unlock();
 
 	let profiler = Profiler::create_global_instance(log_arc.clone()).unwrap();
 
 	{
-		log_arc.lock().unwrap().log_d("Beginning graphics test", "Game");
+		log_arc.write().unwrap().log_d("Beginning graphics test", "Game");
 	}
 
 	//Both GameBuilder::build()
@@ -75,6 +75,6 @@ fn main() {
 	//perform any graphics shutdown here
 
 	{
-		log_arc.lock().unwrap().log_d("Graphics test complete", "Game");
+		log_arc.write().unwrap().log_d("Graphics test complete", "Game");
 	}
 }

@@ -29,14 +29,14 @@ fn main() {
 	let term_listener = Arc::new(TerminalListenerBuilder::new()
 		.build().unwrap());
 	{
-		let _ = log_arc.lock().unwrap().attach(term_listener);
+		let _ = log_arc.write().unwrap().attach(term_listener);
 	}
 	//log_arc.unlock();
 
 	let profiler = Profiler::create_global_instance(log_arc.clone()).unwrap();
 
 	{
-		log_arc.lock().unwrap().log_d("Beginning profiling test", "Game");
+		log_arc.write().unwrap().log_d("Beginning profiling test", "Game");
 	}
 
 	//Both GameBuilder::build()
@@ -55,6 +55,6 @@ fn main() {
 		}, &mut |_game|{});
 
 	{
-		log_arc.lock().unwrap().log_d("Profiling test complete", "Game");
+		log_arc.write().unwrap().log_d("Profiling test complete", "Game");
 	}
 }

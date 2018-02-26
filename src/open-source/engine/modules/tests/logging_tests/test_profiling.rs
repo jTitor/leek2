@@ -35,16 +35,16 @@ fn test_profiling() {
 	let term_listener = Arc::new(TerminalListenerBuilder::new()
 		.build().unwrap());
 	{
-		let _ = log_arc.lock().unwrap().attach(term_listener);
+		let _ = log_arc.write().unwrap().attach(term_listener);
 	}
 
 	let profiler = Profiler::create_global_instance(log_arc.clone()).unwrap_or_else(|e| {
-		log_arc.lock().unwrap().log_e("Failed to init profiler", "test_profiling");
+		log_arc.write().unwrap().log_e("Failed to init profiler", "test_profiling");
 		panic!(e);
 	});
 
 	{
-		log_arc.lock().unwrap().log_d("Beginning profiling test", "test_profiling");
+		log_arc.write().unwrap().log_d("Beginning profiling test", "test_profiling");
 	}
 
 	//Now run the profiling itself.
@@ -56,6 +56,6 @@ fn test_profiling() {
 	}
 
 	{
-		log_arc.lock().unwrap().log_d("Profiling test complete", "test_profiling");
+		log_arc.write().unwrap().log_d("Profiling test complete", "test_profiling");
 	}
 }

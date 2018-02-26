@@ -34,7 +34,7 @@ impl<'a> Profiler<'a> {
 	 * Logs raw text to the profiler.
 	 */
 	pub fn log_text(&mut self, text: &str) {
-		self.logger.lock().unwrap().log_d(text, "profiler");
+		self.logger.write().unwrap().log_d(text, "profiler");
 		Remotery::log_text(text);
 	}
 
