@@ -64,7 +64,7 @@ impl MemoryBuffer {
 	}
 }
 
-impl Drop for Sampler {
+impl Drop for MemoryBuffer {
 	fn drop(&mut self) {
 		if !self.resources_destroyed {
 			self.destroy_resources();
