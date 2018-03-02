@@ -5,8 +5,10 @@
 use failure::Error;
 
 pub struct MemoryBuffer {
-	buffer: ?,
-	buffer_memory: ?,
+	pub buffer: ?,
+	pub buffer_memory: ?,
+	pub buffer_binding: ?,
+	pub buffer_len: usize,
 	unimplemented!()
 	resources_destroyed: bool;
 }
@@ -34,22 +36,6 @@ impl MemoryBuffer {
 
 		let buffer_memory = device.allocate_memory(upload_type, buffer_req.size).unwrap();
 		let vertex_buffer = device.bind_buffer_memory(&buffer_memory, 0, buffer_unbound).unwrap();
-	}
-
-	/**
-	 * Copies the given data into the
-	 * memory buffer.
-	 * Returns a Result indicating if the
-	 * copy succeeded or the reason why the
-	 * copy failed.
-	 */
-	fn write_to_buffer(&self, data: ?) -> Result<(), Error> {
-		let mut vertices = device
-			.acquire_mapping_writer::<Vertex>(&buffer_memory, 0..buffer_len)?
-		vertices.copy_from_slice(data);
-
-		//Presumably this returns a Result as well.
-		device.release_mapping_writer(vertices)
 	}
 
 	pub fn destroy_resources(&mut self) {
