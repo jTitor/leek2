@@ -7,9 +7,14 @@ use failure::Error;
 //TODO: Make buffer a T
 //so it operates on images and buffers
 pub struct MemoryBuffer {
+	device: Weak<&hal::Device>,
 	pub buffer: ?,
 	pub buffer_memory: ?,
 	pub buffer_binding: ?,
+	/** The MemoryBuffer's id in the
+	 * DeviceController's buffer list
+	 */
+	buffer_device_id: usize,
 	pub buffer_len: usize,
 	unimplemented!()
 	resources_destroyed: bool;

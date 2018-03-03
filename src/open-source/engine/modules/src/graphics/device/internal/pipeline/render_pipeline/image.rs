@@ -19,6 +19,10 @@ pub struct Image {
 	image_binding: ?,
 	image_render_view: ?,
 	image_memory: ?,
+	/** The Image's id in the
+	 * DeviceController's buffer list.
+	 */
+	image_device_id: usize,
 	unimplemented!()
 	resources_destroyed: bool
 }

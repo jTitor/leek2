@@ -4,6 +4,10 @@
 
 pub struct Sampler {
 	unimplemented!()
+	/** The Sampler's id in the
+	 * DeviceController's buffer list.
+	 */
+	sampler_device_id: usize,
 	resources_destroyed: bool
 }
 

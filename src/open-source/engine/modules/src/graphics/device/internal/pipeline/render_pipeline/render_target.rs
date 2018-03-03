@@ -4,6 +4,10 @@
  */
 pub struct RenderTarget {
 	//TODO_rust: impl fields
+	/** The RendeTarget's id in the
+	 * DeviceController's buffer list.
+	 */
+	rt_device_id: usize,
 	resources_destroyed: bool
 }
 
