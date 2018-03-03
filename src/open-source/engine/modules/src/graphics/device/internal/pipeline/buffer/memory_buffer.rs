@@ -4,6 +4,8 @@
  */
 use failure::Error;
 
+//TODO: Make buffer a T
+//so it operates on images and buffers
 pub struct MemoryBuffer {
 	pub buffer: ?,
 	pub buffer_memory: ?,

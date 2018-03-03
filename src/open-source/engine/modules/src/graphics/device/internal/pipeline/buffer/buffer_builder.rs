@@ -47,11 +47,16 @@ pub struct BufferBuilder {
 
 pub impl BufferBuilder {
 	pub fn build(&self) -> Result<MemoryBuffer, Error> {
+		//TODO: everything up to here
+		//should be genericized,
+		//as images ues get_image_requirements
+		//instead
 		let cast_buffer_type = Into<buffer::Usage>::into(self.buffer_type);
 		let buffer_unbound = device.create_buffer(self.size_bytes, cast_buffer_type)?;
 		let buffer_req = device.get_buffer_requirements(&buffer_unbound);
 
 		let cast_upload_property = Into<m::Properties>::into(self.upload_type);
+		//END TODO
 		let upload_type = memory_types
 			.iter()
 			.enumerate()
