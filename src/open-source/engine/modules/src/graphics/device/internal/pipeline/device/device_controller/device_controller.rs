@@ -2,11 +2,15 @@
  * Provides implementation-independent
  * access to the device's draw calls.
  */
+use super::DeviceResourceLists;
+
 use gfx_hal as hal;
 use hal::{command, memory as m, image as i,
 	device as d, format as f};
 
 pub struct DeviceController<B> where B: hal::Backend {
+	resource_lists: DeviceResourceLists,
+
 	device: hal::Device<B>,
 	command_pool: hal::CommandPool,
 	queue_group: hal::QueueGroup,
