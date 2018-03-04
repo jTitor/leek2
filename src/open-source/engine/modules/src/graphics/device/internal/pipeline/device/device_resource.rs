@@ -13,10 +13,10 @@ pub trait DeviceResource<T> {
 	 * Destroys all of the resources
 	 * of this type owned by the device.
 	 */
-	fn destroy_resources(&mut self);
+	fn destroy_all_resources(&mut self);
 	/**
 	 * Destroys a single resource if
 	 * it is owned by the device.
 	 */
-	fn destory_resource(&mut self, resource: &T);
+	fn destroy_resource(&mut self, resource: &T);
 }
