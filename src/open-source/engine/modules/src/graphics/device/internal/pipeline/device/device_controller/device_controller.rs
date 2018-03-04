@@ -172,9 +172,14 @@ impl<B> DeviceController<B> where B: hal::Backend {
 
 impl Drop for DeviceController {
 	fn drop(&mut self){
+		//TODO: Have this be manually dropped
+		//to specify order?
 		self.device.destroy_command_pool(self.command_pool.downgrade());
 		self.device.destroy_fence(self.frame_fence);
 		self.device.destroy_semaphore(self.frame_semaphore);
-		//destroy all the unpacked framebuffers.
+
+		//Destroy all the unpacked framebuffers.
+		//Destroy all the resources!
+		unimplemented!();
 	}
 }
