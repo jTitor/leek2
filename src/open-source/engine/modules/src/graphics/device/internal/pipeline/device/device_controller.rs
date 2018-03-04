@@ -3,10 +3,8 @@
  * access to the device's draw calls.
  */
 use gfx_hal as hal;
-use hal::memory as m;
-use hal::image as i;
-use hal::device as d;
-use hal::format as f;
+use hal::{command, memory as m, image as i,
+	device as d, format as f};
 
 pub struct DeviceController<B> where B: hal::Backend {
 	device: hal::Device<B>,
