@@ -17,28 +17,41 @@ pub struct RenderTarget<B> where B: hal::Backend {
 }
 
 impl<B> RenderTarget<B> where B: hal::Backend {
-	fn destroy_resources(&mut self) {
-		debug_assert!(!self.resources_destroyed);
-		if !self.resources_destroyed {
-			for framebuffer in self.framebuffers {
-				self.device.destroy_framebuffer(framebuffer);
-			}
+	fn mark_destroyed(&mut self) {
+		debug_assert!(!self.resources_destroyed,
+			"RenderTarget already marked as destroyed");
 
-			for (image, rtv) in self.frame_images {
-				self.device.destroy_image_view(rtv);
-				self.device.destroy_image(image);
-			}
-
-			self.resources_destroyed = true;
-		}
+		self.resources_destroyed = true;
 	}
 }
 
 impl<B> Drop for RenderTarget<B> where B: hal::Backend {
 	fn drop(&mut self) {
-		if !self.resources_destroyed {
-			self.destroy_resources();
+		debug_assert!(self.resources_destroyed, "MemoryBuffer went out of scope without having its memory destroyed");
+	}
+}
+
+impl<B> DeviceResource<RenderTarget<B>> for DeviceController<B> where B: hal::Backend {
+	fn get_resource(&mut self) -> Weak<&Image<B>> {
+		unimplemented!()
+	}
+
+	fn destroy_all_resources(&mut self) -> Result<(), Error> {
+		unimplemented!()
+	}
+
+	fn destroy_resource(&mut self, resource: &mut T) -> Result<(), Error> {
+		for framebuffer in resource.framebuffers {
+			self.device.destroy_framebuffer(framebuffer);
 		}
+
+		for (image, rtv) in resource.frame_images {
+			self.device.destroy_image_view(rtv);
+			self.device.destroy_image(image);
+		}
+		unimplemented!()
+
+		resource.mark_destroyed();
 	}
 }
 

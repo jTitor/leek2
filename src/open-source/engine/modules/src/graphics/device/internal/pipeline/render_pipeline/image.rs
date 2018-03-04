@@ -19,7 +19,6 @@ use gfx_hal as hal;
  * upload it with Image::write_buffer().
  */
 pub struct Image<B> where B: hal::Backend {
-	device: Weak<&hal::Device<B>>,
 	image_binding: B::Image,
 	image_render_view: B::ImageView,
 	image_memory: B::Memory,
@@ -70,28 +69,40 @@ impl<B> Image<B> where B: hal::Backend {
 		unimplemented!()
 	}
 
-	pub fn destroy_resources(&mut self) {
-		debug_assert!(!self.resources_destroyed);
+	pub fn mark_destroyed(&mut self) {
+		debug_assert!(!self.resources_destroyed,
+			"Image already marked as destroyed");
 
-		if !self.resources_destroyed {
-			//TODO_rust: should be part of the write_buffer() call instead?
-			// self.device.destroy_buffer(self.image_upload_buffer);
-
-			self.device.destroy_image(self.image_binding);
-
-			self.device.destroy_image_view(self.image_render_view);
-
-			self.device.free_memory(image_memory);
-
-			self.resources_destroyed = true;
-		}
+		self.resources_destroyed = true;
 	}
 }
 
 impl<B> Drop for Image<B> where B: hal::Backend {
 	fn drop(&mut self) {
-		if !self.resources_destroyed {
-			self.destroy_resources();
-		}
+		debug_assert!(self.resources_destroyed, "Image went out of scope without having its memory destroyed");
+	}
+}
+
+impl<B> DeviceResource<Image<B>> for DeviceController<B> where B: hal::Backend {
+	fn get_resource(&mut self) -> Weak<&Image<B>> {
+		unimplemented!()
+	}
+
+	fn destroy_all_resources(&mut self) -> Result<(), Error> {
+		unimplemented!()
+	}
+
+	fn destroy_resource(&mut self, resource: &mut T) -> Result<(), Error> {
+		//TODO_rust: should be part of the write_buffer() call instead?
+		// self.device.destroy_buffer(resource.image_upload_buffer);
+
+		self.device.destroy_image(resource.image_binding);
+
+		self.device.destroy_image_view(resource.image_render_view);
+
+		self.device.free_memory(resource.image_memory);
+		unimplemented!()
+
+		resource.mark_destroyed();
 	}
 }

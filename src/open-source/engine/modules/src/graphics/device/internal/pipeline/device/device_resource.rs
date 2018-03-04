@@ -3,6 +3,7 @@
  * by a device controller.
  */
 use std::rc::Weak;
+use failure::Error;
 
 pub trait DeviceResource<T> {
 	/**
@@ -13,10 +14,10 @@ pub trait DeviceResource<T> {
 	 * Destroys all of the resources
 	 * of this type owned by the device.
 	 */
-	fn destroy_all_resources(&mut self);
+	fn destroy_all_resources(&mut self) -> Result<(), Error>;
 	/**
 	 * Destroys a single resource if
 	 * it is owned by the device.
 	 */
-	fn destroy_resource(&mut self, resource: &T);
+	fn destroy_resource(&mut self, resource: &mut T) -> Result<(), Error>;
 }

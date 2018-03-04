@@ -2,15 +2,15 @@
  * Handles buffer storage for a graphics::Device.
  * This buffer is generated from data loaded from disk.
  */
-use super::MemoryBuffer;
+use graphics::device::internal::pipeline::{DeviceController, MemoryBuffer};
 use gfx_hal as hal;
 
-pub struct FileBuffer<B> where B: hal::Backend {
+pub struct WriteableBuffer<B> where B: hal::Backend {
 	memory_buffer: MemoryBuffer<B>
 }
 
-impl<B> FileBuffer<B> where B: hal::Backend {
-	pub fn build() -> FileBuffer<B> {
+impl<B> WriteableBuffer<B> where B: hal::Backend {
+	pub fn build() -> WriteableBuffer<B> {
 		unimplemented!()
 	}
 
@@ -37,5 +37,26 @@ impl<B> FileBuffer<B> where B: hal::Backend {
 impl<B> From<WriteableBuffer> for MemoryBuffer<B> where B: hal::Backend {
 	fn From(x: WriteableBuffer<B>) -> MemoryBuffer<B> {
 		x.memory_buffer
+	}
+}
+
+impl<B> DeviceResource<WriteableBuffer<B>> for DeviceController<B> where B: hal::Backend {
+	fn get_resource(&mut self) -> Weak<&WriteableBuffer<B>> {
+		debug_assert!(false, "Can't directly get_resource() for WriteableBuffer; get_resource() on MemoryBufferBuilder instead and then call MemoryBuffer::into_writeable_buffer() instead");
+
+		//Return a blank ref
+		Weak<WriteableBuffer<B>>::new()
+	}
+
+	fn destroy_all_resources(&mut self) -> Result<(), Error> {
+		//TODO: Unwrap and destroy the
+		//internal buffer
+		unimplemented!()
+	}
+
+	fn destroy_resource(&mut self, resource: &mut T) -> Result<(), Error> {
+		//TODO: Unwrap and destroy the
+		//internal buffer
+		unimplemented!()
 	}
 }

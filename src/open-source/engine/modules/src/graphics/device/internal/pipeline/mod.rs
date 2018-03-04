@@ -19,7 +19,7 @@ mod buffer;
 pub use self::buffer::{FileBuffer, MemoryBuffer};
 
 mod device;
-pub use self::device::{DeviceController, DeviceControllerBuilder, DeviceInfo, Viewport};
+pub use self::device::{DeviceController, DeviceControllerBuilder, DeviceInfo, Viewport, DeviceResource};
 
 mod render_pipeline;
 pub use self::render_pipeline::{DescriptorSet, Image, RenderPipeline, RenderTarget, RenderTargetBuilder, Sampler};

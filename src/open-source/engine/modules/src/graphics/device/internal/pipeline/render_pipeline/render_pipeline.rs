@@ -45,7 +45,7 @@ impl<B> RenderPipeline<B> where B: hal::Backend {
 	/**
 	 * Generates a submission given a command buffer.
 	 */
-	pub fn submission_with_cmd_buffer<S>(&mut self, cmd_buffer: CommandBuffer<B, C, S>) -> Result<(), Error> where S: hal::Shot {
+	pub fn submission_with_cmd_buffer<C, S>(&mut self, cmd_buffer: CommandBuffer<B, C, S>) -> Result<(), Error> where S: hal::Shot {
 		self.submission_callback(cmd_buffer)
 	}
 
@@ -66,8 +66,6 @@ impl<B> RenderPipeline<B> where B: hal::Backend {
 
 impl<B> Drop for RenderPipeline<B> where B: hal::Backend {
 	fn drop(&mut self) {
-		if !self.resources_destroyed {
-			self.destroy_resources();
-		}
+		debug_assert!(self.resources_destroyed, "MemoryBuffer went out of scope without having its memory destroyed");
 	}
 }

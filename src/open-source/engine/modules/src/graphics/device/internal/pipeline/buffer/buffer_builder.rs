@@ -1,7 +1,7 @@
 /*!
  * Builder struct for a MemoryBuffer.
  */
-use super::MemoryBuffer;
+use graphics::device::internal::pipeline::{DeviceController, MemoryBuffer};
 
 use failure::Error;
 use gfx_hal as hal;
@@ -43,13 +43,14 @@ impl From<BufferUploadType> for m::Properties {
 //TODO: Make this a request sent to
 //the DeviceController
 pub struct BufferBuilder {
-	device: Weak<&hal::Device>,
 	buffer_type: BufferType,
 	upload_type: BufferUploadType,
 	size_bytes: usize
 }
 
 pub impl BufferBuilder {
+	//TODO: DeviceController should handle this
+	//instead
 	pub fn build(&self) -> Result<MemoryBuffer, Error> {
 		//TODO: everything up to here
 		//should be genericized,

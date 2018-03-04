@@ -1,6 +1,8 @@
 /*!
  * Samples color data from a texture.
  */
+use graphics::device::internal::pipeline::{DeviceController, DeviceResource};
+
 use gfx_hal as hal;
 
 pub struct Sampler<B> where B: hal::Backend {
@@ -31,21 +33,33 @@ impl<B> Sampler<B> where B: hal::Backend {
 		unimplemented!()
 	}
 
-	pub fn destroy_resources(&mut self) {
-		debug_assert!(!self.resources_destroyed);
+	pub fn mark_destroyed(&mut self) {
+		debug_assert!(!self.resources_destroyed,
+			"Sampler already marked as destroyed");
 
-		if !self.resources_destroyed {
-			self.device.destroy_sampler(self.sampler);
-
-			self.resources_destroyed = true;
-		}
+		self.resources_destroyed = true;
 	}
 }
 
 impl<B> Drop for Sampler<B> where B: hal::Backend {
 	fn drop(&mut self) {
-		if !self.resources_destroyed {
-			self.destroy_resources();
-		}
+		debug_assert!(self.resources_destroyed, "MemoryBuffer went out of scope without having its memory destroyed");
+	}
+}
+
+impl<B> DeviceResource<Sampler<B>> for DeviceController<B> where B: hal::Backend {
+	fn get_resource(&mut self) -> Weak<&Sampler<B>> {
+		unimplemented!()
+	}
+
+	fn destroy_all_resources(&mut self) -> Result<(), Error> {
+		unimplemented!()
+	}
+
+	fn destroy_resource(&mut self, resource: &mut T) -> Result<(), Error> {
+		self.device.destroy_sampler(self.sampler);
+		unimplemented!()
+
+		resource.mark_destroyed();
 	}
 }
