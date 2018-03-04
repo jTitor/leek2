@@ -2,7 +2,10 @@
  * Contains the memory and buffer binding
  * representing an image.
  */
+use std::rc::Weak;
+
 use failure::Error;
+use gfx_hal as hal;
 
 /**
  * Images consist of three main parts:
@@ -15,10 +18,11 @@ use failure::Error;
  * data; other modules must get the data and
  * upload it with Image::write_buffer().
  */
-pub struct Image {
-	image_binding: ?,
-	image_render_view: ?,
-	image_memory: ?,
+pub struct Image<B> where B: hal::Backend {
+	device: Weak<&hal::Device<B>>,
+	image_binding: B::Image,
+	image_render_view: B::ImageView,
+	image_memory: B::Memory,
 	/** The Image's id in the
 	 * DeviceController's buffer list.
 	 */
@@ -27,8 +31,8 @@ pub struct Image {
 	resources_destroyed: bool
 }
 
-impl Image {
-	pub fn build() -> Result<Image, Error> {
+impl<B> Image<B> where B: hal::Backend {
+	pub fn build() -> Result<Image<B>, Error> {
 		//Build the buffer first...
 		//The sample code sets Usage::TRANSFER_DST
 		//so the image can be uploaded from CPU to GPU,
@@ -84,7 +88,7 @@ impl Image {
 	}
 }
 
-impl Drop for Image {
+impl<B> Drop for Image<B> where B: hal::Backend {
 	fn drop(&mut self) {
 		if !self.resources_destroyed {
 			self.destroy_resources();

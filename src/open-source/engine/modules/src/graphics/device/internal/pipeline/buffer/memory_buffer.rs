@@ -2,15 +2,19 @@
  * Handles buffer storage for a graphics::Device.
  * This buffer is manually specified in size and format.
  */
+use std::rc::Weak;
+
 use failure::Error;
+use gfx_hal as hal;
+use hal::buffer;
 
 //TODO: Make buffer a T
 //so it operates on images and buffers
-pub struct MemoryBuffer {
-	device: Weak<&hal::Device>,
-	pub buffer: ?,
-	pub buffer_memory: ?,
-	pub buffer_binding: ?,
+pub struct MemoryBuffer<B> where B: hal::Backend {
+	device: Weak<&hal::Device<B>>,
+	pub buffer: B::UnboundBuffer,
+	pub buffer_memory: B::Memory,
+	pub buffer_binding: B::Buffer,
 	/** The MemoryBuffer's id in the
 	 * DeviceController's buffer list
 	 */
@@ -20,15 +24,15 @@ pub struct MemoryBuffer {
 	resources_destroyed: bool;
 }
 
-impl MemoryBuffer {
-	fn build() -> MemoryBuffer {
+impl<B> MemoryBuffer<B> where B: hal::Backend {
+	fn build() -> Result<MemoryBuffer<B>, Error> {
 		// Buffer allocations
 		println!("Memory types: {:?}", memory_types);
 
 		let buffer_stride = std::mem::size_of::<Vertex>() as u64;
 		let buffer_len = QUAD.len() as u64 * buffer_stride;
 
-		let buffer_unbound = device.create_buffer(buffer_len, buffer::Usage::VERTEX).unwrap();
+		let buffer_unbound = device.create_buffer(buffer_len, buffer::Usage::VERTEX)?;
 		let buffer_req = device.get_buffer_requirements(&buffer_unbound);
 
 		let upload_type = memory_types
@@ -37,12 +41,13 @@ impl MemoryBuffer {
 			.position(|(id, mem_type)| {
 				buffer_req.type_mask & (1 << id) != 0 &&
 				mem_type.properties.contains(m::Properties::CPU_VISIBLE)
-			})
-			.unwrap()
+			})?
 			.into();
 
-		let buffer_memory = device.allocate_memory(upload_type, buffer_req.size).unwrap();
-		let vertex_buffer = device.bind_buffer_memory(&buffer_memory, 0, buffer_unbound).unwrap();
+		let buffer_memory = device.allocate_memory(upload_type, buffer_req.size)?;
+		let vertex_buffer = device.bind_buffer_memory(&buffer_memory, 0, buffer_unbound)?;
+
+		Ok(unimplemented!())
 	}
 
 	pub fn destroy_resources(&mut self) {
@@ -57,7 +62,7 @@ impl MemoryBuffer {
 	}
 }
 
-impl Drop for MemoryBuffer {
+impl<B> Drop for MemoryBuffer<B> where B: hal::Backend {
 	fn drop(&mut self) {
 		if !self.resources_destroyed {
 			self.destroy_resources();

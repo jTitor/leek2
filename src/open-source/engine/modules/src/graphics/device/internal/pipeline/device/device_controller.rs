@@ -3,9 +3,13 @@
  * access to the device's draw calls.
  */
 use gfx_hal as hal;
+use hal::memory as m;
+use hal::image as i;
+use hal::device as d;
+use hal::format as f;
 
-pub struct DeviceController {
-	device: hal::Device,
+pub struct DeviceController<B> where B: hal::Backend {
+	device: hal::Device<B>,
 	command_pool: hal::CommandPool,
 	queue_group: hal::QueueGroup,
 	main_queue: hal::Queue,
@@ -14,14 +18,14 @@ pub struct DeviceController {
 
 	viewport: hal::Viewport,
 
-	frame_semaphore: hal::Semaphore, //B::Semaphore
-	frame_fence: hal::Fence, //B::Fence
+	frame_semaphore: B::Semaphore,
+	frame_fence: B::Fence,
 	frame_wait_timeout_ms: u32,
 
 	frame_can_begin: bool
 }
 
-impl DeviceController {
+impl<B> DeviceController<B> where B: hal::Backend {
 	/**
 	 * Readies the device for a draw submission.
 	 */

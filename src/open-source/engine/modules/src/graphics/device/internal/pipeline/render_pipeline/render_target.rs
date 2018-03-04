@@ -2,16 +2,21 @@
  * Abstracts memory buffers that rendering data
  * can be written to.
  */
-pub struct RenderTarget {
+use gfx_hal as hal;
+
+pub struct RenderTarget<B> where B: hal::Backend {
 	//TODO_rust: impl fields
-	/** The RendeTarget's id in the
+	framebuffers: Vec<B::Framebuffer>,
+	frame_images: Vec<(B::Image, B::ImageView)>,
+	/**
+	 * The RenderTarget's id in the
 	 * DeviceController's buffer list.
 	 */
 	rt_device_id: usize,
 	resources_destroyed: bool
 }
 
-impl RenderTarget {
+impl<B> RenderTarget<B> where B: hal::Backend {
 	fn destroy_resources(&mut self) {
 		debug_assert!(!self.resources_destroyed);
 		if !self.resources_destroyed {
@@ -29,7 +34,7 @@ impl RenderTarget {
 	}
 }
 
-impl Drop for RenderTarget {
+impl<B> Drop for RenderTarget<B> where B: hal::Backend {
 	fn drop(&mut self) {
 		if !self.resources_destroyed {
 			self.destroy_resources();
@@ -37,9 +42,9 @@ impl Drop for RenderTarget {
 	}
 }
 
-pub struct RenderTargetBuilder {}
-impl RenderTargetBuilder {
-	pub fn build() -> RenderTarget {
+pub struct RenderTargetBuilder<B> where B: hal::Backend {}
+impl<B> RenderTargetBuilder<B> where B: hal::Backend {
+	pub fn build() -> RenderTarget<B> {
 		//Pull render texture and framebuffer objects
 		//from the backbuffer struct we've been given.
 		//Exactly what we get depends on the

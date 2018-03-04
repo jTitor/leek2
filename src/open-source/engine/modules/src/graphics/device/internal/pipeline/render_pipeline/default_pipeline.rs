@@ -4,6 +4,8 @@
  * and one fragment shader.
  */
 use super::RenderPipeline;
+use gfx_hal as hal;
+use hal::{pso, pass};
 
 use failure::Error;
 
@@ -29,7 +31,7 @@ impl DefaultPipelineBuilder {
 						binding: 1,
 						ty: pso::DescriptorType::Sampler,
 						count: 1,
-						stage_flags: ShaderStageFlags::FRAGMENT,
+						stage_flags: pso::ShaderStageFlags::FRAGMENT,
 					},
 				],
 			);

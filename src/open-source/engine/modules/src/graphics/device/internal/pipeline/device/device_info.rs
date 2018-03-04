@@ -6,7 +6,7 @@ use gfx_hal as hal;
 use std::rc::Rc;
 use failure::Error;
 
-pub struct DeviceInfo<B: hal::Backend> {
+pub struct DeviceInfo {
 	/**
 	 * TODO
 	 */
@@ -23,8 +23,8 @@ pub struct DeviceInfo<B: hal::Backend> {
 
 type DefaultSurfaceFormat = hal::Format::Rgba8Srgb;
 
-impl<B: hal::Backend> DeviceInfo<B> {
-	pub fn from_backend(adapter: Rc<hal::Adapter<B>>, surface: Rc<&hal::Surface>) -> Result<DeviceInfo, Error> {
+impl DeviceInfo {
+	pub fn from_backend<B>(adapter: Rc<hal::Adapter<B>>, surface: Rc<&hal::Surface>) -> Result<DeviceInfo, Error> where B: hal::Backend {
 		//Setup the device's surface format:
 		let surface_format = surface
 			//Get the first valid one if possible.

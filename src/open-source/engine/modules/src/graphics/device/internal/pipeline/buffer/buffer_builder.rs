@@ -5,7 +5,7 @@ use super::MemoryBuffer;
 
 use failure::Error;
 use gfx_hal as hal;
-use hal::m;
+use hal::memory as m;
 
 pub enum BufferType {
 	Vertex,

@@ -1,18 +1,21 @@
 /*!
  * Samples color data from a texture.
  */
+use gfx_hal as hal;
 
-pub struct Sampler {
+pub struct Sampler<B> where B: hal::Backend {
 	unimplemented!()
-	/** The Sampler's id in the
+	sampler: B::Sampler,
+	/**
+	 * The Sampler's id in the
 	 * DeviceController's buffer list.
 	 */
 	sampler_device_id: usize,
 	resources_destroyed: bool
 }
 
-impl Sampler {
-	pub fn build() -> Sampler {
+impl<B> Sampler<B> where B: hal::Backend {
+	pub fn build() -> Sampler<B> {
 		let sampler = device.create_sampler(
 			i::SamplerInfo::new(
 				i::FilterMethod::Bilinear,
@@ -39,7 +42,7 @@ impl Sampler {
 	}
 }
 
-impl Drop for Sampler {
+impl<B> Drop for Sampler<B> where B: hal::Backend {
 	fn drop(&mut self) {
 		if !self.resources_destroyed {
 			self.destroy_resources();

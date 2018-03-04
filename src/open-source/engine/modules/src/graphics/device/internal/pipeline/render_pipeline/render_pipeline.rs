@@ -3,34 +3,35 @@
  * A DeviceController uses this pipeline to decide what
  * draw calls must be executed.
  */
+use gfx_hal as hal;
 use failure::Error;
 
-pub struct RenderPipeline {
+pub struct RenderPipeline<B> where B: hal::Backend {
 	//The exact backend doesn't matter,
 	//so much as how data is submitted to it.
 
 	/**
 	 * Contains all descriptors used by this pipeline.
 	 */
-	desc_pool: ?,
+	desc_pool: B::DescriptorPool,
 	/**
 	 * Specifies the relation of descriptors to
 	 * pipeline attributes.
 	 */
-	set_layout: ?,
+	set_layout: B::DescriptorSetLayout,
 	/**
 	 * Specifies the pipeline's layout.
 	 */
-	pipeline_layout: ?,
+	pipeline_layout: B::PipelineLayout,
 	/**
 	 * The (currently sole) render pass used by the
 	 * pipeline.
 	 */
-	render_pass: ?,
+	render_pass: B::RenderPass,
 	/**
 	 * The actual gfx_hal pipeline.
 	 */
-	pipeline_impl: ?,
+	pipeline_impl: B::GraphicsPipeline,
 	/**
 	 * Used to generate a command queue
 	 * submission for a graphics device controller.
@@ -40,12 +41,12 @@ pub struct RenderPipeline {
 	resources_destroyed: bool
 }
 
-impl RenderPipeline {
+impl<B> RenderPipeline<B> where B: hal::Backend {
 	/**
 	 * Generates a submission given a command buffer.
 	 */
-	pub fn submission_with_cmd_buffer(&mut self, cmd_buffer: ?) -> ? {
-		self.submission_callback(cmd_buffer);
+	pub fn submission_with_cmd_buffer<S>(&mut self, cmd_buffer: CommandBuffer<B, C, S>) -> Result<(), Error> where S: hal::Shot {
+		self.submission_callback(cmd_buffer)
 	}
 
 	pub fn destroy_resources(&mut self) {
@@ -63,7 +64,7 @@ impl RenderPipeline {
 	}
 }
 
-impl Drop for RenderPipeline {
+impl<B> Drop for RenderPipeline<B> where B: hal::Backend {
 	fn drop(&mut self) {
 		if !self.resources_destroyed {
 			self.destroy_resources();
