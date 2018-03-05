@@ -12,3 +12,9 @@ pub use self::memory_buffer::MemoryBuffer;
 
 mod buffer_builder;
 pub use self::buffer_builder::{BufferBuilder, BufferUploadType, BufferType};
+
+mod image_buffer_builder;
+pub use self::image_buffer_builder::ImageBufferBuilder;
+
+mod writeable_buffer;
+pub use self::writeable_buffer::WriteableBuffer;

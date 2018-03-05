@@ -52,7 +52,7 @@ pub impl BufferBuilder {
 	//TODO: DeviceController should handle this
 	//instead
 	pub fn build(&self) -> Result<MemoryBuffer, Error> {
-		//TODO: everything up to here
+		//TODO: everything up to "END TODO"
 		//should be genericized,
 		//as images ues get_image_requirements
 		//instead

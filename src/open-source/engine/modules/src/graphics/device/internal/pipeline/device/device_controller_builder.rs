@@ -29,6 +29,7 @@ impl DeviceControllerBuilder {
 		let (mut swap_chain, backbuffer) = device.create_swapchain(&mut surface, swap_config);
 
 		Ok(DeviceController {
+			resource_lists: Default::default(),
 			device: device,
 			command_pool: command_pool,
 			queue_group: queue_group,
