@@ -6,10 +6,11 @@
  * the texture for rendering,
  * use a pipeline::Image.
  */
-use std::fs::File;
-
 use super::{BufferBuilder, MemoryBuffer};
 use math::screen::Size;
+
+use std::fs::File;
+use std::marker::PhantomData;
 
 use gfx_hal as hal;
 use failure::Error;
@@ -20,7 +21,8 @@ pub struct ImageBufferBuilder<B: hal::Backend> {
 	//The file to load from disk.
 	//if None, the resulting buffer will be
 	//cleared to 0.
-	image_file: Option<File>
+	image_file: Option<File>,
+	_backend_type: PhantomData<B>
 }
 
 impl<B: hal::Backend> ImageBufferBuilder<B> {

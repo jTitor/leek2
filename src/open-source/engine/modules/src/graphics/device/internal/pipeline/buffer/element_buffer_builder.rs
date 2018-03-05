@@ -4,12 +4,16 @@
  */
 use super::{BufferBuilder, MemoryBuffer};
 
+use std::marker::PhantomData;
+
 use gfx_hal as hal;
 use failure::Error;
 
 pub struct ElementBufferBuilder<Element, B: hal::Backend> {
 	buffer_builder: BufferBuilder<B>,
-	num_elements: usize
+	_element_type: PhantomData<Element>,
+	_backend_type: PhantomData<B>,
+	num_elements: usize,
 }
 
 impl<Element, B: hal::Backend> ElementBufferBuilder<Element, B> {

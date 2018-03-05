@@ -51,15 +51,12 @@ impl<B: hal::Backend> Drop for Sampler<B> {
 	}
 }
 
-pub trait SamplerCapability {}
-impl<B: hal::Backend> SamplerCapability for Sampler<B> {}
-
-impl<B: hal::Backend, C: SamplerCapability> DeviceResource<C> for DeviceController<B> {
-	fn get_resource<C>(&mut self) -> Weak<&C> {
+impl<B: hal::Backend> DeviceResource<B> for Sampler<B> {
+	fn get_resource(device: &mut B::Device) -> Weak<&Self> {
 		unimplemented!()
 	}
 
-	fn destroy_all_resources<C>(&mut self) -> Result<(), Error> {
+	fn destroy_all_resources(device: &mut B::Device, resource_list: &Vec<Self>) -> Result<(), Error> {
 		// for sampler in self.resource_lists.samplers {
 		// 	self.device.destroy_sampler(sampler);
 		// }
@@ -68,8 +65,8 @@ impl<B: hal::Backend, C: SamplerCapability> DeviceResource<C> for DeviceControll
 		Ok(())
 	}
 
-	fn destroy_resource<C>(&mut self, resource: &mut C) -> Result<(), Error> {
-		self.device.destroy_sampler(resource);
+	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error> {
+		device.destroy_sampler(resource.sampler);
 		unimplemented!();
 
 		resource.mark_destroyed();

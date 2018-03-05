@@ -152,16 +152,16 @@ impl<B: hal::Backend> DeviceController<B> {
 
 		//Destroy all the unpacked framebuffers.
 		//Destroy all the resources!
-		self.destroy_all_resources::<MemoryBuffer<B>>();
+		MemoryBuffer::<B>::destroy_all_resources(&mut self.device, &mut self.resource_lists.buffers);
 		
-		self.destroy_all_resources::<Image<B>>();
+		Image::<B>::destroy_all_resources(&mut self.device, &mut self.resource_lists.images);
 
-		self.destroy_all_resources::<Sampler<B>>();
+		Sampler::<B>::destroy_all_resources(&mut self.device, &mut self.resource_lists.samplers);
 
 		self.device.destroy_fence(self.frame_fence);
 		self.device.destroy_semaphore(self.frame_semaphore);
 
-		self.destroy_all_resources::<RenderPipeline<B>>();
+		RenderPipeline::<B>::destroy_all_resources(&mut self.device, &mut self.resource_lists.pipelines);
 
 		// for framebuffer in self.resource_lists.framebuffers {
 		// 	device.destroy_framebuffer(framebuffer);
@@ -169,7 +169,7 @@ impl<B: hal::Backend> DeviceController<B> {
 		//self.device.destroy_framebuffer(self.backbuffer);
 		// self.destroy_all_resources<?<B>>();
 
-		self.destroy_all_resources::<RenderTarget<B>>();
+		RenderTarget::<B>::destroy_all_resources(&mut self.device, &mut self.resource_lists.render_targets);
 
 		unimplemented!();
 		self.resources_destroyed = true;

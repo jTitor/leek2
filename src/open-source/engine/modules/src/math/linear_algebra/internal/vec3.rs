@@ -116,11 +116,7 @@ impl VecOps<Vec3> for Vec3 {
 
 impl Vec3 {
 	pub fn new(x: f32, y: f32, z: f32) -> Vec3 {
-		let mut result: Vec3 = Default::default();
-		*result.mut_x() = x;
-		*result.mut_y() = y;
-		*result.mut_z() = z;
-		result
+		Vec3 { data: [x, y, z] }
 	}
 
 	///Returns the 3-space up vector.

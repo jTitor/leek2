@@ -2,15 +2,14 @@
  * Contains the memory and buffer binding
  * representing an image.
  */
-use graphics::device::internal::pipeline::{DeviceController, DeviceResource};
+use graphics::device::internal::pipeline::DeviceResource;
 use super::ImageInit;
 
 use std::rc::Weak;
 
 use failure::Error;
 use gfx_hal as hal;
-use gfx_hal::format as f;
-use gfx_hal::format::Rgba8Srgb as ColorFormat;
+use gfx_hal::Device;
 
 /**
  * Images consist of three main parts:
@@ -78,15 +77,12 @@ impl<B: hal::Backend> Drop for Image<B> {
 	}
 }
 
-pub trait ImageCapability {}
-impl<B: hal::Backend> ImageCapability for Image<B> {}
-
-impl<B: hal::Backend, C: ImageCapability> DeviceResource<C> for DeviceController<B> where {
-	fn get_resource<C>(&mut self) -> Weak<&C> {
+impl<B: hal::Backend> DeviceResource<B> for Image<B> {
+	fn get_resource(device: &mut B::Device) -> Weak<&Self> {
 		unimplemented!()
 	}
 
-	fn destroy_all_resources<C>(&mut self) -> Result<(), Error> {
+	fn destroy_all_resources(device: &mut B::Device, resource_list: &Vec<Self>) -> Result<(), Error> {
 		// for image in self.resource_lists.images {
 		// 	unimplemented!()
 		// }
@@ -95,15 +91,15 @@ impl<B: hal::Backend, C: ImageCapability> DeviceResource<C> for DeviceController
 		Ok(())
 	}
 
-	fn destroy_resource<C>(&mut self, resource: &mut C) -> Result<(), Error> {
+	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error> {
 		//TODO_rust: should be part of the write_buffer() call instead?
 		// self.device.destroy_buffer(resource.image_upload_buffer);
 
-		self.device.destroy_image(resource.image_binding);
+		device.destroy_image(resource.image_binding);
 
-		self.device.destroy_image_view(resource.image_render_view);
+		device.destroy_image_view(resource.image_render_view);
 
-		self.device.free_memory(resource.image_memory);
+		device.free_memory(resource.image_memory);
 		unimplemented!();
 
 		resource.mark_destroyed();

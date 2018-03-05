@@ -113,10 +113,7 @@ impl VecOps<Vec2> for Vec2 {
 
 impl Vec2 {
 	pub fn new(x: f32, y: f32) -> Vec2 {
-		let mut result: Vec2 = Default::default();
-		*result.mut_x() = x;
-		*result.mut_y() = y;
-		result
+		Vec2 { data: [x, y] }
 	}
 
 	///Returns the 2-space up vector.

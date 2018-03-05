@@ -2,17 +2,21 @@
  * Handles creation of a DeviceController.
  */
 use super::DeviceController;
+use graphics::device::internal::pipeline as pipeline;
+
+use std::fs::File;
+use std::marker::PhantomData;
+use std::rc::Rc;
 
 use gfx_hal as hal;
 use gfx_hal::pool as pool;
-
 use failure::Error;
-
-use std::rc::Rc;
 
 const ELEMENTS_PER_QUEUE: u32 = 16;
 
-pub struct DeviceControllerBuilder<B: hal::Backend> {}
+pub struct DeviceControllerBuilder<B: hal::Backend> {
+	_backend_type: PhantomData<B>
+}
 impl<B: hal::Backend> DeviceControllerBuilder<B> {
 	pub fn example(surface: Rc<&hal::Surface<B>>) -> Result<DeviceController<B>, Error> {
 		let (device, mut queue_group) =
@@ -28,6 +32,10 @@ impl<B: hal::Backend> DeviceControllerBuilder<B> {
 			.with_color(surface_format);
 		let (mut swap_chain, backbuffer) = device.create_swapchain(&mut surface, swap_config);
 
+		//TODO: viewport configuration from builder
+		let viewport: pipeline::Viewport = Default::default();
+		unimplemented!();
+
 		Ok(DeviceController::<B> {
 			resource_lists: Default::default(),
 			device: device,
@@ -36,7 +44,7 @@ impl<B: hal::Backend> DeviceControllerBuilder<B> {
 			main_queue: queue,
 			swap_chain: swap_chain,
 			backbuffer: backbuffer,
-			viewport: ,
+			viewport: viewport,
 			frame_semaphore: device.create_semaphore(),
 			//There's no documentation
 			//currently on what a signaled fence

@@ -40,24 +40,21 @@ impl<B: hal::Backend> From<WriteableBuffer<B>> for MemoryBuffer<B> {
 	}
 }
 
-pub trait WriteableBufferCapability {}
-impl<B: hal::Backend> WriteableBufferCapability for WriteableBuffer<B> {}
-
-impl<B: hal::Backend, C: WriteableBufferCapability> DeviceResource<C> for DeviceController<B> {
-	fn get_resource<C>(&mut self) -> Weak<&C> {
+impl<B: hal::Backend> DeviceResource<B> for WriteableBuffer<B> {
+	fn get_resource(device: &mut B::Device) -> Weak<&Self> {
 		debug_assert!(false, "Can't directly get_resource() for WriteableBuffer; get_resource() on MemoryBufferBuilder instead and then call MemoryBuffer::into_writeable_buffer() instead");
 
 		//Return a blank ref
-		Weak::<&C>::new()
+		Weak::<&Self>::new()
 	}
 
-	fn destroy_all_resources<C>(&mut self) -> Result<(), Error> {
+	fn destroy_all_resources(device: &mut B::Device, resource_list: &Vec<Self>) -> Result<(), Error> {
 		//TODO: Unwrap and destroy the
 		//internal buffer
 		unimplemented!()
 	}
 
-	fn destroy_resource<C>(&mut self, resource: &mut C) -> Result<(), Error> {
+	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error> {
 		//TODO: Unwrap and destroy the
 		//internal buffer
 		unimplemented!()

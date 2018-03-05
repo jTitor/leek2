@@ -4,7 +4,7 @@
  */
 use logging::profiling::ProfilerError;
 use logging::Logger;
-use std::sync::{Arc, RwLock};
+use std::sync::{Arc, Mutex};
 use std::fmt;
 
 use remotery::{Remotery, SampleFlags};
@@ -19,11 +19,11 @@ use remotery::{Remotery, SampleFlags};
  */
 pub struct Profiler<'a> {
 	_profiler_impl: Box<Remotery>,
-	logger: Arc<RwLock<&'a mut Logger>>
+	logger: Arc<Mutex<&'a mut Logger>>
 }
 
 impl<'a> Profiler<'a> {
-	pub fn create_global_instance(logger: Arc<RwLock<&'a mut Logger>>) -> Result<Profiler, ProfilerError> {
+	pub fn create_global_instance(logger: Arc<Mutex<&'a mut Logger>>) -> Result<Profiler, ProfilerError> {
 		let profiler_instance = Box::new(Remotery::create_global_instance()?);
 
 		//Profiler should be static to this module.
@@ -34,7 +34,7 @@ impl<'a> Profiler<'a> {
 	 * Logs raw text to the profiler.
 	 */
 	pub fn log_text(&mut self, text: &str) {
-		self.logger.write().unwrap().log_d(text, "profiler");
+		self.logger.lock().unwrap().log_d(text, "profiler");
 		Remotery::log_text(text);
 	}
 

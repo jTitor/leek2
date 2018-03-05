@@ -18,9 +18,9 @@ impl Into<command::Viewport> for Viewport {
 	fn into(self) -> command::Viewport {
 		command::Viewport {
 			rect: command::Rect {
-				x: self.x, y: self.y,
-				w: self.dimensions.width(),
-				h: self.dimensions.height(),
+				x: self.x as u16, y: self.y as u16,
+				w: self.dimensions.width() as u16,
+				h: self.dimensions.height() as u16,
 			},
 			depth: self.depth_near .. self.depth_far,
 		}

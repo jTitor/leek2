@@ -5,6 +5,7 @@
 use graphics::device::internal::pipeline::{DeviceController, DeviceResource};
 use math::screen::Size;
 
+use std::marker::PhantomData;
 use std::rc::Weak;
 
 use gfx_hal as hal;
@@ -39,15 +40,12 @@ impl<B: hal::Backend> Drop for RenderTarget<B> {
 	}
 }
 
-pub trait RenderTargetCapability {}
-impl<B: hal::Backend> RenderTargetCapability for RenderTarget<B> {}
-
-impl<B: hal::Backend, C: RenderTargetCapability> DeviceResource<C> for DeviceController<B> {
-	fn get_resource<C>(&mut self) -> Weak<&C> {
+impl<B: hal::Backend> DeviceResource<B> for RenderTarget<B> {
+	fn get_resource(device: &mut B::Device) -> Weak<&Self> {
 		unimplemented!()
 	}
 
-	fn destroy_all_resources<C>(&mut self) -> Result<(), Error> {
+	fn destroy_all_resources(device: &mut B::Device, resource_list: &Vec<Self>) -> Result<(), Error> {
 		// for render_target in self.resource_lists.render_targets {
 		// 	device.destroy_image_view(render_target);
 		// 	//TODO: In the example, the RTs
@@ -60,14 +58,14 @@ impl<B: hal::Backend, C: RenderTargetCapability> DeviceResource<C> for DeviceCon
 		Ok(())
 	}
 
-	fn destroy_resource<C>(&mut self, resource: &mut C) -> Result<(), Error> {
+	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error> {
 		for framebuffer in resource.framebuffers {
-			self.device.destroy_framebuffer(framebuffer);
+			device.destroy_framebuffer(framebuffer);
 		}
 
 		for (image, rtv) in resource.frame_images {
-			self.device.destroy_image_view(rtv);
-			self.device.destroy_image(image);
+			device.destroy_image_view(rtv);
+			device.destroy_image(image);
 		}
 		unimplemented!();
 
@@ -77,7 +75,9 @@ impl<B: hal::Backend, C: RenderTargetCapability> DeviceResource<C> for DeviceCon
 	}
 }
 
-pub struct RenderTargetBuilder<B> where B: hal::Backend {}
+pub struct RenderTargetBuilder<B> where B: hal::Backend {
+	_backend_type: PhantomData<B>
+}
 impl<B: hal::Backend> RenderTargetBuilder<B> {
 	pub fn from_gfx_backbuffer(device: &B::Device, backbuffer: &hal::Backbuffer<B>, render_pass: &B::RenderPass, surface_format: f::Format, image_dims: Size) -> RenderTarget<B> {
 		//Pull render texture and framebuffer objects

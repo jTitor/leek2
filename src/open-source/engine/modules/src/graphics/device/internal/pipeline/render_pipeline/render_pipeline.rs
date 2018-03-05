@@ -68,15 +68,12 @@ impl<B> Drop for RenderPipeline<B> where B: hal::Backend {
 	}
 }
 
-pub trait RenderPipelineCapability {}
-impl<B: hal::Backend> RenderPipelineCapability for RenderPipeline<B> {}
-
-impl<B: hal::Backend, C: RenderPipelineCapability> DeviceResource<C> for DeviceController<B> {
-	fn get_resource<C>(&mut self) -> Weak<&C> {
+impl<B: hal::Backend> DeviceResource<B> for RenderPipeline<B> {
+	fn get_resource(device: &mut B::Device) -> Weak<&Self> {
 		unimplemented!();
 	}
 
-	fn destroy_all_resources<C>(&mut self) -> Result<(), Error> {
+	fn destroy_all_resources(device: &mut B::Device, resource_list: &Vec<Self>) -> Result<(), Error> {
 		// for pipeline in self.resource_lists.pipelines {
 		// 	self.device.destroy_pipeline_layout(unimplemented!());
 		// 	self.device.destroy_render_pass(unimplemented!());
@@ -87,13 +84,13 @@ impl<B: hal::Backend, C: RenderPipelineCapability> DeviceResource<C> for DeviceC
 		Ok(())
 	}
 
-	fn destroy_resource<C>(&mut self, resource: &mut C) -> Result<(), Error> {
+	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error> {
 		unimplemented!();
-		self.device.destroy_descriptor_pool(resource.desc_pool);
-		self.device.destroy_descriptor_set_layout(resource.set_layout);
-		self.device.destroy_pipeline_layout(resource.pipeline_layout);
-		self.device.destroy_render_pass(resource.render_pass);
-		self.device.destroy_graphics_pipeline(resource.pipeline_impl);
+		device.destroy_descriptor_pool(resource.desc_pool);
+		device.destroy_descriptor_set_layout(resource.set_layout);
+		device.destroy_pipeline_layout(resource.pipeline_layout);
+		device.destroy_render_pass(resource.render_pass);
+		device.destroy_graphics_pipeline(resource.pipeline_impl);
 
 		resource.mark_destroyed();
 	}

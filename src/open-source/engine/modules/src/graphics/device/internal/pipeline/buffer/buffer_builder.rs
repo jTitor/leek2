@@ -3,6 +3,8 @@
  */
 use graphics::device::internal::pipeline::MemoryBuffer;
 
+use std::marker::PhantomData;
+
 use failure::Error;
 use gfx_hal as hal;
 use gfx_hal::{buffer, memory as m};
@@ -45,19 +47,19 @@ impl From<BufferUploadType> for m::Properties {
 pub struct BufferBuilder<B: hal::Backend> {
 	buffer_type: BufferType,
 	upload_type: BufferUploadType,
+	_backend_type: PhantomData<B>,
 	size_bytes: usize
 }
 
 impl<B> BufferBuilder<B> where B: hal::Backend {
 	//TODO: DeviceController should handle this
 	//instead
-	pub fn build(&self) -> Result<MemoryBuffer<B>, Error> {
+	pub fn build(&self, device: &B::Device) -> Result<MemoryBuffer<B>, Error> {
 		//TODO: everything up to "END TODO"
 		//should be genericized,
 		//as images use get_image_requirements
 		//instead
 		let cast_buffer_type = Into::<buffer::Usage>::into(self.buffer_type);
-		let device_upgrade = self.device.upgrade();
 
 		if let Some(device) = device_upgrade {
 			let buffer_unbound = device.create_buffer(self.size_bytes, cast_buffer_type)?;

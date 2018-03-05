@@ -5,13 +5,17 @@
  */
 use super::RenderPipeline;
 
+use std::marker::PhantomData;
 use std::mem;
+
 use gfx_hal as hal;
 use gfx_hal::{Device, DescriptorPool};
 use gfx_hal::{pso, pass, image as i, format as f};
 use failure::Error;
 
-pub struct DefaultPipelineBuilder<B> where B: hal::Backend {}
+pub struct DefaultPipelineBuilder<B> where B: hal::Backend {
+	_backend_type: PhantomData<B>
+}
 impl<B> DefaultPipelineBuilder<B> where B: hal::Backend {
 	fn build(device: &mut B::Device) -> Result<RenderPipeline<B>, Error> {
 		//Describe pipeline inputs:

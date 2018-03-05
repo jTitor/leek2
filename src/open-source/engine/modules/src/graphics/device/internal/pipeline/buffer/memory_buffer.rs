@@ -39,18 +39,15 @@ impl<B: hal::Backend> Drop for MemoryBuffer<B> {
 	}
 }
 
-pub trait MemoryBufferCapability {}
-impl<B: hal::Backend> MemoryBufferCapability for MemoryBuffer<B> {}
-
-impl<B: hal::Backend, C: MemoryBufferCapability> DeviceResource<C> for DeviceController<B> {
-	fn get_resource<C>(&mut self) -> Weak<&C> {
+impl<B: hal::Backend> DeviceResource<B> for MemoryBuffer<B> {
+	fn get_resource(device: &mut B::Device) -> Weak<&Self> {
 		debug_assert!(false, "Can't directly get_resource() for MemoryBuffer; get_resource() on MemoryBufferBuilder instead and then call MemoryBufferBuilder::build()");
 
 		//Return a blank ref
-		Weak::<&C>::new()
+		Weak::<&Self>::new()
 	}
 
-	fn destroy_all_resources<C>(&mut self) -> Result<(), Error> {
+	fn destroy_all_resources(device: &mut B::Device, resource_list: &Vec<Self>) -> Result<(), Error> {
 		// for buffer in self.resource_lists.buffers {
 		// 	self.device.destroy_buffer(buffer);
 		// }
@@ -58,9 +55,9 @@ impl<B: hal::Backend, C: MemoryBufferCapability> DeviceResource<C> for DeviceCon
 		unimplemented!()
 	}
 
-	fn destroy_resource<C>(&mut self, resource: &mut C) -> Result<(), Error> {
-		self.device.destroy_buffer(resource.buffer);
-		self.device.free_memory(resource.buffer_memory);
+	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error> {
+		device.destroy_buffer(resource.buffer);
+		device.free_memory(resource.buffer_memory);
 		unimplemented!();
 
 		resource.mark_destroyed();
