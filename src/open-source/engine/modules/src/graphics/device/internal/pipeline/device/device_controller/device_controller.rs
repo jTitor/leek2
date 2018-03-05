@@ -178,38 +178,24 @@ impl<B> DeviceController<B> where B: hal::Backend {
 
 		//Destroy all the unpacked framebuffers.
 		//Destroy all the resources!
-		for buffer in self.resource_lists.buffers {
-			self.device.destroy_buffer(buffer);
-		}
+		self.destroy_all_resources<MemoryBuffer<B>>();
+		
+		self.destroy_all_resources<Image<B>>();
 
-		for image in self.resource_lists.images {
-			unimplemented!()
-		}
-
-		for sampler in self.resource_lists.samplers {
-			self.device.destroy_sampler(sampler);
-		}
+		self.destroy_all_resources<Sampler<B>>();
 
 		self.device.destroy_fence(self.frame_fence);
 		self.device.destroy_semaphore(self.frame_semaphore);
 
-		for pipeline in self.resource_lists.pipelines {
-			self.device.destroy_pipeline_layout(unimplemented!());
-			self.device.destroy_render_pass(unimplemented!());
-			self.device.destroy_graphics_pipeline(pipeline);
-		}
+		self.destroy_all_resources<Pipeline<B>>();
 
-		for framebuffer in self.resource_lists.framebuffers {
-			device.destroy_framebuffer(framebuffer);
-		}
+		// for framebuffer in self.resource_lists.framebuffers {
+		// 	device.destroy_framebuffer(framebuffer);
+		// }
+		device.destroy_framebuffer(backbuffer);
+		// self.destroy_all_resources<?<B>>();
 
-		for render_target in self.resource_lists.render_targets {
-			device.destroy_image_view(render_target);
-			//TODO: In the example, the RTs
-			//have a backing image; RTs should have
-			//a separate image list?
-			//device.destroy_image(image);
-		}
+		self.destroy_all_resources<RenderTarget<B>>();
 
 		//TODO: device.free_memory() calls
 		unimplemented!();

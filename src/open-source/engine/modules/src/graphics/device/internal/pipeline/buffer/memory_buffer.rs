@@ -46,7 +46,11 @@ impl<B> DeviceResource<MemoryBuffer<B>> for DeviceController<B> where B: hal::Ba
 		Weak<MemoryBuffer<B>>::new()
 	}
 
-	fn destroy_all_resources(&mut self) -> Result<(), Error> {
+	fn destroy_all_resources<MemoryBuffer<B>>(&mut self) -> Result<(), Error> {
+		// for buffer in self.resource_lists.buffers {
+		// 	self.device.destroy_buffer(buffer);
+		// }
+
 		unimplemented!()
 	}
 

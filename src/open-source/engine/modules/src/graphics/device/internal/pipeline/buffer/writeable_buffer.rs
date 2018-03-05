@@ -48,7 +48,7 @@ impl<B> DeviceResource<WriteableBuffer<B>> for DeviceController<B> where B: hal:
 		Weak<WriteableBuffer<B>>::new()
 	}
 
-	fn destroy_all_resources(&mut self) -> Result<(), Error> {
+	fn destroy_all_resources<WriteableBuffer<B>>(&mut self) -> Result<(), Error> {
 		//TODO: Unwrap and destroy the
 		//internal buffer
 		unimplemented!()

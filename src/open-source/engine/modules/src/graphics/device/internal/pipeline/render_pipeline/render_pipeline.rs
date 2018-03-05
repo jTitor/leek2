@@ -69,3 +69,26 @@ impl<B> Drop for RenderPipeline<B> where B: hal::Backend {
 		debug_assert!(self.resources_destroyed, "MemoryBuffer went out of scope without having its memory destroyed");
 	}
 }
+
+impl<B> DeviceResource<Sampler<B>> for DeviceController<B> where B: hal::Backend {
+	fn get_resource(&mut self) -> Weak<&Sampler<B>> {
+		unimplemented!()
+	}
+
+	fn destroy_all_resources<Sampler<B>>(&mut self) -> Result<(), Error> {
+		// for pipeline in self.resource_lists.pipelines {
+		// 	self.device.destroy_pipeline_layout(unimplemented!());
+		// 	self.device.destroy_render_pass(unimplemented!());
+		// 	self.device.destroy_graphics_pipeline(pipeline);
+		// }
+		unimplemented!()
+
+		Ok(())
+	}
+
+	fn destroy_resource(&mut self, resource: &mut T) -> Result<(), Error> {
+		unimplemented!()
+
+		resource.mark_destroyed();
+	}
+}

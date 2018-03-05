@@ -89,7 +89,12 @@ impl<B> DeviceResource<Image<B>> for DeviceController<B> where B: hal::Backend {
 	}
 
 	fn destroy_all_resources(&mut self) -> Result<(), Error> {
+		// for image in self.resource_lists.images {
+		// 	unimplemented!()
+		// }
 		unimplemented!()
+
+		Ok(())
 	}
 
 	fn destroy_resource(&mut self, resource: &mut T) -> Result<(), Error> {
@@ -104,5 +109,7 @@ impl<B> DeviceResource<Image<B>> for DeviceController<B> where B: hal::Backend {
 		unimplemented!()
 
 		resource.mark_destroyed();
+
+		Ok(())
 	}
 }

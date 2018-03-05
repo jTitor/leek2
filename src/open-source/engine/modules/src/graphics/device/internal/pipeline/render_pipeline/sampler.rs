@@ -52,8 +52,13 @@ impl<B> DeviceResource<Sampler<B>> for DeviceController<B> where B: hal::Backend
 		unimplemented!()
 	}
 
-	fn destroy_all_resources(&mut self) -> Result<(), Error> {
+	fn destroy_all_resources<Sampler<B>>(&mut self) -> Result<(), Error> {
+		// for sampler in self.resource_lists.samplers {
+		// 	self.device.destroy_sampler(sampler);
+		// }
 		unimplemented!()
+
+		Ok(())
 	}
 
 	fn destroy_resource(&mut self, resource: &mut T) -> Result<(), Error> {
@@ -61,5 +66,7 @@ impl<B> DeviceResource<Sampler<B>> for DeviceController<B> where B: hal::Backend
 		unimplemented!()
 
 		resource.mark_destroyed();
+
+		Ok(())
 	}
 }

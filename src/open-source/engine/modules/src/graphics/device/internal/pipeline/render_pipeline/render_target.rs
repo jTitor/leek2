@@ -36,8 +36,17 @@ impl<B> DeviceResource<RenderTarget<B>> for DeviceController<B> where B: hal::Ba
 		unimplemented!()
 	}
 
-	fn destroy_all_resources(&mut self) -> Result<(), Error> {
+	fn destroy_all_resources<RenderTarget<B>>(&mut self) -> Result<(), Error> {
+		// for render_target in self.resource_lists.render_targets {
+		// 	device.destroy_image_view(render_target);
+		// 	//TODO: In the example, the RTs
+		// 	//have a backing image; RTs should have
+		// 	//a separate image list?
+		// 	//device.destroy_image(image);
+		// }
 		unimplemented!()
+
+		Ok(())
 	}
 
 	fn destroy_resource(&mut self, resource: &mut T) -> Result<(), Error> {
@@ -52,6 +61,8 @@ impl<B> DeviceResource<RenderTarget<B>> for DeviceController<B> where B: hal::Ba
 		unimplemented!()
 
 		resource.mark_destroyed();
+
+		Ok(())
 	}
 }
 
