@@ -36,6 +36,7 @@ impl<B: hal::Backend> DeviceControllerBuilder<B> {
 			main_queue: queue,
 			swap_chain: swap_chain,
 			backbuffer: backbuffer,
+			viewport: ,
 			frame_semaphore: device.create_semaphore(),
 			//There's no documentation
 			//currently on what a signaled fence
@@ -43,7 +44,8 @@ impl<B: hal::Backend> DeviceControllerBuilder<B> {
 			frame_fence: device.create_fence(false),
 			//TODO_rust: make this an option
 			frame_wait_timeout_ms: !0,
-			frame_can_begin: true
+			frame_can_begin: true,
+			resources_destroyed: false
 		})
 	}
 }

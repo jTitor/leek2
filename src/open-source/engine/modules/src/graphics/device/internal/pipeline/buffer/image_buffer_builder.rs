@@ -24,7 +24,7 @@ pub struct ImageBufferBuilder<B: hal::Backend> {
 }
 
 impl<B: hal::Backend> ImageBufferBuilder<B> {
-	pub fn buffer_builder(&mut self) -> &mut BufferBuilder<B> { self.buffer_builder }
+	pub fn buffer_builder(&mut self) -> &mut BufferBuilder<B> { &mut self.buffer_builder }
 
 	pub fn build(&self) -> Result<MemoryBuffer<B>, Error> {
 		//TODO:

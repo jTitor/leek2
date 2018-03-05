@@ -82,7 +82,7 @@ pub trait ImageCapability {}
 impl<B: hal::Backend> ImageCapability for Image<B> {}
 
 impl<B: hal::Backend, C: ImageCapability> DeviceResource<C> for DeviceController<B> where {
-	fn get_resource(&mut self) -> Weak<&C> {
+	fn get_resource<C>(&mut self) -> Weak<&C> {
 		unimplemented!()
 	}
 

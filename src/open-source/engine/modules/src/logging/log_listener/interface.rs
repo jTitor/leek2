@@ -64,7 +64,7 @@ impl<T> LogListen for ListenerBase<T> where T: Write + Send {
 			record.severity,
 			record.text);
 		//Actually write the log entry.
-		let output = try!(ListenerError::from_lock_result(self.output.lock()));
+		let output = try!(ListenerError::from_lock_result(self.output.write()));
 		ListenerError::from_io_result(output.borrow_mut().write(out_str.as_bytes()))?;
 		Ok(())
 	}

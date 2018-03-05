@@ -8,6 +8,7 @@ use math::screen::Size;
 use std::rc::Weak;
 
 use gfx_hal as hal;
+use gfx_hal::Device;
 use gfx_hal::{format as f, device as d};
 use failure::Error;
 
@@ -42,7 +43,7 @@ pub trait RenderTargetCapability {}
 impl<B: hal::Backend> RenderTargetCapability for RenderTarget<B> {}
 
 impl<B: hal::Backend, C: RenderTargetCapability> DeviceResource<C> for DeviceController<B> {
-	fn get_resource(&mut self) -> Weak<&C> {
+	fn get_resource<C>(&mut self) -> Weak<&C> {
 		unimplemented!()
 	}
 
@@ -78,12 +79,12 @@ impl<B: hal::Backend, C: RenderTargetCapability> DeviceResource<C> for DeviceCon
 
 pub struct RenderTargetBuilder<B> where B: hal::Backend {}
 impl<B: hal::Backend> RenderTargetBuilder<B> {
-	pub fn from_gfx_backbuffer(device: &hal::Device<B>, backbuffer: &hal::Backbuffer, render_pass: &B::RenderPass, surface_format: f::Format, image_dims: Size) -> RenderTarget<B> {
+	pub fn from_gfx_backbuffer(device: &B::Device, backbuffer: &hal::Backbuffer<B>, render_pass: &B::RenderPass, surface_format: f::Format, image_dims: Size) -> RenderTarget<B> {
 		//Pull render texture and framebuffer objects
 		//from the backbuffer struct we've been given.
 		//Exactly what we get depends on the
 		//backbuffer's type:
-		let (frame_images, framebuffers) = match backbuffer {
+		let (frame_images, framebuffers) = match *backbuffer {
 			//A set of textures can be unwrapped
 			//to the underlying render textures.
 			//The FBOs can be generated on the side.

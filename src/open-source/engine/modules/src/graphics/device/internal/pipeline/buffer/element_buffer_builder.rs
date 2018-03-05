@@ -13,7 +13,7 @@ pub struct ElementBufferBuilder<Element, B: hal::Backend> {
 }
 
 impl<Element, B: hal::Backend> ElementBufferBuilder<Element, B> {
-	pub fn buffer_builder(&mut self) -> &mut BufferBuilder<B> { self.buffer_builder }
+	pub fn buffer_builder(&mut self) -> &mut BufferBuilder<B> { &mut self.buffer_builder }
 
 	pub fn build(&self) -> Result<MemoryBuffer<B>, Error> {
 		//TODO: use size_of<Element>() to get

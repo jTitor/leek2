@@ -6,6 +6,8 @@ use super::Image;
 
 use failure::Error;
 use gfx_hal as hal;
+use gfx_hal::{buffer, command, device as d, format as f, image as i,
+	memory as m};
 
 /**
  * Trait for initialization methods of Image.
@@ -25,7 +27,7 @@ pub trait ImageInit {
 
 	fn create_image_object() -> Result<(), Error>;
 
-	fn copy_upload_buffer_to_image_object() -> Result<(), Error>
+	fn copy_upload_buffer_to_image_object() -> Result<(), Error>;
 }
 
 impl<B: hal::Backend> ImageInit for Image<B> {

@@ -22,7 +22,9 @@ pub struct DeviceController<B: hal::Backend> {
 	queue_group: hal::QueueGroup<B, hal::Graphics>,
 	main_queue: hal::CommandQueue<B, hal::Graphics>,
 	swap_chain: B::Swapchain,
-	backbuffer: B::Backbuffer,
+	//TODO: don't keep as a field -
+	//this is meant to be unwrapped into a RenderTarget
+	backbuffer: hal::Backbuffer<B>,
 
 	viewport: command::Viewport,
 
@@ -35,7 +37,7 @@ pub struct DeviceController<B: hal::Backend> {
 	resources_destroyed: bool
 }
 
-impl<'a, B: hal::Backend> DeviceController<B> {
+impl<B: hal::Backend> DeviceController<B> {
 	/**
 	 * Readies the device for a draw submission.
 	 */
@@ -164,7 +166,7 @@ impl<'a, B: hal::Backend> DeviceController<B> {
 		// for framebuffer in self.resource_lists.framebuffers {
 		// 	device.destroy_framebuffer(framebuffer);
 		// }
-		self.device.destroy_framebuffer(self.backbuffer);
+		//self.device.destroy_framebuffer(self.backbuffer);
 		// self.destroy_all_resources<?<B>>();
 
 		self.destroy_all_resources::<RenderTarget<B>>();

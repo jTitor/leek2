@@ -54,7 +54,7 @@ impl<B> BufferBuilder<B> where B: hal::Backend {
 	pub fn build(&self) -> Result<MemoryBuffer<B>, Error> {
 		//TODO: everything up to "END TODO"
 		//should be genericized,
-		//as images ues get_image_requirements
+		//as images use get_image_requirements
 		//instead
 		let cast_buffer_type = Into::<buffer::Usage>::into(self.buffer_type);
 		let device_upgrade = self.device.upgrade();
@@ -78,16 +78,15 @@ impl<B> BufferBuilder<B> where B: hal::Backend {
 			let buffer_memory = device.allocate_memory(upload_type, buffer_req.size)?;
 			let buffer_object = device.bind_buffer_memory(&buffer_memory, 0, buffer_unbound)?;
 
-			Ok(MemoryBuffer {
-				device: self.device.clone(),
+			return Ok(MemoryBuffer {
 				buffer: buffer_unbound,
 				buffer_memory: buffer_memory,
 				buffer_binding: buffer_object,
 				buffer_len: buffer_req.size,
 				resources_destroyed: false
-			})
+			});
 		}
 
-		Error; //TODO: specify error
+		Error //TODO: specify error
 	}
 }

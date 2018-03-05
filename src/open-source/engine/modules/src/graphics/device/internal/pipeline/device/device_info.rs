@@ -3,7 +3,9 @@
  * command queues and buffers for a device.
  */
 use gfx_hal as hal;
+use gfx_hal::PhysicalDevice;
 use gfx_hal::format as f;
+use gfx_hal::format::AsFormat;
 use std::rc::Rc;
 use failure::Error;
 
@@ -22,7 +24,7 @@ pub struct DeviceInfo {
 	limits: hal::Limits
 }
 
-const DEFAULT_SURFACE_FORMAT: f::Format = f::Rgba8Srgb;
+const DEFAULT_SURFACE_FORMAT: f::Format = f::Rgba8Srgb::SELF;
 
 impl DeviceInfo {
 	pub fn from_backend<B>(adapter: Rc<hal::Adapter<B>>, surface: Rc<&hal::Surface<B>>) -> Result<DeviceInfo, Error> where B: hal::Backend {
@@ -42,8 +44,8 @@ impl DeviceInfo {
 						.into_iter()
 						.find(|format| {
 							format.base_format().1 == f::ChannelType::Srgb
-						})?
-				}
+						})
+				}.unwrap_or_else(|| { return Error; })
 			);
 
 		//and memory/physical properties.

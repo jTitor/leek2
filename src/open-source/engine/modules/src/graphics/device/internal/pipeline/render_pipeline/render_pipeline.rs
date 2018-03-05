@@ -9,6 +9,7 @@ use std::rc::Weak;
 
 use failure::Error;
 use gfx_hal as hal;
+use gfx_hal::Device;
 use gfx_hal::command;
 
 pub struct RenderPipeline<B> where B: hal::Backend {
@@ -56,7 +57,7 @@ impl<B> RenderPipeline<B> where B: hal::Backend {
 
 	pub fn mark_destroyed(&mut self) {
 		debug_assert!(!self.resources_destroyed, "resources appear to have already been destroyed once");
-		
+
 		self.resources_destroyed = true;
 	}
 }
@@ -71,7 +72,7 @@ pub trait RenderPipelineCapability {}
 impl<B: hal::Backend> RenderPipelineCapability for RenderPipeline<B> {}
 
 impl<B: hal::Backend, C: RenderPipelineCapability> DeviceResource<C> for DeviceController<B> {
-	fn get_resource(&mut self) -> Weak<&C> {
+	fn get_resource<C>(&mut self) -> Weak<&C> {
 		unimplemented!();
 	}
 

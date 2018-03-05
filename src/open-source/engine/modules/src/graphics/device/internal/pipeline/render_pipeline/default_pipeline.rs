@@ -7,12 +7,13 @@ use super::RenderPipeline;
 
 use std::mem;
 use gfx_hal as hal;
+use gfx_hal::{Device, DescriptorPool};
 use gfx_hal::{pso, pass, image as i, format as f};
 use failure::Error;
 
 pub struct DefaultPipelineBuilder<B> where B: hal::Backend {}
 impl<B> DefaultPipelineBuilder<B> where B: hal::Backend {
-	fn build(device: &mut hal::Device) -> Result<RenderPipeline, Error> {
+	fn build(device: &mut B::Device) -> Result<RenderPipeline<B>, Error> {
 		//Describe pipeline inputs:
 		//	First up are the uniforms,
 		//	the texture and texture sampler.
@@ -85,10 +86,10 @@ impl<B> DefaultPipelineBuilder<B> where B: hal::Backend {
 			// 	.create_shader_module(include_bytes!("data/frag.spv"))
 			// 	.unwrap();
 			let vs_module = device
-				.create_shader_module([0u8])
+				.create_shader_module(&[0u8])
 				.unwrap();
 			let fs_module = device
-				.create_shader_module([0u8])
+				.create_shader_module(&[0u8])
 				.unwrap();
 			unimplemented!();
 			const ENTRY_NAME: &str = "TODO";

@@ -8,6 +8,7 @@ use graphics::device::internal::pipeline::{DeviceController, DeviceResource};
 
 use failure::Error;
 use gfx_hal as hal;
+use gfx_hal::Device;
 
 //TODO: Make buffer a T
 //so it operates on images and buffers
@@ -42,11 +43,11 @@ pub trait MemoryBufferCapability {}
 impl<B: hal::Backend> MemoryBufferCapability for MemoryBuffer<B> {}
 
 impl<B: hal::Backend, C: MemoryBufferCapability> DeviceResource<C> for DeviceController<B> {
-	fn get_resource(&mut self) -> Weak<&C> {
+	fn get_resource<C>(&mut self) -> Weak<&C> {
 		debug_assert!(false, "Can't directly get_resource() for MemoryBuffer; get_resource() on MemoryBufferBuilder instead and then call MemoryBufferBuilder::build()");
 
 		//Return a blank ref
-		Weak::<&MemoryBuffer<B>>::new()
+		Weak::<&C>::new()
 	}
 
 	fn destroy_all_resources<C>(&mut self) -> Result<(), Error> {

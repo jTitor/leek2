@@ -7,6 +7,7 @@ use graphics::device::internal::pipeline::{DeviceController, DeviceResource, Mem
 use std::rc::Weak;
 
 use gfx_hal as hal;
+use gfx_hal::Device;
 use failure::Error;
 
 pub struct WriteableBuffer<B: hal::Backend> {
@@ -18,7 +19,7 @@ impl<B: hal::Backend> WriteableBuffer<B> {
 		unimplemented!()
 	}
 
-	fn write_to_buffer(&self, data: Vec<u8>, device: &mut hal::Device<B>) -> Result<(), Error> {
+	fn write_to_buffer(&self, data: Vec<u8>, device: &mut B::Device) -> Result<(), Error> {
 		let mut vertices = device
 			.acquire_mapping_writer::<Vertex>(&self.memory_buffer.buffer_memory, 0..self.memory_buffer.buffer_len)?;
 		vertices.copy_from_slice(data.as_slice());
@@ -43,11 +44,11 @@ pub trait WriteableBufferCapability {}
 impl<B: hal::Backend> WriteableBufferCapability for WriteableBuffer<B> {}
 
 impl<B: hal::Backend, C: WriteableBufferCapability> DeviceResource<C> for DeviceController<B> {
-	fn get_resource(&mut self) -> Weak<&C> {
+	fn get_resource<C>(&mut self) -> Weak<&C> {
 		debug_assert!(false, "Can't directly get_resource() for WriteableBuffer; get_resource() on MemoryBufferBuilder instead and then call MemoryBuffer::into_writeable_buffer() instead");
 
 		//Return a blank ref
-		Weak::<&WriteableBuffer<B>>::new()
+		Weak::<&C>::new()
 	}
 
 	fn destroy_all_resources<C>(&mut self) -> Result<(), Error> {

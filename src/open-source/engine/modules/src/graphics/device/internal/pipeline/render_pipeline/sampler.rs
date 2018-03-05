@@ -6,6 +6,7 @@ use graphics::device::internal::pipeline::{DeviceController, DeviceResource};
 use std::rc::Weak;
 
 use gfx_hal as hal;
+use gfx_hal::Device;
 use gfx_hal::image as i;
 use failure::Error;
 
@@ -20,7 +21,7 @@ pub struct Sampler<B: hal::Backend> {
 }
 
 impl<B: hal::Backend> Sampler<B> {
-	pub fn build(device: &mut hal::Device) -> Sampler<B> {
+	pub fn build(device: &mut B::Device) -> Sampler<B> {
 		let sampler = device.create_sampler(
 			i::SamplerInfo::new(
 				i::FilterMethod::Bilinear,
@@ -54,7 +55,7 @@ pub trait SamplerCapability {}
 impl<B: hal::Backend> SamplerCapability for Sampler<B> {}
 
 impl<B: hal::Backend, C: SamplerCapability> DeviceResource<C> for DeviceController<B> {
-	fn get_resource(&mut self) -> Weak<&&C> {
+	fn get_resource<C>(&mut self) -> Weak<&C> {
 		unimplemented!()
 	}
 
@@ -68,7 +69,7 @@ impl<B: hal::Backend, C: SamplerCapability> DeviceResource<C> for DeviceControll
 	}
 
 	fn destroy_resource<C>(&mut self, resource: &mut C) -> Result<(), Error> {
-		self.device.destroy_sampler(self.sampler);
+		self.device.destroy_sampler(resource);
 		unimplemented!();
 
 		resource.mark_destroyed();
