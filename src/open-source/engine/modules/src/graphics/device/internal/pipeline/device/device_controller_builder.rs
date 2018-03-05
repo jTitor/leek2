@@ -12,9 +12,9 @@ use std::rc::Rc;
 
 const ELEMENTS_PER_QUEUE: u32 = 16;
 
-pub struct DeviceControllerBuilder {}
-impl DeviceControllerBuilder {
-	pub fn example(surface: Rc<&hal::Surface>) -> Result<DeviceController, Error> {
+pub struct DeviceControllerBuilder<B: hal::Backend> {}
+impl<B: hal::Backend> DeviceControllerBuilder<B> {
+	pub fn example(surface: Rc<&hal::Surface<B>>) -> Result<DeviceController<B>, Error> {
 		let (device, mut queue_group) =
 			adapter.open_with::<_, hal::Graphics>(1, |family| {
 				surface.supports_queue_family(family)
@@ -28,7 +28,7 @@ impl DeviceControllerBuilder {
 			.with_color(surface_format);
 		let (mut swap_chain, backbuffer) = device.create_swapchain(&mut surface, swap_config);
 
-		Ok(DeviceController {
+		Ok(DeviceController::<B> {
 			resource_lists: Default::default(),
 			device: device,
 			command_pool: command_pool,

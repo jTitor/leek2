@@ -1,7 +1,7 @@
 /*!
  * Builder struct for a MemoryBuffer.
  */
-use graphics::device::internal::pipeline::{DeviceController, MemoryBuffer};
+use graphics::device::internal::pipeline::MemoryBuffer;
 
 use failure::Error;
 use gfx_hal as hal;

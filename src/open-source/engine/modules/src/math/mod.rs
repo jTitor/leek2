@@ -26,4 +26,3 @@ pub mod transform;
 pub use self::transform::{Transform, TransformOps};
 
 pub mod screen;
-pub use self::screen::{Rect, Size};

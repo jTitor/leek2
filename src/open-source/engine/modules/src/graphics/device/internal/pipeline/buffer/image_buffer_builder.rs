@@ -8,8 +8,8 @@
  */
 use std::fs::File;
 
-use super::BufferBuilder;
-use math::Size;
+use super::{BufferBuilder, MemoryBuffer};
+use math::screen::Size;
 
 use gfx_hal as hal;
 use failure::Error;
