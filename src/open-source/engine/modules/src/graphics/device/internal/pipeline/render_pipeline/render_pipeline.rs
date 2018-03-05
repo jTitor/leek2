@@ -3,6 +3,10 @@
  * A DeviceController uses this pipeline to decide what
  * draw calls must be executed.
  */
+use graphics::device::internal::pipeline::{DeviceController, DeviceResource};
+
+use std::rc::Weak;
+
 use gfx_hal as hal;
 use failure::Error;
 
@@ -36,7 +40,7 @@ pub struct RenderPipeline<B> where B: hal::Backend {
 	 * Used to generate a command queue
 	 * submission for a graphics device controller.
 	 */
-	submission_callback: ?,
+	// submission_callback: ?,
 
 	resources_destroyed: bool
 }
@@ -70,24 +74,24 @@ impl<B> Drop for RenderPipeline<B> where B: hal::Backend {
 	}
 }
 
-impl<B> DeviceResource<Sampler<B>> for DeviceController<B> where B: hal::Backend {
-	fn get_resource(&mut self) -> Weak<&Sampler<B>> {
-		unimplemented!()
+impl<B, C> DeviceResource<RenderPipeline<B>> for DeviceController<B, C> where B: hal::Backend {
+	fn get_resource(&mut self) -> Weak<&RenderPipeline<B>> {
+		unimplemented!();
 	}
 
-	fn destroy_all_resources<Sampler<B>>(&mut self) -> Result<(), Error> {
+	fn destroy_all_resources<T = RenderPipeline<B>>(&mut self) -> Result<(), Error> {
 		// for pipeline in self.resource_lists.pipelines {
 		// 	self.device.destroy_pipeline_layout(unimplemented!());
 		// 	self.device.destroy_render_pass(unimplemented!());
 		// 	self.device.destroy_graphics_pipeline(pipeline);
 		// }
-		unimplemented!()
+		unimplemented!();
 
 		Ok(())
 	}
 
-	fn destroy_resource(&mut self, resource: &mut T) -> Result<(), Error> {
-		unimplemented!()
+	fn destroy_resource<T = RenderPipeline<B>>(&mut self, resource: &mut T) -> Result<(), Error> {
+		unimplemented!();
 
 		resource.mark_destroyed();
 	}

@@ -3,22 +3,26 @@
  * access to the device's draw calls.
  */
 use super::DeviceResourceLists;
+use graphics::device::internal::pipeline::{MemoryBuffer, Image, Sampler, RenderPipeline, RenderTarget};
 
 use gfx_hal as hal;
-use hal::{command, memory as m, image as i,
+use gfx_hal::{command, pso, memory as m, image as i,
 	device as d, format as f};
+use gfx_hal::pso::PipelineStage;
+use gfx_hal::queue::Submission;
 
-pub struct DeviceController<B> where B: hal::Backend {
-	resource_lists: DeviceResourceLists,
+pub struct DeviceController<B: hal::Backend> {
+	resource_lists: DeviceResourceLists<B>,
 
 	device: hal::Device<B>,
-	command_pool: hal::CommandPool,
-	queue_group: hal::QueueGroup,
-	main_queue: hal::Queue,
-	swap_chain: hal::Swapchain,
-	backbuffer: hal::Backbuffer,
+	command_pool: B::CommandPool,
+	//problem here - maybe this has to be external to the struct?
+	queue_group: hal::QueueGroup<B, C>,
+	main_queue: B::CommandQueue,
+	swap_chain: hal::Swapchain<B>,
+	backbuffer: hal::Backbuffer<B>,
 
-	viewport: hal::Viewport,
+	viewport: command::Viewport,
 
 	frame_semaphore: B::Semaphore,
 	frame_fence: B::Fence,
@@ -69,14 +73,14 @@ impl<B> DeviceController<B> where B: hal::Backend {
 		self.frame_can_begin = true;
 	}
 
-	fn submit(&mut self, submission: ?) {
-		debug_assert!(!self.frame_can_begin, "begin_frame() wasn't called before this submit() call");
+	// fn submit(&mut self, submission: ?) {
+	// 	debug_assert!(!self.frame_can_begin, "begin_frame() wasn't called before this submit() call");
 
-		let submission = Submission::new()
-			.wait_on(&[(&frame_semaphore, PipelineStage::BOTTOM_OF_PIPE)])
-			.submit(Some(submit));
-		queue.submit(submission, Some(&mut frame_fence));
-	}
+	// 	let submission = Submission::new()
+	// 		.wait_on(&[(&frame_semaphore, PipelineStage::BOTTOM_OF_PIPE)])
+	// 		.submit(Some(submit));
+	// 	queue.submit(submission, Some(&mut frame_fence));
+	// }
 
 	pub fn upload_to_buffer(&mut self) {
 		//TODO_rust: as with submit(), split into actual
@@ -130,7 +134,7 @@ impl<B> DeviceController<B> where B: hal::Backend {
 	/**
 	 * Performs rendering with the given pipeline.
 	 */
-	pub fn render_with_pipeline(&mut self, pipeline: &Pipeline) {
+	pub fn render_with_pipeline(&mut self, pipeline: &RenderPipeline) {
 		self.start_frame();
 		//Ask the pipeline for a submission given a command buffer.
 		let mut cmd_buffer = command_pool.acquire_command_buffer(false);
@@ -189,12 +193,12 @@ impl<B> DeviceController<B> where B: hal::Backend {
 		self.device.destroy_fence(self.frame_fence);
 		self.device.destroy_semaphore(self.frame_semaphore);
 
-		self.destroy_all_resources::<Pipeline<B>>();
+		self.destroy_all_resources::<RenderPipeline<B>>();
 
 		// for framebuffer in self.resource_lists.framebuffers {
 		// 	device.destroy_framebuffer(framebuffer);
 		// }
-		device.destroy_framebuffer(backbuffer);
+		self.device.destroy_framebuffer(backbuffer);
 		// self.destroy_all_resources<?<B>>();
 
 		self.destroy_all_resources::<RenderTarget<B>>();
@@ -204,7 +208,7 @@ impl<B> DeviceController<B> where B: hal::Backend {
 	}
 }
 
-impl Drop for DeviceController {
+impl<B> Drop for DeviceController<B> where B: hal::Backend {
 	fn drop(&mut self) {
 		debug_assert!(self.resources_destroyed, "DeviceController went out of scope without destroy_resources() being called");
 	}

@@ -16,7 +16,7 @@
  */
 
 mod buffer;
-pub use self::buffer::{FileBuffer, MemoryBuffer};
+pub use self::buffer::{BufferType, BufferUploadType, BufferBuilder, ElementBufferBuilder, ImageBufferBuilder, MemoryBuffer, WriteableBuffer};
 
 mod device;
 pub use self::device::{DeviceController, DeviceControllerBuilder, DeviceInfo, Viewport, DeviceResource};

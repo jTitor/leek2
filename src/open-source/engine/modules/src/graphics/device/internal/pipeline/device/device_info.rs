@@ -3,6 +3,7 @@
  * command queues and buffers for a device.
  */
 use gfx_hal as hal;
+use gfx_hal::format as f;
 use std::rc::Rc;
 use failure::Error;
 
@@ -10,7 +11,7 @@ pub struct DeviceInfo {
 	/**
 	 * TODO
 	 */
-	surface_format: hal::Format,
+	surface_format: f::Format,
 	/**
 	 * TODO
 	 */
@@ -21,7 +22,7 @@ pub struct DeviceInfo {
 	limits: hal::Limits
 }
 
-type DefaultSurfaceFormat = hal::Format::Rgba8Srgb;
+const DEFAULT_SURFACE_FORMAT: f::Format = f::Rgba8Srgb;
 
 impl DeviceInfo {
 	pub fn from_backend<B>(adapter: Rc<hal::Adapter<B>>, surface: Rc<&hal::Surface>) -> Result<DeviceInfo, Error> where B: hal::Backend {
@@ -33,14 +34,14 @@ impl DeviceInfo {
 			.map_or(
 				//If .1 is None, pick the default format
 				//instead
-				DefaultSurfaceFormat,
+				DEFAULT_SURFACE_FORMAT,
 				//Otherwise, pull the format's
 				//color format.
 				|formats| {
 					formats
 						.into_iter()
 						.find(|format| {
-							format.base_format().1 == hal::ChannelType::Srgb
+							format.base_format().1 == f::ChannelType::Srgb
 						})?
 				}
 			);

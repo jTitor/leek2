@@ -2,10 +2,14 @@
  * Contains the memory and buffer binding
  * representing an image.
  */
+use graphics::device::internal::pipeline::{DeviceController, DeviceResource};
+
 use std::rc::Weak;
 
 use failure::Error;
 use gfx_hal as hal;
+use gfx_hal::format as f;
+use gfx_hal::format::Rgba8Srgb as ColorFormat;
 
 /**
  * Images consist of three main parts:
@@ -26,12 +30,11 @@ pub struct Image<B> where B: hal::Backend {
 	 * DeviceController's buffer list.
 	 */
 	image_device_id: usize,
-	unimplemented!()
 	resources_destroyed: bool
 }
 
 impl<B> Image<B> where B: hal::Backend {
-	pub fn build() -> Result<Image<B>, Error> {
+	pub fn build(device: &mut hal::Device) -> Result<Image<B>, Error> {
 		//Build the buffer first...
 		//The sample code sets Usage::TRANSFER_DST
 		//so the image can be uploaded from CPU to GPU,
@@ -60,14 +63,14 @@ impl<B> Image<B> where B: hal::Backend {
 		let image_binding = device.bind_image_memory(&image_memory, 0, image_unbound)?;
 
 		//And make the render view.
-		let image_render_view = device.create_image_view(&image_binding, ColorFormat::SELF, Swizzle::NO, COLOR_RANGE.clone())?;
+		let image_render_view = device.create_image_view(&image_binding, ColorFormat::SELF, f::Swizzle::NO, COLOR_RANGE.clone())?;
 
 		unimplemented!()
 	}
 
-	pub fn write_buffer(&mut self, data: ?) -> Result<(), Error> {
-		unimplemented!()
-	}
+	// pub fn write_buffer(&mut self, data: ?) -> Result<(), Error> {
+	// 	unimplemented!()
+	// }
 
 	pub fn mark_destroyed(&mut self) {
 		debug_assert!(!self.resources_destroyed,
@@ -88,16 +91,16 @@ impl<B> DeviceResource<Image<B>> for DeviceController<B> where B: hal::Backend {
 		unimplemented!()
 	}
 
-	fn destroy_all_resources(&mut self) -> Result<(), Error> {
+	fn destroy_all_resources<T = Image<B>>(&mut self) -> Result<(), Error> {
 		// for image in self.resource_lists.images {
 		// 	unimplemented!()
 		// }
-		unimplemented!()
+		unimplemented!();
 
 		Ok(())
 	}
 
-	fn destroy_resource(&mut self, resource: &mut T) -> Result<(), Error> {
+	fn destroy_resource<T = Image<B>>(&mut self, resource: &mut T) -> Result<(), Error> {
 		//TODO_rust: should be part of the write_buffer() call instead?
 		// self.device.destroy_buffer(resource.image_upload_buffer);
 
@@ -106,7 +109,7 @@ impl<B> DeviceResource<Image<B>> for DeviceController<B> where B: hal::Backend {
 		self.device.destroy_image_view(resource.image_render_view);
 
 		self.device.free_memory(resource.image_memory);
-		unimplemented!()
+		unimplemented!();
 
 		resource.mark_destroyed();
 

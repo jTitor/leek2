@@ -4,18 +4,15 @@
  * and one fragment shader.
  */
 use super::RenderPipeline;
-use gfx_hal as hal;
-use hal::{pso, pass};
 
+use std::mem;
+use gfx_hal as hal;
+use gfx_hal::{pso, pass, image as i, format as f};
 use failure::Error;
 
-//TODO: Make this a factory that just generates a Pipeline. 
-struct DefaultPipeline {}
-impl RenderPipeline for DefaultPipeline {}
-
-struct DefaultPipelineBuilder {}
-impl DefaultPipelineBuilder {
-	fn build(device: &mut Device) -> Result<DefaultPipeline, Error> {
+pub struct DefaultPipelineBuilder<B> where B: hal::Backend {}
+impl<B> DefaultPipelineBuilder<B> where B: hal::Backend {
+	fn build(device: &mut hal::Device) -> Result<RenderPipeline, Error> {
 		//Describe pipeline inputs:
 		//	First up are the uniforms,
 		//	the texture and texture sampler.
@@ -25,7 +22,7 @@ impl DefaultPipelineBuilder {
 						binding: 0,
 						ty: pso::DescriptorType::SampledImage,
 						count: 1,
-						stage_flags: ShaderStageFlags::FRAGMENT,
+						stage_flags: pso::ShaderStageFlags::FRAGMENT,
 					},
 					pso::DescriptorSetLayoutBinding {
 						binding: 1,
@@ -70,7 +67,7 @@ impl DefaultPipelineBuilder {
 			//Link the subpass to this render pass
 			let dependency = pass::SubpassDependency {
 				passes: pass::SubpassRef::External .. pass::SubpassRef::Pass(0),
-				stages: PipelineStage::COLOR_ATTACHMENT_OUTPUT .. PipelineStage::COLOR_ATTACHMENT_OUTPUT,
+				stages: pso::PipelineStage::COLOR_ATTACHMENT_OUTPUT .. pso::PipelineStage::COLOR_ATTACHMENT_OUTPUT,
 				accesses: i::Access::empty() .. (i::Access::COLOR_ATTACHMENT_READ | i::Access::COLOR_ATTACHMENT_WRITE),
 			};
 
@@ -80,23 +77,32 @@ impl DefaultPipelineBuilder {
 
 		let pipeline = {
 			//Load the actual shader files here.
+			unimplemented!();
+			// let vs_module = device
+			// 	.create_shader_module(include_bytes!("data/vert.spv"))
+			// 	.unwrap();
+			// let fs_module = device
+			// 	.create_shader_module(include_bytes!("data/frag.spv"))
+			// 	.unwrap();
 			let vs_module = device
-				.create_shader_module(include_bytes!("data/vert.spv"))
+				.create_shader_module([0u8])
 				.unwrap();
 			let fs_module = device
-				.create_shader_module(include_bytes!("data/frag.spv"))
+				.create_shader_module([0u8])
 				.unwrap();
+			unimplemented!();
+			const ENTRY_NAME: &str = "TODO";
 
 			let pipeline = {
 				//Specify the entry points
 				//for the shader types:
 				let (vs_entry, fs_entry) = (
 					//The vertex shader
-					pso::EntryPoint::<back::Backend> {
+					pso::EntryPoint::<B> {
 						entry: ENTRY_NAME,
 						module: &vs_module,
 						specialization: &[
-							Specialization {
+							pso::Specialization {
 								id: 0,
 								//...Presumably
 								//this is used as the z position
@@ -106,7 +112,7 @@ impl DefaultPipelineBuilder {
 						],
 					},
 					//and the fragment shader.
-					pso::EntryPoint::<back::Backend> {
+					pso::EntryPoint::<B> {
 						entry: ENTRY_NAME,
 						module: &fs_module,
 						specialization: &[],
@@ -128,7 +134,7 @@ impl DefaultPipelineBuilder {
 				//Specify the pipeline's only
 				//subpass.
 				//Note that it's part of the only render pass.
-				let subpass = Subpass { index: 0, main_pass: &render_pass };
+				let subpass = pass::Subpass { index: 0, main_pass: &render_pass };
 
 				//Create the pipeline description!
 				let mut pipeline_desc = pso::GraphicsPipelineDesc::new(
@@ -136,7 +142,7 @@ impl DefaultPipelineBuilder {
 					shader_entries,
 					//The shaders take triangle lists
 					//as submitted primitives
-					Primitive::TriangleList,
+					hal::Primitive::TriangleList,
 					//They'll rasterize primitives as filled fragments
 					pso::Rasterizer::FILL,
 					//And the actual layout of the pipeline
@@ -157,7 +163,7 @@ impl DefaultPipelineBuilder {
 				//What's the buffer layout for
 				//vertex data?
 				pipeline_desc.vertex_buffers.push(pso::VertexBufferDesc {
-					stride: std::mem::size_of::<Vertex>() as u32,
+					stride: mem::size_of::<Vertex>() as u32,
 					rate: 0,
 				});
 

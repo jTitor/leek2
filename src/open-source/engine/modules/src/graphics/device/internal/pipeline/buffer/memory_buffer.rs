@@ -4,11 +4,10 @@
  */
 use std::rc::Weak;
 
-use graphics::device::internal::pipeline::DeviceController;
+use graphics::device::internal::pipeline::{DeviceController, DeviceResource};
 
 use failure::Error;
 use gfx_hal as hal;
-use hal::buffer;
 
 //TODO: Make buffer a T
 //so it operates on images and buffers
@@ -47,7 +46,7 @@ impl<B> DeviceResource<MemoryBuffer<B>> for DeviceController<B> where B: hal::Ba
 		Weak::<MemoryBuffer<B>>::new()
 	}
 
-	fn destroy_all_resources<T: MemoryBuffer<B>>(&mut self) -> Result<(), Error> {
+	fn destroy_all_resources<T = MemoryBuffer<B>>(&mut self) -> Result<(), Error> {
 		// for buffer in self.resource_lists.buffers {
 		// 	self.device.destroy_buffer(buffer);
 		// }
@@ -55,7 +54,7 @@ impl<B> DeviceResource<MemoryBuffer<B>> for DeviceController<B> where B: hal::Ba
 		unimplemented!()
 	}
 
-	fn destroy_resource(&mut self, resource: &mut T) -> Result<(), Error> {
+	fn destroy_resource<T = MemoryBuffer<B>>(&mut self, resource: &mut T) -> Result<(), Error> {
 		self.device.destroy_buffer(resource.buffer);
 		self.device.free_memory(resource.buffer_memory);
 		unimplemented!();

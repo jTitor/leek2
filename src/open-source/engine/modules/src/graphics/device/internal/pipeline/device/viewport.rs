@@ -2,8 +2,6 @@
  * Specifies the geometry of a viewport's
  * rendering volume.
  */
-use std::num;
-
 use math::Size;
 use gfx_hal::command;
 

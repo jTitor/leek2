@@ -3,10 +3,13 @@
  */
 use graphics::device::internal::pipeline::{DeviceController, DeviceResource};
 
+use std::rc::Weak;
+
 use gfx_hal as hal;
+use gfx_hal::image as i;
+use failure::Error;
 
 pub struct Sampler<B> where B: hal::Backend {
-	unimplemented!()
 	sampler: B::Sampler,
 	/**
 	 * The Sampler's id in the
@@ -17,7 +20,7 @@ pub struct Sampler<B> where B: hal::Backend {
 }
 
 impl<B> Sampler<B> where B: hal::Backend {
-	pub fn build() -> Sampler<B> {
+	pub fn build(device: &mut hal::Device) -> Sampler<B> {
 		let sampler = device.create_sampler(
 			i::SamplerInfo::new(
 				i::FilterMethod::Bilinear,
@@ -30,7 +33,7 @@ impl<B> Sampler<B> where B: hal::Backend {
 		//you can just pass it to a
 		//description set.
 
-		unimplemented!()
+		unimplemented!();
 	}
 
 	pub fn mark_destroyed(&mut self) {
@@ -52,18 +55,18 @@ impl<B> DeviceResource<Sampler<B>> for DeviceController<B> where B: hal::Backend
 		unimplemented!()
 	}
 
-	fn destroy_all_resources<Sampler<B>>(&mut self) -> Result<(), Error> {
+	fn destroy_all_resources<T>(&mut self) -> Result<(), Error> where T: Sampler<B>{
 		// for sampler in self.resource_lists.samplers {
 		// 	self.device.destroy_sampler(sampler);
 		// }
-		unimplemented!()
+		unimplemented!();
 
 		Ok(())
 	}
 
-	fn destroy_resource(&mut self, resource: &mut T) -> Result<(), Error> {
+	fn destroy_resource<T = Sampler<B>>(&mut self, resource: &mut T) -> Result<(), Error> {
 		self.device.destroy_sampler(self.sampler);
-		unimplemented!()
+		unimplemented!();
 
 		resource.mark_destroyed();
 

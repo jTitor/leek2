@@ -1,11 +1,9 @@
 /*!
  * Binds shader descriptors to input views/samplers.
  */
-use gfx_hal as hal;
-use hal::pso;
+use gfx_hal::{pso, image as i};
 
 pub struct DescriptorSet {
-	unimplemented!()
 }
 
 impl DescriptorSet {

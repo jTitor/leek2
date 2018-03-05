@@ -2,7 +2,13 @@
  * Abstracts memory buffers that rendering data
  * can be written to.
  */
+use graphics::device::internal::pipeline::{DeviceController, DeviceResource};
+
+use std::rc::Weak;
+
 use gfx_hal as hal;
+use gfx_hal::{format as f, device as d};
+use failure::Error;
 
 pub struct RenderTarget<B> where B: hal::Backend {
 	//TODO_rust: impl fields
@@ -32,11 +38,11 @@ impl<B> Drop for RenderTarget<B> where B: hal::Backend {
 }
 
 impl<B> DeviceResource<RenderTarget<B>> for DeviceController<B> where B: hal::Backend {
-	fn get_resource(&mut self) -> Weak<&Image<B>> {
+	fn get_resource(&mut self) -> Weak<&RenderTarget<B>> {
 		unimplemented!()
 	}
 
-	fn destroy_all_resources<RenderTarget<B>>(&mut self) -> Result<(), Error> {
+	fn destroy_all_resources<T = RenderTarget<B>>(&mut self) -> Result<(), Error> {
 		// for render_target in self.resource_lists.render_targets {
 		// 	device.destroy_image_view(render_target);
 		// 	//TODO: In the example, the RTs
@@ -44,12 +50,12 @@ impl<B> DeviceResource<RenderTarget<B>> for DeviceController<B> where B: hal::Ba
 		// 	//a separate image list?
 		// 	//device.destroy_image(image);
 		// }
-		unimplemented!()
+		unimplemented!();
 
 		Ok(())
 	}
 
-	fn destroy_resource(&mut self, resource: &mut T) -> Result<(), Error> {
+	fn destroy_resource<T = RenderTarget<B>>(&mut self, resource: &mut T) -> Result<(), Error> {
 		for framebuffer in resource.framebuffers {
 			self.device.destroy_framebuffer(framebuffer);
 		}
@@ -58,7 +64,7 @@ impl<B> DeviceResource<RenderTarget<B>> for DeviceController<B> where B: hal::Ba
 			self.device.destroy_image_view(rtv);
 			self.device.destroy_image(image);
 		}
-		unimplemented!()
+		unimplemented!();
 
 		resource.mark_destroyed();
 
@@ -68,7 +74,7 @@ impl<B> DeviceResource<RenderTarget<B>> for DeviceController<B> where B: hal::Ba
 
 pub struct RenderTargetBuilder<B> where B: hal::Backend {}
 impl<B> RenderTargetBuilder<B> where B: hal::Backend {
-	pub fn build() -> RenderTarget<B> {
+	pub fn build(device: &mut hal::Device) -> RenderTarget<B> {
 		//Pull render texture and framebuffer objects
 		//from the backbuffer struct we've been given.
 		//Exactly what we get depends on the
@@ -77,12 +83,12 @@ impl<B> RenderTargetBuilder<B> where B: hal::Backend {
 			//A set of textures can be unwrapped
 			//to the underlying render textures.
 			//The FBOs can be generated on the side.
-			Backbuffer::Images(images) => {
+			hal::Backbuffer::Images(images) => {
 				let extent = d::Extent { width: pixel_width as _, height: pixel_height as _, depth: 1 };
 				let pairs = images
 					.into_iter()
 					.map(|image| {
-						let rtv = device.create_image_view(&image, surface_format, Swizzle::NO, COLOR_RANGE.clone()).unwrap();
+						let rtv = device.create_image_view(&image, surface_format, f::Swizzle::NO, COLOR_RANGE.clone()).unwrap();
 						(image, rtv)
 					})
 					.collect::<Vec<_>>();
@@ -97,7 +103,7 @@ impl<B> RenderTargetBuilder<B> where B: hal::Backend {
 			//A straight framebuffer has no
 			//render textures, so just
 			//return the FBO inside it
-			Backbuffer::Framebuffer(fbo) => {
+			hal::Backbuffer::Framebuffer(fbo) => {
 				(Vec::new(), vec![fbo])
 			}
 		};

@@ -19,5 +19,5 @@ pub trait DeviceResource<T> {
 	 * Destroys a single resource if
 	 * it is owned by the device.
 	 */
-	fn destroy_resource(&mut self, resource: &mut T) -> Result<(), Error>;
+	fn destroy_resource<T>(&mut self, resource: &mut T) -> Result<(), Error>;
 }
