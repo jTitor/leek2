@@ -168,18 +168,56 @@ impl<B> DeviceController<B> where B: hal::Backend {
 			.submit(Some(submit));
 		self.queue.submit(submission, Some(&mut self.frame_fence));
 	}
-}
 
-impl Drop for DeviceController {
-	fn drop(&mut self){
+	pub fn destroy_resources(&mut self) {
 		//TODO: Have this be manually dropped
 		//to specify order?
 		self.device.destroy_command_pool(self.command_pool.downgrade());
-		self.device.destroy_fence(self.frame_fence);
-		self.device.destroy_semaphore(self.frame_semaphore);
+		//device.destroy_descriptor_pool(desc_pool);
+		//device.destroy_descriptor_set_layout(set_layout);
 
 		//Destroy all the unpacked framebuffers.
 		//Destroy all the resources!
+		for buffer in self.resource_lists.buffers {
+			self.device.destroy_buffer(buffer);
+		}
+
+		for image in self.resource_lists.images {
+			unimplemented!()
+		}
+
+		for sampler in self.resource_lists.samplers {
+			self.device.destroy_sampler(sampler);
+		}
+
+		self.device.destroy_fence(self.frame_fence);
+		self.device.destroy_semaphore(self.frame_semaphore);
+
+		for pipeline in self.resource_lists.pipelines {
+			self.device.destroy_pipeline_layout(unimplemented!());
+			self.device.destroy_render_pass(unimplemented!());
+			self.device.destroy_graphics_pipeline(pipeline);
+		}
+
+		for framebuffer in self.resource_lists.framebuffers {
+			device.destroy_framebuffer(framebuffer);
+		}
+
+		for render_target in self.resource_lists.render_targets {
+			device.destroy_image_view(render_target);
+			//TODO: In the example, the RTs
+			//have a backing image; RTs should have
+			//a separate image list?
+			//device.destroy_image(image);
+		}
+
+		//TODO: device.free_memory() calls
 		unimplemented!();
+	}
+}
+
+impl Drop for DeviceController {
+	fn drop(&mut self) {
+		self.destroy_resources();
 	}
 }
