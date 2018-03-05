@@ -9,7 +9,7 @@ pub struct DescriptorSet {
 impl DescriptorSet {
 	pub fn connect(&mut self) {
 		//TODO_rust: generalize from demo code
-			device.write_descriptor_sets::<_, Range<_>>(vec![
+		device.write_descriptor_sets::<_, Range<_>>(vec![
 			pso::DescriptorSetWrite {
 				set: &desc_set,
 				binding: 0,

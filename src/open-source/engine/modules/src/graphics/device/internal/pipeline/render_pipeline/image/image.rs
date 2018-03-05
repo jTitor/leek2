@@ -3,6 +3,7 @@
  * representing an image.
  */
 use graphics::device::internal::pipeline::{DeviceController, DeviceResource};
+use super::ImageInit;
 
 use std::rc::Weak;
 
@@ -77,6 +78,27 @@ impl<B: hal::Backend> Image<B> {
 			"Image already marked as destroyed");
 
 		self.resources_destroyed = true;
+	}
+
+	fn from_file(file_name: String) -> Image<B> {
+		Self::load_file()?;
+
+		//It looks like you can't upload
+		//directly from CPU to a hal::Image,
+		//or at least you have to query
+		//for the capability.
+		//
+		//Instead you make a temporary buffer, then
+		//do a buffer to RT copy; this is
+		//a GPU->GPU operation so it's always ok.
+		Self::create_upload_buffer()?;
+		Self::copy_image_to_upload_buffer()?;
+
+		//Now create the *actual* image object.
+		Self::create_image_object()?;
+
+		//Copy from the upload buffer to the
+		//image object.
 	}
 }
 
