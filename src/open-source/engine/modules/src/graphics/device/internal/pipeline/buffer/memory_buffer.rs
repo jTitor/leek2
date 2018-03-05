@@ -11,7 +11,7 @@ use gfx_hal as hal;
 
 //TODO: Make buffer a T
 //so it operates on images and buffers
-pub struct MemoryBuffer<B> where B: hal::Backend {
+pub struct MemoryBuffer<B: hal::Backend> {
 	pub buffer: B::UnboundBuffer,
 	pub buffer_memory: B::Memory,
 	pub buffer_binding: B::Buffer,
@@ -24,29 +24,32 @@ pub struct MemoryBuffer<B> where B: hal::Backend {
 	resources_destroyed: bool
 }
 
-impl<B> MemoryBuffer<B> where B: hal::Backend {
-	pub fn mark_destroyed(&mut self) {
+impl<B: hal::Backend> MemoryBuffer<B> {
+	fn mark_destroyed(&mut self) {
 		debug_assert!(!self.resources_destroyed, "MemoryBuffer already marked as destroyed");
 		
 		self.resources_destroyed = true;
 	}
 }
 
-impl<B> Drop for MemoryBuffer<B> where B: hal::Backend {
+impl<B: hal::Backend> Drop for MemoryBuffer<B> {
 	fn drop(&mut self) {
 		debug_assert!(self.resources_destroyed, "MemoryBuffer went out of scope without having its memory destroyed");
 	}
 }
 
-impl<B> DeviceResource<MemoryBuffer<B>> for DeviceController<B> where B: hal::Backend {
-	fn get_resource(&mut self) -> Weak<&MemoryBuffer<B>> {
+pub trait MemoryBufferCapability {}
+impl<B: hal::Backend> MemoryBufferCapability for MemoryBuffer<B> {}
+
+impl<B: hal::Backend, C: MemoryBufferCapability> DeviceResource<C> for DeviceController<B> {
+	fn get_resource(&mut self) -> Weak<&C> {
 		debug_assert!(false, "Can't directly get_resource() for MemoryBuffer; get_resource() on MemoryBufferBuilder instead and then call MemoryBufferBuilder::build()");
 
 		//Return a blank ref
-		Weak::<MemoryBuffer<B>>::new()
+		Weak::<&MemoryBuffer<B>>::new()
 	}
 
-	fn destroy_all_resources<T = MemoryBuffer<B>>(&mut self) -> Result<(), Error> {
+	fn destroy_all_resources<C>(&mut self) -> Result<(), Error> {
 		// for buffer in self.resource_lists.buffers {
 		// 	self.device.destroy_buffer(buffer);
 		// }
@@ -54,7 +57,7 @@ impl<B> DeviceResource<MemoryBuffer<B>> for DeviceController<B> where B: hal::Ba
 		unimplemented!()
 	}
 
-	fn destroy_resource<T = MemoryBuffer<B>>(&mut self, resource: &mut T) -> Result<(), Error> {
+	fn destroy_resource<C>(&mut self, resource: &mut C) -> Result<(), Error> {
 		self.device.destroy_buffer(resource.buffer);
 		self.device.free_memory(resource.buffer_memory);
 		unimplemented!();

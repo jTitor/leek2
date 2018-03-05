@@ -33,7 +33,7 @@ pub struct DeviceController<B: hal::Backend> {
 	resources_destroyed: bool
 }
 
-impl<B> DeviceController<B> where B: hal::Backend {
+impl<B: hal::Backend> DeviceController<B> {
 	/**
 	 * Readies the device for a draw submission.
 	 */

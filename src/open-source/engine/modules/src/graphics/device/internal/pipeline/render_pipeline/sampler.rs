@@ -9,7 +9,7 @@ use gfx_hal as hal;
 use gfx_hal::image as i;
 use failure::Error;
 
-pub struct Sampler<B> where B: hal::Backend {
+pub struct Sampler<B: hal::Backend> {
 	sampler: B::Sampler,
 	/**
 	 * The Sampler's id in the
@@ -19,7 +19,7 @@ pub struct Sampler<B> where B: hal::Backend {
 	resources_destroyed: bool
 }
 
-impl<B> Sampler<B> where B: hal::Backend {
+impl<B: hal::Backend> Sampler<B> {
 	pub fn build(device: &mut hal::Device) -> Sampler<B> {
 		let sampler = device.create_sampler(
 			i::SamplerInfo::new(
@@ -44,18 +44,21 @@ impl<B> Sampler<B> where B: hal::Backend {
 	}
 }
 
-impl<B> Drop for Sampler<B> where B: hal::Backend {
+impl<B: hal::Backend> Drop for Sampler<B> {
 	fn drop(&mut self) {
 		debug_assert!(self.resources_destroyed, "MemoryBuffer went out of scope without having its memory destroyed");
 	}
 }
 
-impl<B> DeviceResource<Sampler<B>> for DeviceController<B> where B: hal::Backend {
-	fn get_resource(&mut self) -> Weak<&Sampler<B>> {
+pub trait SamplerCapability {}
+impl<B: hal::Backend> SamplerCapability for Sampler<B> {}
+
+impl<B: hal::Backend, C: SamplerCapability> DeviceResource<C> for DeviceController<B> {
+	fn get_resource(&mut self) -> Weak<&&C> {
 		unimplemented!()
 	}
 
-	fn destroy_all_resources<T>(&mut self) -> Result<(), Error> where T: Sampler<B>{
+	fn destroy_all_resources<C>(&mut self) -> Result<(), Error> {
 		// for sampler in self.resource_lists.samplers {
 		// 	self.device.destroy_sampler(sampler);
 		// }
@@ -64,7 +67,7 @@ impl<B> DeviceResource<Sampler<B>> for DeviceController<B> where B: hal::Backend
 		Ok(())
 	}
 
-	fn destroy_resource<T = Sampler<B>>(&mut self, resource: &mut T) -> Result<(), Error> {
+	fn destroy_resource<C>(&mut self, resource: &mut C) -> Result<(), Error> {
 		self.device.destroy_sampler(self.sampler);
 		unimplemented!();
 

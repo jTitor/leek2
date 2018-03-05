@@ -22,7 +22,7 @@ use gfx_hal::format::Rgba8Srgb as ColorFormat;
  * data; other modules must get the data and
  * upload it with Image::write_buffer().
  */
-pub struct Image<B> where B: hal::Backend {
+pub struct Image<B: hal::Backend> {
 	image_binding: B::Image,
 	image_render_view: B::ImageView,
 	image_memory: B::Memory,
@@ -33,7 +33,7 @@ pub struct Image<B> where B: hal::Backend {
 	resources_destroyed: bool
 }
 
-impl<B> Image<B> where B: hal::Backend {
+impl<B: hal::Backend> Image<B> {
 	pub fn build(device: &mut hal::Device) -> Result<Image<B>, Error> {
 		//Build the buffer first...
 		//The sample code sets Usage::TRANSFER_DST
@@ -80,18 +80,21 @@ impl<B> Image<B> where B: hal::Backend {
 	}
 }
 
-impl<B> Drop for Image<B> where B: hal::Backend {
+impl<B: hal::Backend> Drop for Image<B> {
 	fn drop(&mut self) {
 		debug_assert!(self.resources_destroyed, "Image went out of scope without having its memory destroyed");
 	}
 }
 
-impl<B> DeviceResource<Image<B>> for DeviceController<B> where B: hal::Backend {
-	fn get_resource(&mut self) -> Weak<&Image<B>> {
+pub trait ImageCapability {}
+impl<B: hal::Backend> ImageCapability for Image<B> {}
+
+impl<B: hal::Backend, C: ImageCapability> DeviceResource<C> for DeviceController<B> where {
+	fn get_resource(&mut self) -> Weak<&C> {
 		unimplemented!()
 	}
 
-	fn destroy_all_resources<T = Image<B>>(&mut self) -> Result<(), Error> {
+	fn destroy_all_resources<C>(&mut self) -> Result<(), Error> {
 		// for image in self.resource_lists.images {
 		// 	unimplemented!()
 		// }
@@ -100,7 +103,7 @@ impl<B> DeviceResource<Image<B>> for DeviceController<B> where B: hal::Backend {
 		Ok(())
 	}
 
-	fn destroy_resource<T = Image<B>>(&mut self, resource: &mut T) -> Result<(), Error> {
+	fn destroy_resource<C>(&mut self, resource: &mut C) -> Result<(), Error> {
 		//TODO_rust: should be part of the write_buffer() call instead?
 		// self.device.destroy_buffer(resource.image_upload_buffer);
 

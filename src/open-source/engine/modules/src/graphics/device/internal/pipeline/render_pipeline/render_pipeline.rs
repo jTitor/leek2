@@ -49,7 +49,7 @@ impl<B> RenderPipeline<B> where B: hal::Backend {
 	/**
 	 * Generates a submission given a command buffer.
 	 */
-	pub fn submission_with_cmd_buffer<C, S>(&mut self, cmd_buffer: CommandBuffer<B, C, S>) -> Result<(), Error> where S: hal::Shot {
+	pub fn submission_with_cmd_buffer<C, S>(&mut self, cmd_buffer: hal::CommandBuffer<B, C, S>) -> Result<(), Error> where S: hal::Shot {
 		self.submission_callback(cmd_buffer)
 	}
 
@@ -74,12 +74,15 @@ impl<B> Drop for RenderPipeline<B> where B: hal::Backend {
 	}
 }
 
-impl<B, C> DeviceResource<RenderPipeline<B>> for DeviceController<B, C> where B: hal::Backend {
-	fn get_resource(&mut self) -> Weak<&RenderPipeline<B>> {
+pub trait RenderPipelineCapability {}
+impl<B: hal::Backend> RenderPipelineCapability for RenderPipeline<B> {}
+
+impl<B: hal::Backend, C: RenderPipelineCapability> DeviceResource<C> for DeviceController<B> {
+	fn get_resource(&mut self) -> Weak<&C> {
 		unimplemented!();
 	}
 
-	fn destroy_all_resources<T = RenderPipeline<B>>(&mut self) -> Result<(), Error> {
+	fn destroy_all_resources<C>(&mut self) -> Result<(), Error> {
 		// for pipeline in self.resource_lists.pipelines {
 		// 	self.device.destroy_pipeline_layout(unimplemented!());
 		// 	self.device.destroy_render_pass(unimplemented!());
@@ -90,7 +93,7 @@ impl<B, C> DeviceResource<RenderPipeline<B>> for DeviceController<B, C> where B:
 		Ok(())
 	}
 
-	fn destroy_resource<T = RenderPipeline<B>>(&mut self, resource: &mut T) -> Result<(), Error> {
+	fn destroy_resource<C>(&mut self, resource: &mut C) -> Result<(), Error> {
 		unimplemented!();
 
 		resource.mark_destroyed();

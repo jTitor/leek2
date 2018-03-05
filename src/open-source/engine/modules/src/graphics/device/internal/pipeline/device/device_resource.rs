@@ -5,11 +5,11 @@
 use std::rc::Weak;
 use failure::Error;
 
-pub trait DeviceResource<T> {
+pub trait DeviceResource<C> {
 	/**
 	 * Gets a new instance of the given resource.
 	 */
-	fn get_resource(&mut self) -> Weak<&T>;
+	fn get_resource(&mut self) -> Weak<&C>;
 	/**
 	 * Destroys all of the resources
 	 * of this type owned by the device.
@@ -19,5 +19,5 @@ pub trait DeviceResource<T> {
 	 * Destroys a single resource if
 	 * it is owned by the device.
 	 */
-	fn destroy_resource<T>(&mut self, resource: &mut T) -> Result<(), Error>;
+	fn destroy_resource<C>(&mut self, resource: &mut C) -> Result<(), Error>;
 }

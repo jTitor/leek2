@@ -11,10 +11,11 @@ use std::fs::File;
 use super::BufferBuilder;
 use math::Size;
 
+use gfx_hal as hal;
 use failure::Error;
 
-pub struct ImageBufferBuilder {
-	buffer_builder: BufferBuilder,
+pub struct ImageBufferBuilder<B: hal::Backend> {
+	buffer_builder: BufferBuilder<B>,
 	image_dimensions: Size,
 	//The file to load from disk.
 	//if None, the resulting buffer will be
@@ -22,10 +23,10 @@ pub struct ImageBufferBuilder {
 	image_file: Option<File>
 }
 
-pub impl ImageBufferBuilder {
-	pub fn buffer_builder(&mut self) -> &mut BufferBuilder { self.buffer_builder }
+impl<B: hal::Backend> ImageBufferBuilder<B> {
+	pub fn buffer_builder(&mut self) -> &mut BufferBuilder<B> { self.buffer_builder }
 
-	pub fn build(&self) -> Result<MemoryBuffer, Error> {
+	pub fn build(&self) -> Result<MemoryBuffer<B>, Error> {
 		//TODO:
 		//Convert dimensions into
 		//buffer size.
@@ -41,7 +42,7 @@ pub impl ImageBufferBuilder {
 		Ok(unimplemented!())
 	}
 
-	pub fn with_image_file(&mut self, value: File) -> &mut ImageBufferBuilder {
+	pub fn with_image_file(&mut self, value: File) -> &mut ImageBufferBuilder<B> {
 		unimplemented!();
 		self.image_file = Some(value);
 		unimplemented!();

@@ -25,7 +25,7 @@ pub struct DeviceInfo {
 const DEFAULT_SURFACE_FORMAT: f::Format = f::Rgba8Srgb;
 
 impl DeviceInfo {
-	pub fn from_backend<B>(adapter: Rc<hal::Adapter<B>>, surface: Rc<&hal::Surface>) -> Result<DeviceInfo, Error> where B: hal::Backend {
+	pub fn from_backend<B>(adapter: Rc<hal::Adapter<B>>, surface: Rc<&hal::Surface<B>>) -> Result<DeviceInfo, Error> where B: hal::Backend {
 		//Setup the device's surface format:
 		let surface_format = surface
 			//Get the first valid one if possible.

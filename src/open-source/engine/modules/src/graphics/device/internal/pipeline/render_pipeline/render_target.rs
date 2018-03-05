@@ -10,7 +10,7 @@ use gfx_hal as hal;
 use gfx_hal::{format as f, device as d};
 use failure::Error;
 
-pub struct RenderTarget<B> where B: hal::Backend {
+pub struct RenderTarget<B: hal::Backend> {
 	//TODO_rust: impl fields
 	framebuffers: Vec<B::Framebuffer>,
 	frame_images: Vec<(B::Image, B::ImageView)>,
@@ -22,7 +22,7 @@ pub struct RenderTarget<B> where B: hal::Backend {
 	resources_destroyed: bool
 }
 
-impl<B> RenderTarget<B> where B: hal::Backend {
+impl<B: hal::Backend> RenderTarget<B> {
 	fn mark_destroyed(&mut self) {
 		debug_assert!(!self.resources_destroyed,
 			"RenderTarget already marked as destroyed");
@@ -31,18 +31,21 @@ impl<B> RenderTarget<B> where B: hal::Backend {
 	}
 }
 
-impl<B> Drop for RenderTarget<B> where B: hal::Backend {
+impl<B: hal::Backend> Drop for RenderTarget<B> {
 	fn drop(&mut self) {
 		debug_assert!(self.resources_destroyed, "MemoryBuffer went out of scope without having its memory destroyed");
 	}
 }
 
-impl<B> DeviceResource<RenderTarget<B>> for DeviceController<B> where B: hal::Backend {
-	fn get_resource(&mut self) -> Weak<&RenderTarget<B>> {
+pub trait RenderTargetCapability {}
+impl<B: hal::Backend> RenderTargetCapability for RenderTarget<B> {}
+
+impl<B: hal::Backend, C: RenderTargetCapability> DeviceResource<C> for DeviceController<B> {
+	fn get_resource(&mut self) -> Weak<&C> {
 		unimplemented!()
 	}
 
-	fn destroy_all_resources<T = RenderTarget<B>>(&mut self) -> Result<(), Error> {
+	fn destroy_all_resources<C>(&mut self) -> Result<(), Error> {
 		// for render_target in self.resource_lists.render_targets {
 		// 	device.destroy_image_view(render_target);
 		// 	//TODO: In the example, the RTs
@@ -55,7 +58,7 @@ impl<B> DeviceResource<RenderTarget<B>> for DeviceController<B> where B: hal::Ba
 		Ok(())
 	}
 
-	fn destroy_resource<T = RenderTarget<B>>(&mut self, resource: &mut T) -> Result<(), Error> {
+	fn destroy_resource<C>(&mut self, resource: &mut C) -> Result<(), Error> {
 		for framebuffer in resource.framebuffers {
 			self.device.destroy_framebuffer(framebuffer);
 		}
@@ -73,7 +76,7 @@ impl<B> DeviceResource<RenderTarget<B>> for DeviceController<B> where B: hal::Ba
 }
 
 pub struct RenderTargetBuilder<B> where B: hal::Backend {}
-impl<B> RenderTargetBuilder<B> where B: hal::Backend {
+impl<B: hal::Backend> RenderTargetBuilder<B> {
 	pub fn build(device: &mut hal::Device) -> RenderTarget<B> {
 		//Pull render texture and framebuffer objects
 		//from the backbuffer struct we've been given.
