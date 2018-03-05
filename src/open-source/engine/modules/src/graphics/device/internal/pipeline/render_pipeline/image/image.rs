@@ -35,44 +35,6 @@ pub struct Image<B: hal::Backend> {
 }
 
 impl<B: hal::Backend> Image<B> {
-	pub fn build(device: &mut hal::Device) -> Result<Image<B>, Error> {
-		//Build the buffer first...
-		//The sample code sets Usage::TRANSFER_DST
-		//so the image can be uploaded from CPU to GPU,
-		//and Usage::SAMPLED so the sampler can get at it
-			// let image_unbound = device.create_image(kind, 1, ColorFormat::SELF, i::Usage::TRANSFER_DST | i::Usage::SAMPLED).unwrap();
-		//Requirements are a generic opaque enum that
-		//gets used to filter available memory types
-		//to one the image buffer can use.
-			// let image_req = device.get_image_requirements(&image_unbound);
-
-			// let device_type = memory_types
-			// 	.iter()
-			// 	.enumerate()
-			// 	.position(|(id, memory_type)| {
-		//NOTE: properties of this memory
-		//are different from FileBuffer or MemoryBuffer.
-			// 		image_req.type_mask & (1 << id) != 0 &&
-			// 		memory_type.properties.contains(m::Properties::DEVICE_LOCAL)
-			// 	})
-			// 	.unwrap()
-			// 	.into();
-		//Allocate the actual memory here...
-			// let image_memory = device.allocate_memory(device_type, image_req.size).unwrap();
-
-		//Create the binding...
-		let image_binding = device.bind_image_memory(&image_memory, 0, image_unbound)?;
-
-		//And make the render view.
-		let image_render_view = device.create_image_view(&image_binding, ColorFormat::SELF, f::Swizzle::NO, COLOR_RANGE.clone())?;
-
-		unimplemented!()
-	}
-
-	// pub fn write_buffer(&mut self, data: ?) -> Result<(), Error> {
-	// 	unimplemented!()
-	// }
-
 	pub fn mark_destroyed(&mut self) {
 		debug_assert!(!self.resources_destroyed,
 			"Image already marked as destroyed");
@@ -81,6 +43,10 @@ impl<B: hal::Backend> Image<B> {
 	}
 
 	fn from_file(file_name: String) -> Image<B> {
+		//TODO: This part should be split out into
+		//a separate struct - a RawImage?
+		//Then you can have multiple providers or
+		//a dummy provider for unit tests
 		Self::load_file()?;
 
 		//It looks like you can't upload
@@ -99,6 +65,10 @@ impl<B: hal::Backend> Image<B> {
 
 		//Copy from the upload buffer to the
 		//image object.
+		let to_image_object_submission =  Self::copy_upload_buffer_to_image_object()?;
+		//device.???(to_image_object_submission);
+		
+		unimplemented!();
 	}
 }
 

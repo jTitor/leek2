@@ -24,12 +24,14 @@ pub trait ImageInit {
 	fn copy_image_to_upload_buffer() -> Result<(), Error>;
 
 	fn create_image_object() -> Result<(), Error>;
+
+	fn copy_upload_buffer_to_image_object() -> Result<(), Error>
 }
 
 impl<B: hal::Backend> ImageInit for Image<B> {
 	fn load_file(file_name: String) -> Result<(), Error> {
 		//TODO: make appropriate fs call
-		let img_data = include_bytes!(file_name.as_str());
+		let img_data = [0u8];//include_bytes!(file_name.as_str());
 
 		let img = image::load(Cursor::new(&img_data[..]), image::PNG).unwrap().to_rgba();
 		let (width, height) = img.dimensions();
@@ -92,6 +94,10 @@ impl<B: hal::Backend> ImageInit for Image<B> {
 	fn create_image_object() -> Result<(), Error> {
 		//TODO: everything from here to "END TODO"
 		//should be handled by an ImageBufferBuilder.
+		//
+		//The sample code sets Usage::TRANSFER_DST
+		//so the image can be uploaded from CPU to GPU,
+		//and Usage::SAMPLED so the sampler can get at it
 		let image_unbound = device.create_image(kind, 1, ColorFormat::SELF, i::Usage::TRANSFER_DST | i::Usage::SAMPLED).unwrap(); // TODO: usage
 		let image_req = device.get_image_requirements(&image_unbound);
 
@@ -114,6 +120,52 @@ impl<B: hal::Backend> ImageInit for Image<B> {
 		//samplers connect to.
 		let image_logo = device.bind_image_memory(&image_memory, 0, image_unbound).unwrap();
 		let image_srv = device.create_image_view(&image_logo, ColorFormat::SELF, Swizzle::NO, COLOR_RANGE.clone()).unwrap();
+
+		Ok(())
+	}
+
+	fn copy_upload_buffer_to_image_object() -> Result<(), Error> {
+		//This is the command queue
+		//call, but should be submitted to a Device.
+		//The Image struct doesn't handle this itself.
+		let submit = {
+			let mut cmd_buffer = command_pool.acquire_command_buffer(false);
+
+			let image_barrier = m::Barrier::Image {
+				states: (i::Access::empty(), i::ImageLayout::Undefined) ..
+						(i::Access::TRANSFER_WRITE, i::ImageLayout::TransferDstOptimal),
+				target: &image_logo,
+				range: COLOR_RANGE.clone(),
+			};
+			cmd_buffer.pipeline_barrier(PipelineStage::TOP_OF_PIPE .. PipelineStage::TRANSFER, &[image_barrier]);
+
+			cmd_buffer.copy_buffer_to_image(
+				&image_upload_buffer,
+				&image_logo,
+				i::ImageLayout::TransferDstOptimal,
+				&[command::BufferImageCopy {
+					buffer_offset: 0,
+					buffer_width: row_pitch / (image_stride as u32),
+					buffer_height: height as u32,
+					image_layers: i::SubresourceLayers {
+						aspects: f::AspectFlags::COLOR,
+						level: 0,
+						layers: 0 .. 1,
+					},
+					image_offset: command::Offset { x: 0, y: 0, z: 0 },
+					image_extent: d::Extent { width, height, depth: 1 },
+				}]);
+
+			let image_barrier = m::Barrier::Image {
+				states: (i::Access::TRANSFER_WRITE, i::ImageLayout::TransferDstOptimal) ..
+						(i::Access::SHADER_READ, i::ImageLayout::ShaderReadOnlyOptimal),
+				target: &image_logo,
+				range: COLOR_RANGE.clone(),
+			};
+			cmd_buffer.pipeline_barrier(PipelineStage::TRANSFER .. PipelineStage::FRAGMENT_SHADER, &[image_barrier]);
+
+			cmd_buffer.finish()
+		};
 
 		Ok(())
 	}
