@@ -45,10 +45,10 @@ impl<B> DeviceResource<WriteableBuffer<B>> for DeviceController<B> where B: hal:
 		debug_assert!(false, "Can't directly get_resource() for WriteableBuffer; get_resource() on MemoryBufferBuilder instead and then call MemoryBuffer::into_writeable_buffer() instead");
 
 		//Return a blank ref
-		Weak<WriteableBuffer<B>>::new()
+		Weak::<WriteableBuffer<B>>::new()
 	}
 
-	fn destroy_all_resources<WriteableBuffer<B>>(&mut self) -> Result<(), Error> {
+	fn destroy_all_resources<T: WriteableBuffer<B>>(&mut self) -> Result<(), Error> {
 		//TODO: Unwrap and destroy the
 		//internal buffer
 		unimplemented!()

@@ -56,14 +56,14 @@ pub impl BufferBuilder {
 		//should be genericized,
 		//as images ues get_image_requirements
 		//instead
-		let cast_buffer_type = Into<buffer::Usage>::into(self.buffer_type);
+		let cast_buffer_type = Into::<buffer::Usage>::into(self.buffer_type);
 		let device_upgrade = self.device.upgrade();
 
 		if let Some(device) = device_upgrade {
 			let buffer_unbound = device.create_buffer(self.size_bytes, cast_buffer_type)?;
 			let buffer_req = device.get_buffer_requirements(&buffer_unbound);
 
-			let cast_upload_property = Into<m::Properties>::into(self.upload_type);
+			let cast_upload_property = Into::<m::Properties>::into(self.upload_type);
 			//END TODO
 			let upload_type = memory_types
 				.iter()
@@ -75,8 +75,8 @@ pub impl BufferBuilder {
 				.unwrap()
 				.into();
 
-			let buffer_memory = device.allocate_memory(upload_type, buffer_req.size)?
-			let buffer_object = device.bind_buffer_memory(&buffer_memory, 0, buffer_unbound)?
+			let buffer_memory = device.allocate_memory(upload_type, buffer_req.size)?;
+			let buffer_object = device.bind_buffer_memory(&buffer_memory, 0, buffer_unbound)?;
 
 			Ok(MemoryBuffer {
 				device: self.device.clone(),
@@ -84,7 +84,7 @@ pub impl BufferBuilder {
 				buffer_memory: buffer_memory,
 				buffer_binding: buffer_object,
 				buffer_len: buffer_req.size,
-				resources_destroyed: false;
+				resources_destroyed: false
 			})
 		}
 

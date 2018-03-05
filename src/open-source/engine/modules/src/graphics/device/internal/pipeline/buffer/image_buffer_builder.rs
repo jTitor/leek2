@@ -6,6 +6,8 @@
  * the texture for rendering,
  * use a pipeline::Image.
  */
+use std::fs::File;
+
 use super::BufferBuilder;
 use math::Size;
 
@@ -17,8 +19,7 @@ pub struct ImageBufferBuilder {
 	//The file to load from disk.
 	//if None, the resulting buffer will be
 	//cleared to 0.
-	image_file: Option<?>
-	unimplemented!()
+	image_file: Option<File>
 }
 
 pub impl ImageBufferBuilder {
@@ -28,22 +29,23 @@ pub impl ImageBufferBuilder {
 		//TODO:
 		//Convert dimensions into
 		//buffer size.
-		unimplemented!()
+		unimplemented!();
 
 		//TODO: If there's a file specified,
 		//load its data and upload it to the
 		//buffer.
 		if let Some(image_data) = self.image_file {
-			unimplemented!()
+			unimplemented!();
 		}
 
 		Ok(unimplemented!())
 	}
 
-	pub fn with_image_file(&mut self, value: ?) -> &mut ImageBufferBuilder {
-		unimplemented!()
+	pub fn with_image_file(&mut self, value: File) -> &mut ImageBufferBuilder {
+		unimplemented!();
 		self.image_file = Some(value);
-		self.image_dimensions = ?;
+		unimplemented!();
+		// self.image_dimensions = ?;
 
 		self
 	}

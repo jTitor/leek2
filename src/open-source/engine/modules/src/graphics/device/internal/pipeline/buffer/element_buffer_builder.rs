@@ -9,7 +9,6 @@ use failure::Error;
 pub struct ElementBufferBuilder<Element> {
 	buffer_builder: BufferBuilder,
 	num_elements: usize
-	unimplemented!()
 }
 
 impl<Element> ElementBufferBuilder<Element> {
@@ -18,6 +17,8 @@ impl<Element> ElementBufferBuilder<Element> {
 	pub fn build(&self) -> Result<MemoryBuffer, Error> {
 		//TODO: use size_of<Element>() to get
 		//the buffer's final size.
-		unimplemented!()
+		unimplemented!();
+
+		Ok(unimplemented!())
 	}
 }

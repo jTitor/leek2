@@ -15,7 +15,7 @@ pub struct DeviceResourceLists<B> where B: hal::Backend {
 
 impl Default for DeviceResourceLists<B> where B: hal::Backend {
 	fn default() -> Self {
-		DeviceResourceLists<B> {
+		DeviceResourceLists::<B> {
 			buffers: vec!(),
 			images: vec!(),
 			render_targets: vec!(),

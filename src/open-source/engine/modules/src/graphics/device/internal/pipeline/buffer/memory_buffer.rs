@@ -2,6 +2,8 @@
  * Handles buffer storage for a graphics::Device.
  * This buffer is manually specified in size and format.
  */
+use std::rc::Weak;
+
 use graphics::device::internal::pipeline::DeviceController;
 
 use failure::Error;
@@ -20,8 +22,7 @@ pub struct MemoryBuffer<B> where B: hal::Backend {
 	 */
 	buffer_device_id: usize,
 	pub buffer_len: usize,
-	unimplemented!()
-	resources_destroyed: bool;
+	resources_destroyed: bool
 }
 
 impl<B> MemoryBuffer<B> where B: hal::Backend {
@@ -43,10 +44,10 @@ impl<B> DeviceResource<MemoryBuffer<B>> for DeviceController<B> where B: hal::Ba
 		debug_assert!(false, "Can't directly get_resource() for MemoryBuffer; get_resource() on MemoryBufferBuilder instead and then call MemoryBufferBuilder::build()");
 
 		//Return a blank ref
-		Weak<MemoryBuffer<B>>::new()
+		Weak::<MemoryBuffer<B>>::new()
 	}
 
-	fn destroy_all_resources<MemoryBuffer<B>>(&mut self) -> Result<(), Error> {
+	fn destroy_all_resources<T: MemoryBuffer<B>>(&mut self) -> Result<(), Error> {
 		// for buffer in self.resource_lists.buffers {
 		// 	self.device.destroy_buffer(buffer);
 		// }
@@ -57,7 +58,7 @@ impl<B> DeviceResource<MemoryBuffer<B>> for DeviceController<B> where B: hal::Ba
 	fn destroy_resource(&mut self, resource: &mut T) -> Result<(), Error> {
 		self.device.destroy_buffer(resource.buffer);
 		self.device.free_memory(resource.buffer_memory);
-		unimplemented!()
+		unimplemented!();
 
 		resource.mark_destroyed();
 	}

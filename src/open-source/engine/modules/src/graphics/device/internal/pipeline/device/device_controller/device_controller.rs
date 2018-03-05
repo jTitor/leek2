@@ -24,7 +24,9 @@ pub struct DeviceController<B> where B: hal::Backend {
 	frame_fence: B::Fence,
 	frame_wait_timeout_ms: u32,
 
-	frame_can_begin: bool
+	frame_can_begin: bool,
+
+	resources_destroyed: bool
 }
 
 impl<B> DeviceController<B> where B: hal::Backend {
@@ -178,16 +180,16 @@ impl<B> DeviceController<B> where B: hal::Backend {
 
 		//Destroy all the unpacked framebuffers.
 		//Destroy all the resources!
-		self.destroy_all_resources<MemoryBuffer<B>>();
+		self.destroy_all_resources::<MemoryBuffer<B>>();
 		
-		self.destroy_all_resources<Image<B>>();
+		self.destroy_all_resources::<Image<B>>();
 
-		self.destroy_all_resources<Sampler<B>>();
+		self.destroy_all_resources::<Sampler<B>>();
 
 		self.device.destroy_fence(self.frame_fence);
 		self.device.destroy_semaphore(self.frame_semaphore);
 
-		self.destroy_all_resources<Pipeline<B>>();
+		self.destroy_all_resources::<Pipeline<B>>();
 
 		// for framebuffer in self.resource_lists.framebuffers {
 		// 	device.destroy_framebuffer(framebuffer);
@@ -195,15 +197,15 @@ impl<B> DeviceController<B> where B: hal::Backend {
 		device.destroy_framebuffer(backbuffer);
 		// self.destroy_all_resources<?<B>>();
 
-		self.destroy_all_resources<RenderTarget<B>>();
+		self.destroy_all_resources::<RenderTarget<B>>();
 
-		//TODO: device.free_memory() calls
 		unimplemented!();
+		self.resources_destroyed = true;
 	}
 }
 
 impl Drop for DeviceController {
 	fn drop(&mut self) {
-		self.destroy_resources();
+		debug_assert!(self.resources_destroyed, "DeviceController went out of scope without destroy_resources() being called");
 	}
 }
