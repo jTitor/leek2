@@ -5,7 +5,7 @@ use graphics::device::internal::pipeline::{DeviceController, MemoryBuffer};
 
 use failure::Error;
 use gfx_hal as hal;
-use hal::memory as m;
+use gfx_hal::{buffer, memory as m};
 
 pub enum BufferType {
 	Vertex,
@@ -42,16 +42,16 @@ impl From<BufferUploadType> for m::Properties {
 
 //TODO: Make this a request sent to
 //the DeviceController
-pub struct BufferBuilder {
+pub struct BufferBuilder<B: hal::Backend> {
 	buffer_type: BufferType,
 	upload_type: BufferUploadType,
 	size_bytes: usize
 }
 
-pub impl BufferBuilder {
+impl<B> BufferBuilder<B> where B: hal::Backend {
 	//TODO: DeviceController should handle this
 	//instead
-	pub fn build(&self) -> Result<MemoryBuffer, Error> {
+	pub fn build(&self) -> Result<MemoryBuffer<B>, Error> {
 		//TODO: everything up to "END TODO"
 		//should be genericized,
 		//as images ues get_image_requirements

@@ -126,18 +126,18 @@ impl<B> DeviceController<B> where B: hal::Backend {
 
 		let submission = Submission::new()
 			.submit(Some(submit));
-		queue.submit(submission, Some(&mut self.frame_fence));
+		self.main_queue.submit(submission, Some(&mut self.frame_fence));
 
-		device.wait_for_fence(&self.frame_fence, self.frame_wait_timeout_ms);
+		self.device.wait_for_fence(&self.frame_fence, self.frame_wait_timeout_ms);
 	}
 
 	/**
 	 * Performs rendering with the given pipeline.
 	 */
-	pub fn render_with_pipeline(&mut self, pipeline: &RenderPipeline) {
+	pub fn render_with_pipeline(&mut self, pipeline: &RenderPipeline<B>) {
 		self.start_frame();
 		//Ask the pipeline for a submission given a command buffer.
-		let mut cmd_buffer = command_pool.acquire_command_buffer(false);
+		let mut cmd_buffer = self.command_pool.acquire_command_buffer(false);
 		let submission = pipeline.submission_with_cmd_buffer(cmd_buffer);
 		self.end_frame();
 	}
