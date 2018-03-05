@@ -2,7 +2,7 @@
  * Specifies the geometry of a viewport's
  * rendering volume.
  */
-use math::Size;
+use math::screen::Size;
 use gfx_hal::command;
 
 #[derive(Default)]
