@@ -3,10 +3,12 @@
  * access to the device's draw calls.
  */
 use super::DeviceResourceLists;
-use graphics::device::internal::pipeline::{MemoryBuffer, Image, Sampler, RenderPipeline, RenderTarget};
+use graphics::device::internal::pipeline::{DeviceResource, MemoryBuffer, Image, Sampler, RenderPipeline, RenderTarget};
 
 use gfx_hal as hal;
-use gfx_hal::{command, pso, memory as m, image as i,
+use gfx_hal::{Device, Swapchain, CommandQueue};
+use gfx_hal::pool::RawCommandPool;
+use gfx_hal::{command, pool, pso, memory as m, image as i,
 	device as d, format as f};
 use gfx_hal::pso::PipelineStage;
 use gfx_hal::queue::Submission;
@@ -14,13 +16,13 @@ use gfx_hal::queue::Submission;
 pub struct DeviceController<B: hal::Backend> {
 	resource_lists: DeviceResourceLists<B>,
 
-	device: hal::Device<B>,
-	command_pool: B::CommandPool,
+	device: B::Device,
+	command_pool: pool::CommandPool<B, hal::Graphics>,
 	//problem here - maybe this has to be external to the struct?
-	queue_group: hal::QueueGroup<B, C>,
-	main_queue: B::CommandQueue,
-	swap_chain: hal::Swapchain<B>,
-	backbuffer: hal::Backbuffer<B>,
+	queue_group: hal::QueueGroup<B, hal::Graphics>,
+	main_queue: hal::CommandQueue<B, hal::Graphics>,
+	swap_chain: B::Swapchain,
+	backbuffer: B::Backbuffer,
 
 	viewport: command::Viewport,
 
@@ -33,7 +35,7 @@ pub struct DeviceController<B: hal::Backend> {
 	resources_destroyed: bool
 }
 
-impl<B: hal::Backend> DeviceController<B> {
+impl<'a, B: hal::Backend> DeviceController<B> {
 	/**
 	 * Readies the device for a draw submission.
 	 */
@@ -83,47 +85,7 @@ impl<B: hal::Backend> DeviceController<B> {
 	// }
 
 	pub fn upload_to_buffer(&mut self) {
-		//TODO_rust: as with submit(), split into actual
-		//calls
-		let submit = {
-			let mut cmd_buffer = self.command_pool.acquire_command_buffer(false);
-
-			let image_barrier = m::Barrier::Image {
-				states: (i::Access::empty(), i::ImageLayout::Undefined) ..
-						(i::Access::TRANSFER_WRITE, i::ImageLayout::TransferDstOptimal),
-				target: &image_logo,
-				range: COLOR_RANGE.clone(),
-			};
-			cmd_buffer.pipeline_barrier(PipelineStage::TOP_OF_PIPE .. PipelineStage::TRANSFER, &[image_barrier]);
-
-			cmd_buffer.copy_buffer_to_image(
-				&image_upload_buffer,
-				&image_logo,
-				i::ImageLayout::TransferDstOptimal,
-				&[command::BufferImageCopy {
-					buffer_offset: 0,
-					buffer_width: row_pitch / (image_stride as u32),
-					buffer_height: height as u32,
-					image_layers: i::SubresourceLayers {
-						aspects: f::AspectFlags::COLOR,
-						level: 0,
-						layers: 0 .. 1,
-					},
-					image_offset: command::Offset { x: 0, y: 0, z: 0 },
-					image_extent: d::Extent { width, height, depth: 1 },
-				}]);
-
-			let image_barrier = m::Barrier::Image {
-				states: (i::Access::TRANSFER_WRITE, i::ImageLayout::TransferDstOptimal) ..
-						(i::Access::SHADER_READ, i::ImageLayout::ShaderReadOnlyOptimal),
-				target: &image_logo,
-				range: COLOR_RANGE.clone(),
-			};
-			cmd_buffer.pipeline_barrier(PipelineStage::TRANSFER .. PipelineStage::FRAGMENT_SHADER, &[image_barrier]);
-
-			cmd_buffer.finish()
-		};
-
+		
 		let submission = Submission::new()
 			.submit(Some(submit));
 		self.main_queue.submit(submission, Some(&mut self.frame_fence));
@@ -135,7 +97,7 @@ impl<B: hal::Backend> DeviceController<B> {
 	 * Performs rendering with the given pipeline.
 	 */
 	pub fn render_with_pipeline(&mut self, pipeline: &RenderPipeline<B>) {
-		self.start_frame();
+		self.begin_frame();
 		//Ask the pipeline for a submission given a command buffer.
 		let mut cmd_buffer = self.command_pool.acquire_command_buffer(false);
 		let submission = pipeline.submission_with_cmd_buffer(cmd_buffer);
@@ -143,18 +105,22 @@ impl<B: hal::Backend> DeviceController<B> {
 	}
 
 	fn REMOVE_submit(&mut self) {
+		//The submission used to draw the
+		//demo scene.
 		//TODO_rust: figure out how to *actually*
 		//split this up
 		let frame = self.swap_chain.acquire_frame(FrameSync::Semaphore(&mut self.frame_semaphore));
 
 		let submit = {
 			let mut cmd_buffer = self.command_pool.acquire_command_buffer(false);
+			let viewport = self.viewport as command::Viewport;
+			let pipeline = self.resource_lists.pipelines[0];
 
 			cmd_buffer.set_viewports(&[viewport.clone()]);
 			cmd_buffer.set_scissors(&[viewport.rect]);
-			cmd_buffer.bind_graphics_pipeline(&pipeline.as_ref().unwrap());
+			cmd_buffer.bind_graphics_pipeline(&pipeline.pipeline_impl.as_ref().unwrap());
 			cmd_buffer.bind_vertex_buffers(pso::VertexBufferSet(vec![(&vertex_buffer, 0)]));
-			cmd_buffer.bind_graphics_descriptor_sets(&pipeline_layout, 0, Some(&desc_set)); //TODO
+			cmd_buffer.bind_graphics_descriptor_sets(&pipeline.pipeline_layout, 0, Some(&desc_set)); //TODO
 
 			{
 				let mut encoder = cmd_buffer.begin_render_pass_inline(
@@ -172,7 +138,7 @@ impl<B: hal::Backend> DeviceController<B> {
 		let submission = Submission::new()
 			.wait_on(&[(&self.frame_semaphore, PipelineStage::BOTTOM_OF_PIPE)])
 			.submit(Some(submit));
-		self.queue.submit(submission, Some(&mut self.frame_fence));
+		self.main_queue.submit(submission, Some(&mut self.frame_fence));
 	}
 
 	pub fn destroy_resources(&mut self) {
@@ -198,7 +164,7 @@ impl<B: hal::Backend> DeviceController<B> {
 		// for framebuffer in self.resource_lists.framebuffers {
 		// 	device.destroy_framebuffer(framebuffer);
 		// }
-		self.device.destroy_framebuffer(backbuffer);
+		self.device.destroy_framebuffer(self.backbuffer);
 		// self.destroy_all_resources<?<B>>();
 
 		self.destroy_all_resources::<RenderTarget<B>>();

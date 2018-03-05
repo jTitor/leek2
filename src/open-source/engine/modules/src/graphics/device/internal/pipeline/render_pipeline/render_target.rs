@@ -3,6 +3,7 @@
  * can be written to.
  */
 use graphics::device::internal::pipeline::{DeviceController, DeviceResource};
+use math::screen::Size;
 
 use std::rc::Weak;
 
@@ -77,7 +78,7 @@ impl<B: hal::Backend, C: RenderTargetCapability> DeviceResource<C> for DeviceCon
 
 pub struct RenderTargetBuilder<B> where B: hal::Backend {}
 impl<B: hal::Backend> RenderTargetBuilder<B> {
-	pub fn build(device: &mut hal::Device) -> RenderTarget<B> {
+	pub fn from_gfx_backbuffer(device: &hal::Device<B>, backbuffer: &hal::Backbuffer, render_pass: &B::RenderPass, surface_format: f::Format, image_dims: Size) -> RenderTarget<B> {
 		//Pull render texture and framebuffer objects
 		//from the backbuffer struct we've been given.
 		//Exactly what we get depends on the
@@ -87,7 +88,7 @@ impl<B: hal::Backend> RenderTargetBuilder<B> {
 			//to the underlying render textures.
 			//The FBOs can be generated on the side.
 			hal::Backbuffer::Images(images) => {
-				let extent = d::Extent { width: pixel_width as _, height: pixel_height as _, depth: 1 };
+				let extent = d::Extent { width: image_dims.width() as _, height: image_dims.height() as _, depth: 1 };
 				let pairs = images
 					.into_iter()
 					.map(|image| {
@@ -98,7 +99,7 @@ impl<B: hal::Backend> RenderTargetBuilder<B> {
 				let fbos = pairs
 					.iter()
 					.map(|&(_, ref rtv)| {
-						device.create_framebuffer(&render_pass, Some(rtv), extent).unwrap()
+						device.create_framebuffer(render_pass, Some(rtv), extent).unwrap()
 					})
 					.collect();
 				(pairs, fbos)

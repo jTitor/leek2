@@ -167,6 +167,20 @@ impl<B: hal::Backend> ImageInit for Image<B> {
 			cmd_buffer.finish()
 		};
 
+		//The submission call for this
+		//upload is different from a draw scene call:
+		// let submission = Submission::new()
+		// 	.submit(Some(submit));
+		// self.main_queue.submit(submission, Some(&mut self.frame_fence));
+
+		// self.device.wait_for_fence(&self.frame_fence, self.frame_wait_timeout_ms);
+
+		//The draw scene call is instead:
+		// let submission = Submission::new()
+		// 	.wait_on(&[(&self.frame_semaphore, PipelineStage::BOTTOM_OF_PIPE)])
+		// 	.submit(Some(submit));
+		// self.main_queue.submit(submission, Some(&mut self.frame_fence));
+
 		Ok(())
 	}
 }

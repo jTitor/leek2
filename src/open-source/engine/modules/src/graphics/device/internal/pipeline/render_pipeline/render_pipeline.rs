@@ -7,8 +7,9 @@ use graphics::device::internal::pipeline::{DeviceController, DeviceResource};
 
 use std::rc::Weak;
 
-use gfx_hal as hal;
 use failure::Error;
+use gfx_hal as hal;
+use gfx_hal::command;
 
 pub struct RenderPipeline<B> where B: hal::Backend {
 	//The exact backend doesn't matter,
@@ -49,22 +50,14 @@ impl<B> RenderPipeline<B> where B: hal::Backend {
 	/**
 	 * Generates a submission given a command buffer.
 	 */
-	pub fn submission_with_cmd_buffer<C, S>(&mut self, cmd_buffer: hal::CommandBuffer<B, C, S>) -> Result<(), Error> where S: hal::Shot {
+	pub fn submission_with_cmd_buffer<C, S>(&mut self, cmd_buffer: command::CommandBuffer<B, C, S>) -> Result<(), Error> where S: command::Shot {
 		self.submission_callback(cmd_buffer)
 	}
 
-	pub fn destroy_resources(&mut self) {
-		debug_assert!(!self.resources_destroyed);
-
-		if !self.resources_destroyed {
-			self.device.destroy_descriptor_pool(self.desc_pool);
-			self.device.destroy_descriptor_set_layout(self.set_layout);
-			self.device.destroy_pipeline_layout(self.pipeline_layout);
-			self.device.destroy_render_pass(self.render_pass);
-			self.device.destroy_graphics_pipeline(self.pipeline_impl);
-
-			self.resources_destroyed = true;
-		}
+	pub fn mark_destroyed(&mut self) {
+		debug_assert!(!self.resources_destroyed, "resources appear to have already been destroyed once");
+		
+		self.resources_destroyed = true;
 	}
 }
 
@@ -95,6 +88,11 @@ impl<B: hal::Backend, C: RenderPipelineCapability> DeviceResource<C> for DeviceC
 
 	fn destroy_resource<C>(&mut self, resource: &mut C) -> Result<(), Error> {
 		unimplemented!();
+		self.device.destroy_descriptor_pool(resource.desc_pool);
+		self.device.destroy_descriptor_set_layout(resource.set_layout);
+		self.device.destroy_pipeline_layout(resource.pipeline_layout);
+		self.device.destroy_render_pass(resource.render_pass);
+		self.device.destroy_graphics_pipeline(resource.pipeline_impl);
 
 		resource.mark_destroyed();
 	}

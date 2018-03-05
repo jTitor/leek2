@@ -42,12 +42,12 @@ impl<B: hal::Backend> Image<B> {
 		self.resources_destroyed = true;
 	}
 
-	fn from_file(file_name: String) -> Image<B> {
+	fn from_file(file_name: String) -> Result<Image<B>, Error> {
 		//TODO: This part should be split out into
 		//a separate struct - a RawImage?
 		//Then you can have multiple providers or
 		//a dummy provider for unit tests
-		Self::load_file()?;
+		Self::load_file(file_name)?;
 
 		//It looks like you can't upload
 		//directly from CPU to a hal::Image,
