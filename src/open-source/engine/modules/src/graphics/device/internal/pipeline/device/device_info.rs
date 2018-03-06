@@ -8,7 +8,7 @@ use gfx_hal::format::AsFormat;
 use std::rc::Rc;
 use failure::Error;
 
-/*!
+/**
  * Contains fields and structs used to build
  * command queues and buffers for a device.
  */
