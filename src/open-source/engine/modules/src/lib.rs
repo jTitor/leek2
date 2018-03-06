@@ -20,6 +20,7 @@ extern crate gfx_hal;
 //#[cfg(feature = "gl")]
 extern crate gfx_backend_gl;
 extern crate glutin;
+extern crate image;
 extern crate winapi;
 extern crate kernel32;
 extern crate num_traits;

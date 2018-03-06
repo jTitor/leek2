@@ -6,10 +6,10 @@ use super::DeviceResourceLists;
 use graphics::device::internal::pipeline::{DeviceResource, MemoryBuffer, Image, Sampler, RenderPipeline, RenderTarget};
 
 use gfx_hal as hal;
-use gfx_hal::{Device, Swapchain, CommandQueue};
+use gfx_hal::{Device, Swapchain};
 use gfx_hal::pool::RawCommandPool;
-use gfx_hal::{command, pool, pso, memory as m, image as i,
-	device as d, format as f};
+use gfx_hal::{command, pool, pso};
+use gfx_hal::command::CommandBuffer;
 use gfx_hal::pso::PipelineStage;
 use gfx_hal::queue::Submission;
 
@@ -111,7 +111,7 @@ impl<B: hal::Backend> DeviceController<B> {
 		//demo scene.
 		//TODO_rust: figure out how to *actually*
 		//split this up
-		let frame = self.swap_chain.acquire_frame(FrameSync::Semaphore(&mut self.frame_semaphore));
+		let frame = self.swap_chain.acquire_frame(hal::FrameSync::Semaphore(&mut self.frame_semaphore));
 
 		let submit = {
 			let mut cmd_buffer = self.command_pool.acquire_command_buffer(false);
@@ -138,7 +138,7 @@ impl<B: hal::Backend> DeviceController<B> {
 		};
 
 		let submission = Submission::new()
-			.wait_on(&[(&self.frame_semaphore, PipelineStage::BOTTOM_OF_PIPE)])
+			.wait_on(&[(&self.frame_semaphore, pso::PipelineStage::BOTTOM_OF_PIPE)])
 			.submit(Some(submit));
 		self.main_queue.submit(submission, Some(&mut self.frame_fence));
 	}

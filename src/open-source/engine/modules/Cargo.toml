@@ -6,6 +6,8 @@ authors = [ "jTitor <me@me.me>" ]
 [dependencies]
 #Simpler and easier-to-convert errors
 failure = "*"#"0.1.1"
+#Image loading library
+image = "*"#"0.15"
 
 #The graphics wrapper.
 #HAL isn't finalized for release, so

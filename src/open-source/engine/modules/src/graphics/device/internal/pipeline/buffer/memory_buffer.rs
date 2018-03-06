@@ -56,7 +56,7 @@ impl<B: hal::Backend> DeviceResource<B> for MemoryBuffer<B> {
 	}
 
 	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error> {
-		device.destroy_buffer(resource.buffer);
+		device.destroy_buffer(resource.buffer_binding);
 		device.free_memory(resource.buffer_memory);
 		unimplemented!();
 

@@ -61,34 +61,30 @@ impl<B> BufferBuilder<B> where B: hal::Backend {
 		//instead
 		let cast_buffer_type = Into::<buffer::Usage>::into(self.buffer_type);
 
-		if let Some(device) = device_upgrade {
-			let buffer_unbound = device.create_buffer(self.size_bytes, cast_buffer_type)?;
-			let buffer_req = device.get_buffer_requirements(&buffer_unbound);
+		let buffer_unbound = device.create_buffer(self.size_bytes, cast_buffer_type)?;
+		let buffer_req = device.get_buffer_requirements(&buffer_unbound);
 
-			let cast_upload_property = Into::<m::Properties>::into(self.upload_type);
-			//END TODO
-			let upload_type = memory_types
-				.iter()
-				.enumerate()
-				.position(|(id, mem_type)| {
-					buffer_req.type_mask & (1 << id) != 0 &&
-					mem_type.properties.contains(cast_upload_property)
-				})
-				.unwrap()
-				.into();
+		let cast_upload_property = Into::<m::Properties>::into(self.upload_type);
+		//END TODO
+		let upload_type = memory_types
+			.iter()
+			.enumerate()
+			.position(|(id, mem_type)| {
+				buffer_req.type_mask & (1 << id) != 0 &&
+				mem_type.properties.contains(cast_upload_property)
+			})
+			.unwrap()
+			.into();
 
-			let buffer_memory = device.allocate_memory(upload_type, buffer_req.size)?;
-			let buffer_object = device.bind_buffer_memory(&buffer_memory, 0, buffer_unbound)?;
+		let buffer_memory = device.allocate_memory(upload_type, buffer_req.size)?;
+		let buffer_object = device.bind_buffer_memory(&buffer_memory, 0, buffer_unbound)?;
 
-			return Ok(MemoryBuffer {
-				buffer: buffer_unbound,
-				buffer_memory: buffer_memory,
-				buffer_binding: buffer_object,
-				buffer_len: buffer_req.size,
-				resources_destroyed: false
-			});
-		}
-
-		Error //TODO: specify error
+		return Ok(MemoryBuffer {
+			buffer: buffer_unbound,
+			buffer_memory: buffer_memory,
+			buffer_binding: buffer_object,
+			buffer_len: buffer_req.size,
+			resources_destroyed: false
+		});
 	}
 }

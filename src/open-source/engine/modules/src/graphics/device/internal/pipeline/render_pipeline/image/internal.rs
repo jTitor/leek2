@@ -4,34 +4,40 @@
  */
 use super::Image;
 
+use std::io::Cursor;
+
 use failure::Error;
 use gfx_hal as hal;
-use gfx_hal::{buffer, command, device as d, format as f, image as i,
+use gfx_hal::Device;
+use gfx_hal::{buffer, command, pool, pso, device as d, format as f, image as i,
 	memory as m};
+use gfx_hal::format::AsFormat;
+use gfx_hal::format::Rgba8Srgb as ColorFormat;
+use image;
 
 /**
  * Trait for initialization methods of Image.
  */
-pub trait ImageInit {
+pub trait ImageInit<B: hal::Backend> {
 	//TEMP METHOD: Loads the file into memory
 	//and retrieves all the info needed
 	//to create a buffer to upload it to.
-	fn load_file(file_name: String) -> Result<(), Error>;
+	fn load_file(file_name: String, limits: hal::Limits) -> Result<(), Error>;
 
 	//TEMP METHOD: Creates the image buffers used to
 	//temporarily store the image before
 	//binding to a render target.
-	fn create_upload_buffer() -> Result<(), Error>;
+	fn create_upload_buffer(device: &B::Device, upload_size: u64, upload_type: hal::MemoryTypeId) -> Result<(), Error>;
 
-	fn copy_image_to_upload_buffer() -> Result<(), Error>;
+	fn copy_image_to_upload_buffer(device: &B::Device, image_upload_memory: B::Memory, upload_size: u64, img: image::RgbaImage, width: u32, height: u32, image_stride: usize, row_pitch: u64) -> Result<(), Error>;
 
-	fn create_image_object() -> Result<(), Error>;
+	fn create_image_object(device: &B::Device, image_kind: i::Kind, memory_types: &Vec<hal::MemoryType>) -> Result<(), Error>;
 
-	fn copy_upload_buffer_to_image_object() -> Result<(), Error>;
+	fn copy_upload_buffer_to_image_object(command_pool: pool::CommandPool<B, hal::Graphics>, image_logo: &B::Image, image_upload_buffer: &B::Buffer, width: u32, height: u32, image_stride: usize, row_pitch: u32) -> Result<(), Error>;
 }
 
-impl<B: hal::Backend> ImageInit for Image<B> {
-	fn load_file(file_name: String) -> Result<(), Error> {
+impl<B: hal::Backend> ImageInit<B> for Image<B> {
+	fn load_file(file_name: String, limits: hal::Limits) -> Result<(), Error> {
 		//TODO: make appropriate fs call
 		let img_data = [0u8];//include_bytes!(file_name.as_str());
 
@@ -56,7 +62,7 @@ impl<B: hal::Backend> ImageInit for Image<B> {
 		Ok(())
 	}
 
-	fn create_upload_buffer() -> Result<(), Error> {
+	fn create_upload_buffer(device: &B::Device, upload_size: u64, upload_type: hal::MemoryTypeId) -> Result<(), Error> {
 		//Set up the raw buffer object here...
 		let image_buffer_unbound = device.create_buffer(upload_size, buffer::Usage::TRANSFER_SRC).unwrap();
 		//The requirement that we be able to read from CPU
@@ -74,7 +80,7 @@ impl<B: hal::Backend> ImageInit for Image<B> {
 		Ok(())
 	}
 
-	fn copy_image_to_upload_buffer() -> Result<(), Error> {
+	fn copy_image_to_upload_buffer(device: &B::Device, image_upload_memory: B::Memory, upload_size: u64, img: image::RgbaImage, width: u32, height: u32, image_stride: usize, row_pitch: u64) -> Result<(), Error> {
 		let mut data = device
 			.acquire_mapping_writer::<u8>(&image_upload_memory, 0..upload_size)?;
 
@@ -93,14 +99,14 @@ impl<B: hal::Backend> ImageInit for Image<B> {
 		Ok(())
 	}
 
-	fn create_image_object() -> Result<(), Error> {
+	fn create_image_object(device: &B::Device, image_kind: i::Kind, memory_types: &Vec<hal::MemoryType>) -> Result<(), Error> {
 		//TODO: everything from here to "END TODO"
 		//should be handled by an ImageBufferBuilder.
 		//
 		//The sample code sets Usage::TRANSFER_DST
 		//so the image can be uploaded from CPU to GPU,
 		//and Usage::SAMPLED so the sampler can get at it
-		let image_unbound = device.create_image(kind, 1, ColorFormat::SELF, i::Usage::TRANSFER_DST | i::Usage::SAMPLED).unwrap(); // TODO: usage
+		let image_unbound = device.create_image(image_kind, 1, ColorFormat::SELF, i::Usage::TRANSFER_DST | i::Usage::SAMPLED).unwrap(); // TODO: usage
 		let image_req = device.get_image_requirements(&image_unbound);
 
 		let device_type = memory_types
@@ -121,12 +127,12 @@ impl<B: hal::Backend> ImageInit for Image<B> {
 		//and also has an image view that
 		//samplers connect to.
 		let image_logo = device.bind_image_memory(&image_memory, 0, image_unbound).unwrap();
-		let image_srv = device.create_image_view(&image_logo, ColorFormat::SELF, Swizzle::NO, COLOR_RANGE.clone()).unwrap();
+		let image_srv = device.create_image_view(&image_logo, ColorFormat::SELF, f::Swizzle::NO, COLOR_RANGE.clone()).unwrap();
 
 		Ok(())
 	}
 
-	fn copy_upload_buffer_to_image_object() -> Result<(), Error> {
+	fn copy_upload_buffer_to_image_object(command_pool: pool::CommandPool<B, hal::Graphics>, image_logo: &B::Image, image_upload_buffer: &B::Buffer, width: u32, height: u32, image_stride: usize, row_pitch: u32) -> Result<(), Error> {
 		//This is the command queue
 		//call, but should be submitted to a Device.
 		//The Image struct doesn't handle this itself.
@@ -136,14 +142,14 @@ impl<B: hal::Backend> ImageInit for Image<B> {
 			let image_barrier = m::Barrier::Image {
 				states: (i::Access::empty(), i::ImageLayout::Undefined) ..
 						(i::Access::TRANSFER_WRITE, i::ImageLayout::TransferDstOptimal),
-				target: &image_logo,
+				target: image_logo,
 				range: COLOR_RANGE.clone(),
 			};
-			cmd_buffer.pipeline_barrier(PipelineStage::TOP_OF_PIPE .. PipelineStage::TRANSFER, &[image_barrier]);
+			cmd_buffer.pipeline_barrier(pso::PipelineStage::TOP_OF_PIPE .. pso::PipelineStage::TRANSFER, &[image_barrier]);
 
 			cmd_buffer.copy_buffer_to_image(
-				&image_upload_buffer,
-				&image_logo,
+				image_upload_buffer,
+				image_logo,
 				i::ImageLayout::TransferDstOptimal,
 				&[command::BufferImageCopy {
 					buffer_offset: 0,
@@ -161,10 +167,10 @@ impl<B: hal::Backend> ImageInit for Image<B> {
 			let image_barrier = m::Barrier::Image {
 				states: (i::Access::TRANSFER_WRITE, i::ImageLayout::TransferDstOptimal) ..
 						(i::Access::SHADER_READ, i::ImageLayout::ShaderReadOnlyOptimal),
-				target: &image_logo,
+				target: image_logo,
 				range: COLOR_RANGE.clone(),
 			};
-			cmd_buffer.pipeline_barrier(PipelineStage::TRANSFER .. PipelineStage::FRAGMENT_SHADER, &[image_barrier]);
+			cmd_buffer.pipeline_barrier(pso::PipelineStage::TRANSFER .. pso::PipelineStage::FRAGMENT_SHADER, &[image_barrier]);
 
 			cmd_buffer.finish()
 		};
