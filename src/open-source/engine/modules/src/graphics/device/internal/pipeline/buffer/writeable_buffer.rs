@@ -2,7 +2,7 @@
  * Handles buffer storage for a graphics::Device.
  * This buffer is generated from data loaded from disk.
  */
-use graphics::device::internal::pipeline::{DeviceController, DeviceResource, MemoryBuffer};
+use graphics::device::internal::pipeline::{DeviceResource, MemoryBuffer};
 
 use std::rc::Weak;
 

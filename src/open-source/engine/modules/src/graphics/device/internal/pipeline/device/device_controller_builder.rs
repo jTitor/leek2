@@ -4,22 +4,20 @@
 use super::DeviceController;
 use graphics::device::internal::pipeline as pipeline;
 
-use std::fs::File;
 use std::marker::PhantomData;
-use std::rc::Rc;
 
 use gfx_hal as hal;
-use gfx_hal::Device;
+use gfx_hal::{Device, Surface};
 use gfx_hal::{format as f, pool as pool};
 use failure::Error;
 
-const ELEMENTS_PER_QUEUE: u32 = 16;
+const ELEMENTS_PER_QUEUE: usize = 16;
 
 pub struct DeviceControllerBuilder<B: hal::Backend> {
 	_backend_type: PhantomData<B>
 }
 impl<B: hal::Backend> DeviceControllerBuilder<B> {
-	pub fn example(adapter: &hal::Adapter<B>, surface: Rc<&hal::Surface<B>>, surface_format: f::Format) -> Result<DeviceController<B>, Error> {
+	pub fn example(adapter: &hal::Adapter<B>, surface: &mut B::Surface, surface_format: f::Format) -> Result<DeviceController<B>, Error> {
 		let (device, mut queue_group) =
 			adapter.open_with::<_, hal::Graphics>(1, |family| {
 				surface.supports_queue_family(family)
@@ -31,7 +29,7 @@ impl<B: hal::Backend> DeviceControllerBuilder<B> {
 		println!("Surface format: {:?}", surface_format);
 		let swap_config = hal::SwapchainConfig::new()
 			.with_color(surface_format);
-		let (mut swap_chain, backbuffer) = device.create_swapchain(&mut surface, swap_config);
+		let (mut swap_chain, backbuffer) = device.create_swapchain(surface, swap_config);
 
 		//TODO: viewport configuration from builder
 		let viewport: pipeline::Viewport = Default::default();

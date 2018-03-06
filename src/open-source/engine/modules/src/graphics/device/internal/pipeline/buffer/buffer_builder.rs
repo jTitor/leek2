@@ -7,6 +7,7 @@ use std::marker::PhantomData;
 
 use failure::Error;
 use gfx_hal as hal;
+use gfx_hal::Device;
 use gfx_hal::{buffer, memory as m};
 
 pub enum BufferType {
@@ -54,14 +55,14 @@ pub struct BufferBuilder<B: hal::Backend> {
 impl<B> BufferBuilder<B> where B: hal::Backend {
 	//TODO: DeviceController should handle this
 	//instead
-	pub fn build(&self, device: &B::Device) -> Result<MemoryBuffer<B>, Error> {
+	pub fn build(&self, device: &B::Device, memory_types: &Vec<hal::MemoryType>) -> Result<MemoryBuffer<B>, Error> {
 		//TODO: everything up to "END TODO"
 		//should be genericized,
 		//as images use get_image_requirements
 		//instead
 		let cast_buffer_type = Into::<buffer::Usage>::into(self.buffer_type);
 
-		let buffer_unbound = device.create_buffer(self.size_bytes, cast_buffer_type)?;
+		let buffer_unbound = device.create_buffer(self.size_bytes as u64, cast_buffer_type)?;
 		let buffer_req = device.get_buffer_requirements(&buffer_unbound);
 
 		let cast_upload_property = Into::<m::Properties>::into(self.upload_type);
@@ -83,7 +84,7 @@ impl<B> BufferBuilder<B> where B: hal::Backend {
 			buffer: buffer_unbound,
 			buffer_memory: buffer_memory,
 			buffer_binding: buffer_object,
-			buffer_len: buffer_req.size,
+			buffer_len: buffer_req.size as usize,
 			resources_destroyed: false
 		});
 	}

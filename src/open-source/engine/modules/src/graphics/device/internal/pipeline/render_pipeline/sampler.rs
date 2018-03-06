@@ -1,7 +1,7 @@
 /*!
  * Samples color data from a texture.
  */
-use graphics::device::internal::pipeline::{DeviceController, DeviceResource};
+use graphics::device::internal::pipeline::DeviceResource;
 
 use std::rc::Weak;
 

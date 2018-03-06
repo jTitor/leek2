@@ -31,9 +31,9 @@ pub trait ImageInit<B: hal::Backend> {
 
 	fn copy_image_to_upload_buffer(device: &B::Device, image_upload_memory: B::Memory, upload_size: u64, img: image::RgbaImage, width: u32, height: u32, image_stride: usize, row_pitch: u64) -> Result<(), Error>;
 
-	fn create_image_object(device: &B::Device, image_kind: i::Kind, memory_types: &Vec<hal::MemoryType>) -> Result<(), Error>;
+	fn create_image_object(device: &B::Device, image_kind: i::Kind, memory_types: &Vec<hal::MemoryType>, color_range: i::SubresourceRange) -> Result<(), Error>;
 
-	fn copy_upload_buffer_to_image_object(command_pool: pool::CommandPool<B, hal::Graphics>, image_logo: &B::Image, image_upload_buffer: &B::Buffer, width: u32, height: u32, image_stride: usize, row_pitch: u32) -> Result<(), Error>;
+	fn copy_upload_buffer_to_image_object(command_pool: pool::CommandPool<B, hal::Graphics>, image_logo: &B::Image, image_upload_buffer: &B::Buffer, width: u32, height: u32, image_stride: usize, row_pitch: u32, color_range: i::SubresourceRange) -> Result<(), Error>;
 }
 
 impl<B: hal::Backend> ImageInit<B> for Image<B> {
@@ -99,7 +99,7 @@ impl<B: hal::Backend> ImageInit<B> for Image<B> {
 		Ok(())
 	}
 
-	fn create_image_object(device: &B::Device, image_kind: i::Kind, memory_types: &Vec<hal::MemoryType>) -> Result<(), Error> {
+	fn create_image_object(device: &B::Device, image_kind: i::Kind, memory_types: &Vec<hal::MemoryType>, color_range: i::SubresourceRange) -> Result<(), Error> {
 		//TODO: everything from here to "END TODO"
 		//should be handled by an ImageBufferBuilder.
 		//
@@ -127,12 +127,12 @@ impl<B: hal::Backend> ImageInit<B> for Image<B> {
 		//and also has an image view that
 		//samplers connect to.
 		let image_logo = device.bind_image_memory(&image_memory, 0, image_unbound).unwrap();
-		let image_srv = device.create_image_view(&image_logo, ColorFormat::SELF, f::Swizzle::NO, COLOR_RANGE.clone()).unwrap();
+		let image_srv = device.create_image_view(&image_logo, ColorFormat::SELF, f::Swizzle::NO, color_range.clone()).unwrap();
 
 		Ok(())
 	}
 
-	fn copy_upload_buffer_to_image_object(command_pool: pool::CommandPool<B, hal::Graphics>, image_logo: &B::Image, image_upload_buffer: &B::Buffer, width: u32, height: u32, image_stride: usize, row_pitch: u32) -> Result<(), Error> {
+	fn copy_upload_buffer_to_image_object(command_pool: pool::CommandPool<B, hal::Graphics>, image_logo: &B::Image, image_upload_buffer: &B::Buffer, width: u32, height: u32, image_stride: usize, row_pitch: u32, color_range: i::SubresourceRange) -> Result<(), Error> {
 		//This is the command queue
 		//call, but should be submitted to a Device.
 		//The Image struct doesn't handle this itself.
@@ -143,7 +143,7 @@ impl<B: hal::Backend> ImageInit<B> for Image<B> {
 				states: (i::Access::empty(), i::ImageLayout::Undefined) ..
 						(i::Access::TRANSFER_WRITE, i::ImageLayout::TransferDstOptimal),
 				target: image_logo,
-				range: COLOR_RANGE.clone(),
+				range: color_range.clone(),
 			};
 			cmd_buffer.pipeline_barrier(pso::PipelineStage::TOP_OF_PIPE .. pso::PipelineStage::TRANSFER, &[image_barrier]);
 
@@ -168,7 +168,7 @@ impl<B: hal::Backend> ImageInit<B> for Image<B> {
 				states: (i::Access::TRANSFER_WRITE, i::ImageLayout::TransferDstOptimal) ..
 						(i::Access::SHADER_READ, i::ImageLayout::ShaderReadOnlyOptimal),
 				target: image_logo,
-				range: COLOR_RANGE.clone(),
+				range: color_range.clone(),
 			};
 			cmd_buffer.pipeline_barrier(pso::PipelineStage::TRANSFER .. pso::PipelineStage::FRAGMENT_SHADER, &[image_barrier]);
 

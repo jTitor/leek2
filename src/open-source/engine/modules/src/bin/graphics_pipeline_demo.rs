@@ -13,6 +13,14 @@ use std::time::Duration;
 use std::thread;
 use std::sync::{Arc, RwLock};
 
+use gfx_hal::{format as f, image as i};
+
+const COLOR_RANGE: i::SubresourceRange = i::SubresourceRange {
+	aspects: f::AspectFlags::COLOR,
+	levels: 0 .. 1,
+	layers: 0 .. 1,
+};
+
 fn main() {
 	let log_path : &str = "./test.log";
 	//Setup profiler here.

@@ -17,7 +17,7 @@ pub struct DefaultPipelineBuilder<B> where B: hal::Backend {
 	_backend_type: PhantomData<B>
 }
 impl<B> DefaultPipelineBuilder<B> where B: hal::Backend {
-	fn build(device: &mut B::Device) -> Result<RenderPipeline<B>, Error> {
+	fn build(device: &mut B::Device, surface_format: f::Format) -> Result<RenderPipeline<B>, Error> {
 		//Describe pipeline inputs:
 		//	First up are the uniforms,
 		//	the texture and texture sampler.

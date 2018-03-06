@@ -4,7 +4,7 @@
  */
 use std::rc::Weak;
 
-use graphics::device::internal::pipeline::{DeviceController, DeviceResource};
+use graphics::device::internal::pipeline::DeviceResource;
 
 use failure::Error;
 use gfx_hal as hal;

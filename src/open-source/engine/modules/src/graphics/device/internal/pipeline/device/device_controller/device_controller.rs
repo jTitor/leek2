@@ -6,12 +6,13 @@ use super::DeviceResourceLists;
 use graphics::device::internal::pipeline::{DeviceResource, MemoryBuffer, Image, Sampler, RenderPipeline, RenderTarget};
 
 use gfx_hal as hal;
-use gfx_hal::{Device, Swapchain};
+use gfx_hal::{Device, Swapchain, Graphics};
 use gfx_hal::pool::RawCommandPool;
 use gfx_hal::{command, pool, pso};
-use gfx_hal::command::CommandBuffer;
+use gfx_hal::command::{CommandBuffer, Submit, Primary};
 use gfx_hal::pso::PipelineStage;
 use gfx_hal::queue::Submission;
+use gfx_hal::queue::capability as capability;
 
 pub struct DeviceController<B: hal::Backend> {
 	resource_lists: DeviceResourceLists<B>,
@@ -37,7 +38,7 @@ pub struct DeviceController<B: hal::Backend> {
 	resources_destroyed: bool
 }
 
-impl<B: hal::Backend> DeviceController<B> {
+impl<'a, B: hal::Backend> DeviceController<B> {
 	/**
 	 * Readies the device for a draw submission.
 	 */
@@ -86,7 +87,7 @@ impl<B: hal::Backend> DeviceController<B> {
 	// 	queue.submit(submission, Some(&mut frame_fence));
 	// }
 
-	pub fn upload_to_buffer(&mut self) {
+	pub fn upload_to_buffer<I, C, S>(&mut self, submit: I) where I: command::Submittable<'a, B, S, command::Primary>, (hal::Transfer, S): capability::Upper {
 		
 		let submission = Submission::new()
 			.submit(Some(submit));
@@ -106,7 +107,7 @@ impl<B: hal::Backend> DeviceController<B> {
 		self.end_frame();
 	}
 
-	fn REMOVE_submit(&mut self) {
+	fn REMOVE_submit(&mut self, pipeline: &RenderPipeline<B>, render_pass: &B::RenderPass, framebuffers: &Vec<B::Framebuffer>, vertex_buffer: &B::Buffer, desc_set: &B::DescriptorSet) {
 		//The submission used to draw the
 		//demo scene.
 		//TODO_rust: figure out how to *actually*
@@ -121,12 +122,12 @@ impl<B: hal::Backend> DeviceController<B> {
 			cmd_buffer.set_viewports(&[viewport.clone()]);
 			cmd_buffer.set_scissors(&[viewport.rect]);
 			cmd_buffer.bind_graphics_pipeline(&pipeline.pipeline_impl.as_ref().unwrap());
-			cmd_buffer.bind_vertex_buffers(pso::VertexBufferSet(vec![(&vertex_buffer, 0)]));
-			cmd_buffer.bind_graphics_descriptor_sets(&pipeline.pipeline_layout, 0, Some(&desc_set)); //TODO
+			cmd_buffer.bind_vertex_buffers(pso::VertexBufferSet(vec![(vertex_buffer, 0)]));
+			cmd_buffer.bind_graphics_descriptor_sets(&pipeline.pipeline_layout, 0, Some(desc_set)); //TODO
 
 			{
 				let mut encoder = cmd_buffer.begin_render_pass_inline(
-					&render_pass,
+					render_pass,
 					&framebuffers[frame.id()],
 					viewport.rect,
 					&[command::ClearValue::Color(command::ClearColor::Float([0.8, 0.8, 0.8, 1.0]))],

@@ -3,7 +3,7 @@
  * A DeviceController uses this pipeline to decide what
  * draw calls must be executed.
  */
-use graphics::device::internal::pipeline::{DeviceController, DeviceResource};
+use graphics::device::internal::pipeline::DeviceResource;
 
 use std::rc::Weak;
 
