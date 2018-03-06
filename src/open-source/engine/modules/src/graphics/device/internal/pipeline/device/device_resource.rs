@@ -1,12 +1,15 @@
 /*!
- * Trait for resources managed
- * by a device controller.
+ * Defines the DeviceResource trait.
  */
 use std::rc::Weak;
 use failure::Error;
 
 use gfx_hal as hal;
 
+/**
+ * Trait for resources managed
+ * by a device controller.
+ */
 pub trait DeviceResource<B: hal::Backend> where Self: Sized {
 	/**
 	 * Gets a new instance of the given resource.

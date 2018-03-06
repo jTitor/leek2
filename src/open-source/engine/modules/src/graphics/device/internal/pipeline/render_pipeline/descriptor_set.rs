@@ -1,5 +1,5 @@
 /*!
- * Binds shader descriptors to input views/samplers.
+ * Defines the Sampler struct.
  */
 use std::marker::PhantomData;
 use std::ops::Range;
@@ -8,6 +8,9 @@ use gfx_hal as hal;
 use gfx_hal::device::Device;
 use gfx_hal::{pso, device as d, image as i};
 
+/**
+ * Binds shader descriptors to input views/samplers.
+ */
 pub struct DescriptorSet<B: hal::Backend> {
 	_backend_type: PhantomData<B>
 }

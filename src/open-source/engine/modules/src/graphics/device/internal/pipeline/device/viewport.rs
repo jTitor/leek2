@@ -1,10 +1,13 @@
 /*!
- * Specifies the geometry of a viewport's
- * rendering volume.
+ * Defines the Viewport struct.
  */
 use math::screen::Size;
 use gfx_hal::command;
 
+/**
+ * Specifies the geometry of a viewport's
+ * rendering volume.
+ */
 #[derive(Default)]
 pub struct Viewport {
 	pub x: f32,

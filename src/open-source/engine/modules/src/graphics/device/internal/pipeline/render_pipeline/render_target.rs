@@ -1,6 +1,5 @@
 /*!
- * Abstracts memory buffers that rendering data
- * can be written to.
+ * Defines the RenderTarget struct.
  */
 use graphics::device::internal::pipeline::DeviceResource;
 use math::screen::Size;
@@ -13,6 +12,10 @@ use gfx_hal::Device;
 use gfx_hal::{format as f, device as d, image as i};
 use failure::Error;
 
+/**
+ * Abstracts memory buffers that rendering data
+ * can be written to.
+ */
 pub struct RenderTarget<B: hal::Backend> {
 	//TODO_rust: impl fields
 	framebuffers: Vec<B::Framebuffer>,

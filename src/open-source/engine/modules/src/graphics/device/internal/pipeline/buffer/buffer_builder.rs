@@ -1,5 +1,6 @@
 /*!
- * Builder struct for a MemoryBuffer.
+ * Defines the BufferBuilder struct and
+ * associated enums.
  */
 use graphics::device::internal::pipeline::MemoryBuffer;
 
@@ -10,6 +11,10 @@ use gfx_hal as hal;
 use gfx_hal::Device;
 use gfx_hal::{buffer, memory as m};
 
+/**
+ * Specifies the type of data stored
+ * by a MemoryBuffer.
+ */
 pub enum BufferType {
 	Vertex,
 	/** Any data that isn't per-vertex. */
@@ -45,6 +50,9 @@ impl From<BufferUploadType> for m::Properties {
 
 //TODO: Make this a request sent to
 //the DeviceController
+/**
+ * Basic builder struct for a MemoryBuffer.
+ */
 pub struct BufferBuilder<B: hal::Backend> {
 	buffer_type: BufferType,
 	upload_type: BufferUploadType,
@@ -84,7 +92,8 @@ impl<B> BufferBuilder<B> where B: hal::Backend {
 			buffer: buffer_unbound,
 			buffer_memory: buffer_memory,
 			buffer_binding: buffer_object,
-			buffer_len: buffer_req.size as usize,
+			buffer_device_id: ,
+			buffer_len: buffer_req.size as u64,
 			resources_destroyed: false
 		});
 	}

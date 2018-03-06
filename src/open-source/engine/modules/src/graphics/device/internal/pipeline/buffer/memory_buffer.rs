@@ -1,6 +1,5 @@
 /*!
- * Handles buffer storage for a graphics::Device.
- * This buffer is manually specified in size and format.
+ * Defines the MemoryBuffer struct.
  */
 use std::rc::Weak;
 
@@ -10,9 +9,13 @@ use failure::Error;
 use gfx_hal as hal;
 use gfx_hal::Device;
 
-//TODO: Make buffer a T
-//so it operates on images and buffers
+/**
+ * Handles buffer storage for a graphics::Device.
+ * This buffer is manually specified in size and format.
+ */
 pub struct MemoryBuffer<B: hal::Backend> {
+	//TODO: Make buffer a T
+	//so it operates on images and buffers
 	pub buffer: B::UnboundBuffer,
 	pub buffer_memory: B::Memory,
 	pub buffer_binding: B::Buffer,
@@ -20,8 +23,8 @@ pub struct MemoryBuffer<B: hal::Backend> {
 	 * The MemoryBuffer's id in the
 	 * DeviceController's buffer list.
 	 */
-	buffer_device_id: usize,
-	pub buffer_len: usize,
+	buffer_device_id: u64,
+	pub buffer_len: u64,
 	resources_destroyed: bool
 }
 

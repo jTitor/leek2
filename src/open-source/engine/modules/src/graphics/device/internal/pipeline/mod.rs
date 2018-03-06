@@ -12,7 +12,8 @@
  *     data
  * 
  * This module describes how the Device does all of
- * these tasks.
+ * these tasks. Structures and methods that aren't publicly
+ * facing can reference implementation structures/values.
  */
 
 mod buffer;

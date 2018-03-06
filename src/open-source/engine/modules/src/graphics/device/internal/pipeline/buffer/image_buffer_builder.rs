@@ -1,10 +1,5 @@
 /*!
- * Wrapper around MemoryBufferBuilder that
- * builds a data buffer for 2D textures.
- * This buffer is for uploading the color data from
- * disk to GPU; to actually use
- * the texture for rendering,
- * use a pipeline::Image.
+ * Defines the ImageBufferBuilder struct.
  */
 use super::{BufferBuilder, MemoryBuffer};
 use math::screen::Size;
@@ -15,12 +10,23 @@ use std::marker::PhantomData;
 use gfx_hal as hal;
 use failure::Error;
 
+/**
+ * Wrapper around MemoryBufferBuilder that
+ * builds a data buffer for 2D textures.
+ * 
+ * This buffer is for uploading the color data from
+ * disk to GPU; to actually use
+ * the texture for rendering,
+ * use a pipeline::Image.
+ */
 pub struct ImageBufferBuilder<B: hal::Backend> {
 	buffer_builder: BufferBuilder<B>,
 	image_dimensions: Size,
-	//The file to load from disk.
-	//if None, the resulting buffer will be
-	//cleared to 0.
+	/**
+	 * The file to load from disk.
+	 * If None, the resulting buffer will be
+	 * cleared to 0.
+	 */
 	image_file: Option<File>,
 	_backend_type: PhantomData<B>
 }

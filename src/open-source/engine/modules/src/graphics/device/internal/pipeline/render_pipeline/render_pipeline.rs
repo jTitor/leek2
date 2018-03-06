@@ -1,7 +1,5 @@
 /*!
- * Performs the actual rendering for a Device.
- * A DeviceController uses this pipeline to decide what
- * draw calls must be executed.
+ * Defines the RenderPipeline struct.
  */
 use graphics::device::internal::pipeline::DeviceResource;
 
@@ -12,6 +10,11 @@ use gfx_hal as hal;
 use gfx_hal::Device;
 use gfx_hal::command;
 
+/**
+ * Performs the actual rendering for a Device.
+ * A DeviceController uses this pipeline to decide what
+ * draw calls must be executed.
+ */
 pub struct RenderPipeline<B> where B: hal::Backend {
 	//The exact backend doesn't matter,
 	//so much as how data is submitted to it.

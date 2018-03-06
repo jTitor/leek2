@@ -1,5 +1,5 @@
 /*!
- * Samples color data from a texture.
+ * Defines the Sampler struct.
  */
 use graphics::device::internal::pipeline::DeviceResource;
 
@@ -10,6 +10,9 @@ use gfx_hal::Device;
 use gfx_hal::image as i;
 use failure::Error;
 
+/**
+ * Samples color data from a texture.
+ */
 pub struct Sampler<B: hal::Backend> {
 	sampler: B::Sampler,
 	/**

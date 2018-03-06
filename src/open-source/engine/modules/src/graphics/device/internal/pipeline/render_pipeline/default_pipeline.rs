@@ -1,7 +1,6 @@
 /*!
- * Default pipeline implementation.
- * This generates a pipeline with one vertex shader
- * and one fragment shader.
+ * Defines the default RenderPipeline
+ * builder.
  */
 use super::RenderPipeline;
 
@@ -13,6 +12,11 @@ use gfx_hal::{Device, DescriptorPool};
 use gfx_hal::{pso, pass, image as i, format as f};
 use failure::Error;
 
+/**
+ * Default pipeline implementation.
+ * This generates a pipeline with one vertex shader
+ * and one fragment shader.
+ */
 pub struct DefaultPipelineBuilder<B> where B: hal::Backend {
 	_backend_type: PhantomData<B>
 }

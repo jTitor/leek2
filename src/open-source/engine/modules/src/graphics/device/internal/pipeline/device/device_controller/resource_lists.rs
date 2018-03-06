@@ -1,10 +1,13 @@
 /*!
- * Stores the resource lists used
- * by the DeviceController.
+ * Defines the DeviceResourceLists struct.
  */
 use gfx_hal as hal;
 use graphics::device::internal::pipeline as pipeline;
 
+/**
+ * Stores the resource lists used
+ * by the DeviceController.
+ */
 pub struct DeviceResourceLists<B> where B: hal::Backend {
 	pub buffers: Vec<pipeline::MemoryBuffer<B>>,
 	pub images: Vec<pipeline::Image<B>>,

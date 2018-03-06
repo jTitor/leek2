@@ -1,6 +1,5 @@
 /*!
- * Contains the memory and buffer binding
- * representing an image.
+ * Defines the Image struct.
  */
 use graphics::device::internal::pipeline::DeviceResource;
 use super::ImageInit;
@@ -12,6 +11,9 @@ use gfx_hal as hal;
 use gfx_hal::Device;
 
 /**
+ * Contains the memory and buffer binding
+ * representing an image.
+ *
  * Images consist of three main parts:
  * the GPU-side buffer, the binding
  * used to link it to other pipeline elements,

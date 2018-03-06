@@ -1,5 +1,5 @@
 /*!
- * Handles creation of a DeviceController.
+ * Defines the DeviceControllerBuilder struct.
  */
 use super::DeviceController;
 use graphics::device::internal::pipeline as pipeline;
@@ -13,6 +13,9 @@ use failure::Error;
 
 const ELEMENTS_PER_QUEUE: usize = 16;
 
+/**
+ * Handles creation of a DeviceController.
+ */
 pub struct DeviceControllerBuilder<B: hal::Backend> {
 	_backend_type: PhantomData<B>
 }

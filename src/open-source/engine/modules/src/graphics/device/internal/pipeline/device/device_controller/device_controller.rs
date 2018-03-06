@@ -1,6 +1,5 @@
 /*!
- * Provides implementation-independent
- * access to the device's draw calls.
+ * Defines the DeviceController struct.
  */
 use super::DeviceResourceLists;
 use graphics::device::internal::pipeline::{DeviceResource, MemoryBuffer, Image, Sampler, RenderPipeline, RenderTarget};
@@ -14,6 +13,10 @@ use gfx_hal::pso::PipelineStage;
 use gfx_hal::queue::Submission;
 use gfx_hal::queue::capability as capability;
 
+/**
+ * Provides implementation-independent
+ * access to the device's draw calls.
+ */
 pub struct DeviceController<B: hal::Backend> {
 	resource_lists: DeviceResourceLists<B>,
 
@@ -88,7 +91,6 @@ impl<'a, B: hal::Backend> DeviceController<B> {
 	// }
 
 	pub fn upload_to_buffer<I, C, S>(&mut self, submit: I) where I: command::Submittable<'a, B, S, command::Primary>, (hal::Transfer, S): capability::Upper {
-		
 		let submission = Submission::new()
 			.submit(Some(submit));
 		self.main_queue.submit(submission, Some(&mut self.frame_fence));

@@ -1,5 +1,6 @@
 /*!
- * Handles GPU-side memory allocations;
+ * Contains modules that handle
+ * GPU-side memory allocations;
  * any such allocations on the GPU are referred to
  * here as *buffers*.
  */

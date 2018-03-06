@@ -1,6 +1,5 @@
 /*!
- * Contains fields and structs used to build
- * command queues and buffers for a device.
+ * Defines the DeviceInfo struct.
  */
 use gfx_hal as hal;
 use gfx_hal::PhysicalDevice;
@@ -9,6 +8,10 @@ use gfx_hal::format::AsFormat;
 use std::rc::Rc;
 use failure::Error;
 
+/*!
+ * Contains fields and structs used to build
+ * command queues and buffers for a device.
+ */
 pub struct DeviceInfo {
 	/**
 	 * TODO
