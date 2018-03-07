@@ -2,7 +2,8 @@
  * Defines the default RenderPipeline
  * builder.
  */
-use super::RenderPipeline;
+use graphics::device::internal::pipeline::RenderPipeline;
+use super::RenderPipelineBuilder;
 
 use std::marker::PhantomData;
 use std::mem;
@@ -13,7 +14,7 @@ use gfx_hal::{pso, pass, image as i, format as f};
 use failure::Error;
 
 /**
- * Default pipeline implementation.
+ * Default pipeline builder.
  * This generates a pipeline with one vertex shader
  * and one fragment shader.
  */
@@ -112,6 +113,7 @@ impl<B> DefaultPipelineBuilder<B> where B: hal::Backend {
 						module: &vs_module,
 						specialization: &[
 							pso::Specialization {
+								//This will be constant 0.
 								id: 0,
 								//...Presumably
 								//this is used as the z position
