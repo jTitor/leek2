@@ -20,3 +20,6 @@ pub use self::subpass::Subpass;
 
 mod shader_module;
 pub use self::shader_module::ShaderModule;
+
+mod attachment;
+pub use self::attachment::Attachment;

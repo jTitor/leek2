@@ -65,8 +65,9 @@ impl<B> DefaultPipelineBuilder<B> where B: hal::Backend {
 				layouts: i::ImageLayout::Undefined .. i::ImageLayout::Present,
 			};
 
-			//We don't really have a subpass,
-			//just send color results through
+			//Indicate to subpass that index
+			//0 has a color output attachment
+			//(the framebuffer).
 			let subpass = pass::SubpassDesc {
 				colors: &[(0, i::ImageLayout::ColorAttachmentOptimal)],
 				depth_stencil: None,
@@ -191,7 +192,7 @@ impl<B> DefaultPipelineBuilder<B> where B: hal::Backend {
 						//or RGB10A2
 						//since what's being rendered
 						//is effectively a 2D object;
-						//The z and a coordinates can be a
+						//The z and w coordinates can be a
 						//shader constant instead
 						format: f::Format::Rg32Float,
 						offset: 0,

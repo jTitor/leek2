@@ -9,23 +9,14 @@
  * can run rendering submissions.
 */
 
-mod graphics_pipeline_description;
-pub use self::graphics_pipeline_description::GraphicsPipelineDescription;
+mod pipeline;
+pub use self::pipeline::*;
 
-mod graphics_shader_set;
-pub use self::graphics_shader_set::GraphicsShaderSet;
+mod shader;
+pub use self::shader::*;
 
-mod shader_entry_point;
-pub use self::shader_entry_point::ShaderEntryPoint;
+mod buffer;
+pub use self::buffer::*;
 
-mod pipeline_blend_description;
-pub use self::pipeline_blend_description::PipelineBlendDescription;
-
-mod attribute_description;
-pub use self::attribute_description::AttributeDescription;
-
-mod buffer_description;
-pub use self::buffer_description::BufferDescription;
-
-mod buffer_element;
-pub use self::buffer_element::BufferElement;
+mod attribute;
+pub use self::attribute::*;

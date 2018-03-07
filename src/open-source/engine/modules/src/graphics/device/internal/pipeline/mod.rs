@@ -23,4 +23,4 @@ mod device;
 pub use self::device::{DeviceController, DeviceControllerBuilder, DeviceInfo, Viewport, DeviceResource};
 
 mod render_pipeline;
-pub use self::render_pipeline::{DescriptorSet, Image, RenderPipeline, RenderTarget, RenderTargetBuilder, Sampler};
+pub use self::render_pipeline::{RenderPipeline, DefaultPipelineBuilder, RenderPipelineBuilder};

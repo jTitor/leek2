@@ -1,6 +1,7 @@
 /*!
  * Defines the Subpass struct.
  */
+use gfx_hal::pass;
 
 /**
  * Encapsulates a distinct rendering operation
@@ -10,5 +11,4 @@
  * the backend can reorder them for optimal
  * performance.
  */
-pub struct Subpass {
-}
+pub type Subpass = pass::SubpassDesc;
