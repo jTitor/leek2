@@ -43,13 +43,18 @@ impl<B> DefaultPipelineBuilder<B> where B: hal::Backend {
 				],
 			);
 
-		//Next, the varying data in a push block.
+		//Next, the push block constants.
 		//We only need a couple of vertex
-		//attributes 
+		//constants;
+		//if we needed other constant types,
+		//we'd place them within the
+		//push array as per the commented-out
+		//element.
 		let pipeline_layout = device.create_pipeline_layout(
 			Some(&set_layout),
 			&[
 				(pso::ShaderStageFlags::VERTEX, 0..8),
+				//(pso::ShaderStageFlags::FRAGMENT, 0..1)
 			],
 		);
 
