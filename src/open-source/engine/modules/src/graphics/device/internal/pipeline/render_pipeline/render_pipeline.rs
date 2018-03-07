@@ -11,9 +11,12 @@ use gfx_hal::Device;
 use gfx_hal::command;
 
 /**
- * Performs the actual rendering for a Device.
+ * Performs rendering for a given subpass.
+ * 
+ * TODO: fix description of following:
+ * "Performs the actual rendering for a Device.
  * A DeviceController uses this pipeline to decide what
- * draw calls must be executed.
+ * draw calls must be executed."
  */
 pub struct RenderPipeline<B> where B: hal::Backend {
 	//The exact backend doesn't matter,
@@ -52,6 +55,7 @@ pub struct RenderPipeline<B> where B: hal::Backend {
 
 impl<B> RenderPipeline<B> where B: hal::Backend {
 	/**
+	 * TODO: move this to top-level of rendering hierarchy
 	 * Generates a submission given a command buffer.
 	 */
 	pub fn submission_with_cmd_buffer<C, S>(&mut self, cmd_buffer: command::CommandBuffer<B, C, S>) -> Result<(), Error> where S: command::Shot {

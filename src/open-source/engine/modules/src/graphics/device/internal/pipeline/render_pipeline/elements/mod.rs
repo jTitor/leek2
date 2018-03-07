@@ -4,5 +4,7 @@
  */
 pub mod nodes;
 
+pub mod links;
+
 mod descriptor_set;
 pub use self::descriptor_set::DescriptorSet;

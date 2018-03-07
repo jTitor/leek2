@@ -11,3 +11,12 @@ pub use self::sampler::Sampler;
 
 mod render_target;
 pub use self::render_target::{RenderTarget, RenderTargetBuilder};
+
+mod pass;
+pub use self::pass::Pass;
+
+mod subpass;
+pub use self::subpass::Subpass;
+
+mod shader_module;
+pub use self::shader_module::ShaderModule;

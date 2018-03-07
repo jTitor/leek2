@@ -159,7 +159,8 @@ impl<B> DefaultPipelineBuilder<B> where B: hal::Backend {
 					//And the actual layout of the pipeline
 					//is here
 					&pipeline_layout,
-					//using this subpass
+					//This pipeline belongs to this
+					//subpass
 					subpass,
 				);
 				//That gives the basic behavior of
@@ -184,7 +185,14 @@ impl<B> DefaultPipelineBuilder<B> where B: hal::Backend {
 					location: 0,
 					binding: 0,
 					element: pso::Element {
-						//Which uses F32s
+						//Which uses RG32 = R32, G32
+						//per vertex.
+						//The demo doesn't use RGBA8
+						//or RGB10A2
+						//since what's being rendered
+						//is effectively a 2D object;
+						//The z and a coordinates can be a
+						//shader constant instead
 						format: f::Format::Rg32Float,
 						offset: 0,
 					},
@@ -196,6 +204,7 @@ impl<B> DefaultPipelineBuilder<B> where B: hal::Backend {
 					element: pso::Element {
 						//Which uses F32s that come
 						//after the position data
+						//for U and V
 						format: f::Format::Rg32Float,
 						offset: 8
 					},
@@ -216,7 +225,10 @@ impl<B> DefaultPipelineBuilder<B> where B: hal::Backend {
 
 		//Create external-facing descriptors
 		//the render calls can bind to.
-		// Descriptors
+		// Descriptor pool -
+		// this describes how many descriptors
+		// can be allocated at any given time
+		// and in how many sets of the given layout.
 		let mut desc_pool = device.create_descriptor_pool(
 			1, // sets
 			&[
