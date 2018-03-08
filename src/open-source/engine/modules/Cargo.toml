@@ -4,6 +4,7 @@ version = "0.0.1"
 authors = [ "jTitor <me@me.me>" ]
 
 [dependencies]
+bitflags = "*"
 #Simpler and easier-to-convert errors
 failure = "*"#"0.1.1"
 #Image loading library

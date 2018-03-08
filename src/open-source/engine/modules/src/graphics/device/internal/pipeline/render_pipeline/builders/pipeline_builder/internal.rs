@@ -1,7 +1,8 @@
 /*!
  * Defines internal methods of PipelineBuilder.
  */
-use super::PipelineBuilder;
+use super::{PipelineBuilder, RenderPassLayout,
+	SubpassPipelineLayout};
 
 use graphics::device::internal::pipeline::render_pipeline::{elements, layout};
 
@@ -28,13 +29,13 @@ pub trait PipelineBuilderInternal<B: hal::Backend> {
 	 * Builds a render pass
 	 * with the given device.
 	 */
-	fn build_render_pass(&self, render_pass_layout: , device: &B::Device) -> Result<elements::Pass<B>, Error>;
+	fn build_render_pass(&self, render_pass_layout: &RenderPassLayout, device: &B::Device) -> Result<elements::Pass<B>, Error>;
 
 	/**
 	 * Builds a subpass pipeline
 	 * with the given device.
 	 */
-	fn build_subpass_pipeline(&self, subpass_layout: , device: &B::Device) -> Result<elements::SubpassPipeline<B>, Error>;
+	fn build_subpass_pipeline(&self, subpass_layout: &SubpassPipelineLayout<B>, device: &B::Device) -> Result<elements::SubpassPipeline<B>, Error>;
 }
 
 impl<B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<B> {
@@ -54,7 +55,10 @@ impl<B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<B> {
 		Ok(())
 	}
 
-	fn build_render_pass(&self, render_pass_layout: , device: &B::Device) -> Result<elements::Pass<B>, Error> {
+	fn build_render_pass(&self, render_pass_layout: &RenderPassLayout, device: &B::Device) -> Result<elements::Pass<B>, Error> {
+		//First check that the layout is valid.
+		let _layout_valid = render_pass_layout.layout_valid()?;
+
 		let render_pass = {
 			//Describe attachments here.
 			//attachment = ...
@@ -78,7 +82,7 @@ impl<B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<B> {
 		Ok(render_pass)
 	}
 
-	fn build_subpass_pipeline(&self, subpass_layout: ,device: &B::Device) -> Result<elements::SubpassPipeline<B>, Error> {
+	fn build_subpass_pipeline(&self, subpass_layout: &SubpassPipelineLayout<B>,device: &B::Device) -> Result<elements::SubpassPipeline<B>, Error> {
 		//Subpass pipeline is placed in this
 		//double block so the shader modules are unloaded
 		//the moment they don't need to be used.
