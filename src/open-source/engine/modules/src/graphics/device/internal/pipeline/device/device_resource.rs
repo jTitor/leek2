@@ -11,6 +11,8 @@ use gfx_hal as hal;
  * by a device controller.
  */
 pub trait DeviceResource<B: hal::Backend> where Self: Sized {
+	//TODO: Device create/destroy calls don't
+	//require mutability, update this
 	/**
 	 * Gets a new instance of the given resource.
 	 */
@@ -25,4 +27,19 @@ pub trait DeviceResource<B: hal::Backend> where Self: Sized {
 	 * it is owned by the device.
 	 */
 	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error>;
+
+	//Member methods...
+
+	/**
+	 * If true, the resource does not need
+	 * destroy_resource() to be called on it,
+	 * since its allocated resources have
+	 * already been destroyed.
+	 */
+	fn resources_destroyed(&self) -> bool;
+
+	//TODO: really awkward, fix this
+	fn destroy_resource(&mut self, device: &mut B::Device) -> Result<(), Error> {
+		Self::destroy_resource(device, self);
+	}
 }

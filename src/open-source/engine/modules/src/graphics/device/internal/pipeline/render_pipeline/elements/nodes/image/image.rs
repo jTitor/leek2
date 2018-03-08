@@ -108,4 +108,8 @@ impl<B: hal::Backend> DeviceResource<B> for Image<B> {
 
 		Ok(())
 	}
+
+	fn resources_destroyed(&self) -> bool {
+		self.resources_destroyed;
+	}
 }

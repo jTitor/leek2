@@ -76,4 +76,8 @@ impl<B: hal::Backend> DeviceResource<B> for Sampler<B> {
 
 		Ok(())
 	}
+
+	fn resources_destroyed(&self) -> bool {
+		self.resources_destroyed;
+	}
 }

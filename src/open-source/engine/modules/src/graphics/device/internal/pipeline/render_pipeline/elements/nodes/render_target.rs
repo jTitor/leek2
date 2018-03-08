@@ -76,6 +76,10 @@ impl<B: hal::Backend> DeviceResource<B> for RenderTarget<B> {
 
 		Ok(())
 	}
+
+	fn resources_destroyed(&self) -> bool {
+		self.resources_destroyed;
+	}
 }
 
 pub struct RenderTargetBuilder<B> where B: hal::Backend {

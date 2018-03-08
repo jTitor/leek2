@@ -64,4 +64,8 @@ impl<B: hal::Backend, ElementT: Copy> DeviceResource<B> for WriteableBuffer<B, E
 		//internal buffer
 		unimplemented!()
 	}
+
+	fn resources_destroyed(&self) -> bool {
+		self.resources_destroyed;
+	}
 }

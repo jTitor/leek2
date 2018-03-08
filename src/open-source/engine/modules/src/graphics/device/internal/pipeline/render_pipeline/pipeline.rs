@@ -74,4 +74,8 @@ impl<B: hal::Backend> DeviceResource<B> for Pipeline<B> {
 
 		resource.mark_destroyed();
 	}
+
+	fn resources_destroyed(&self) -> bool {
+		self.resources_destroyed;
+	}
 }
