@@ -30,8 +30,8 @@
  * texture samplers.
  */
 
-mod render_pipeline;
-pub use self::render_pipeline::RenderPipeline;
+mod pipeline;
+pub use self::pipeline::Pipeline;
 
 mod builders;
 pub use self::builders::{DefaultPipelineBuilder, RenderPipelineBuilder};

@@ -20,3 +20,6 @@ pub use self::buffer::*;
 
 mod attribute;
 pub use self::attribute::*;
+
+mod subpass;
+pub use self::subpass::*;

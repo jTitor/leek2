@@ -18,6 +18,9 @@ pub use self::pass::Pass;
 mod subpass;
 pub use self::subpass::Subpass;
 
+mod subpass_pipeline;
+pub use self::subpass_pipeline::SubpassPipeline;
+
 mod shader_module;
 pub use self::shader_module::ShaderModule;
 

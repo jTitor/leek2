@@ -2,9 +2,11 @@
  * Contains modules defining all the different parts
  * that make a pipeline graph.
  */
-pub mod nodes;
+mod nodes;
+pub use self::nodes::*;
 
-pub mod links;
+mod links;
+pub use self::links::*;
 
 mod descriptor_set;
 pub use self::descriptor_set::DescriptorSet;

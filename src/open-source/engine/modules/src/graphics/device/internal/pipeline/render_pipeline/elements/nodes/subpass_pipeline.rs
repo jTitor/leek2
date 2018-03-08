@@ -2,6 +2,7 @@
  * Defines the RenderPipeline struct.
  */
 use graphics::device::internal::pipeline::DeviceResource;
+use super::Subpass;
 
 use std::rc::Weak;
 
@@ -18,14 +19,10 @@ use gfx_hal::command;
  * A DeviceController uses this pipeline to decide what
  * draw calls must be executed."
  */
-pub struct RenderPipeline<B> where B: hal::Backend {
+pub struct SubpassPipeline<B: hal::Backend> {
 	//The exact backend doesn't matter,
 	//so much as how data is submitted to it.
 
-	/**
-	 * Contains all descriptors used by this pipeline.
-	 */
-	desc_pool: B::DescriptorPool,
 	/**
 	 * Specifies the relation of descriptors to
 	 * pipeline attributes.
@@ -36,10 +33,10 @@ pub struct RenderPipeline<B> where B: hal::Backend {
 	 */
 	pipeline_layout: B::PipelineLayout,
 	/**
-	 * The (currently sole) render pass used by the
-	 * pipeline.
+	 * The subpass this subpass pipeline
+	 * belongs to.
 	 */
-	render_pass: B::RenderPass,
+	subpass: Subpass,
 	/**
 	 * The actual gfx_hal pipeline.
 	 */
@@ -93,10 +90,8 @@ impl<B: hal::Backend> DeviceResource<B> for RenderPipeline<B> {
 
 	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error> {
 		unimplemented!();
-		device.destroy_descriptor_pool(resource.desc_pool);
 		device.destroy_descriptor_set_layout(resource.set_layout);
 		device.destroy_pipeline_layout(resource.pipeline_layout);
-		device.destroy_render_pass(resource.render_pass);
 		device.destroy_graphics_pipeline(resource.pipeline_impl);
 
 		resource.mark_destroyed();

@@ -11,4 +11,4 @@ use gfx_hal::pass;
  * the backend can reorder them for optimal
  * performance.
  */
-pub type Subpass = pass::SubpassDesc;
+pub type Subpass = pass::Subpass;
