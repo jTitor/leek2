@@ -4,5 +4,5 @@
 mod default_pipeline;
 pub use self::default_pipeline::DefaultPipelineBuilder;
 
-mod render_pipeline_builder;
-pub use self::render_pipeline_builder::RenderPipelineBuilder;
+mod pipeline_builder;
+pub use self::pipeline_builder::PipelineBuilder;

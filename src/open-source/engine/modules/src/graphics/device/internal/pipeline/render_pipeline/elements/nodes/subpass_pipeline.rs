@@ -9,7 +9,6 @@ use std::rc::Weak;
 use failure::Error;
 use gfx_hal as hal;
 use gfx_hal::Device;
-use gfx_hal::command;
 
 /**
  * Performs rendering for a given subpass.
@@ -50,15 +49,7 @@ pub struct SubpassPipeline<B: hal::Backend> {
 	resources_destroyed: bool
 }
 
-impl<B> RenderPipeline<B> where B: hal::Backend {
-	/**
-	 * TODO: move this to top-level of rendering hierarchy
-	 * Generates a submission given a command buffer.
-	 */
-	pub fn submission_with_cmd_buffer<C, S>(&mut self, cmd_buffer: command::CommandBuffer<B, C, S>) -> Result<(), Error> where S: command::Shot {
-		self.submission_callback(cmd_buffer)
-	}
-
+impl<B> SubpassPipeline<B> where B: hal::Backend {
 	pub fn mark_destroyed(&mut self) {
 		debug_assert!(!self.resources_destroyed, "resources appear to have already been destroyed once");
 
@@ -72,7 +63,7 @@ impl<B> Drop for RenderPipeline<B> where B: hal::Backend {
 	}
 }
 
-impl<B: hal::Backend> DeviceResource<B> for RenderPipeline<B> {
+impl<B: hal::Backend> DeviceResource<B> for SubpassPipeline<B> {
 	fn get_resource(device: &mut B::Device) -> Weak<&Self> {
 		unimplemented!();
 	}
