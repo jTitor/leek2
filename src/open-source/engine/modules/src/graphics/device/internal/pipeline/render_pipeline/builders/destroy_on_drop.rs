@@ -7,6 +7,10 @@ use std::rc::Rc;
 
 use gfx_hal as hal;
 
+pub trait DestroyOnDrop<B: hal::Backend> {
+	
+}
+
 /**
  * If the given DeviceResource is dropped
  * without having its data freed or retrieved
@@ -28,6 +32,20 @@ impl<B: hal::Backend, T: DeviceResource<B>> DestroyOnDrop<B, T> {
 	}
 
 	/**
+	 * Provides access to the internal resource.
+	 */
+	fn resource(&self) -> &T {
+		&self.resource
+	}
+
+	/**
+	 * Provides mutable access to the internal resource.
+	 */
+	fn resource_mut(&self) -> &mut T {
+		&mut self.resource
+	}
+
+	/**
 	 * Returns the resource contained by this
 	 * DestroyOnDrop wrapper and marks that
 	 * the wrapper should not destroy
@@ -36,7 +54,7 @@ impl<B: hal::Backend, T: DeviceResource<B>> DestroyOnDrop<B, T> {
 	fn unwrap(&self) -> T {
 		self.was_unwrapped = true;
 
-		resource
+		self.resource
 	}
 }
 
@@ -77,6 +95,23 @@ I::Item: DeviceResource<B> {
 	}
 
 	/**
+	 * Provides access to the internal resource
+	 * for iterable read operations.
+	 */
+	fn resource_iter(&self) -> &T {
+		&self.resource
+	}
+
+	/**
+	 * Provides mutable access to the internal resource
+	 * for operations such as appending to the
+	 * iterable.
+	 */
+	fn resource_iter_mut(&self) -> &mut T {
+		&mut self.resource
+	}
+
+	/**
 	 * Returns the resource contained by this
 	 * DestroyOnDrop wrapper and marks that
 	 * the wrapper should not destroy
@@ -85,7 +120,7 @@ I::Item: DeviceResource<B> {
 	fn unwrap(&self) -> T {
 		self.was_unwrapped = true;
 
-		resource
+		self.resource_iter
 	}
 }
 

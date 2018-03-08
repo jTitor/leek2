@@ -6,6 +6,8 @@ use super::{PipelineBuilder, RenderPassLayout,
 
 use graphics::device::internal::pipeline::render_pipeline::{elements, layout};
 
+use std::rc::Rc;
+
 use failure::Error;
 use gfx_hal as hal;
 use gfx_hal::pso;
@@ -23,23 +25,23 @@ pub trait PipelineBuilderInternal<B: hal::Backend> {
 	 * looking, might move this directly into
 	 * PipelineBuilder::build()
 	 */
-	fn build_descriptor_set_layout<D>(&self, device: &B::Device) -> Result<D, Error> where D: pso::DescriptorSetLayout;
+	fn build_descriptor_set_layout<D>(&self, device: Rc<&B::Device>) -> Result<D, Error> where D: pso::DescriptorSetLayout;
 
 	/**
 	 * Builds a render pass
 	 * with the given device.
 	 */
-	fn build_render_pass(&self, render_pass_layout: &RenderPassLayout, device: &B::Device) -> Result<elements::Pass<B>, Error>;
+	fn build_render_pass(&self, render_pass_layout: &RenderPassLayout, device: Rc<&B::Device>) -> Result<elements::Pass<B>, Error>;
 
 	/**
 	 * Builds a subpass pipeline
 	 * with the given device.
 	 */
-	fn build_subpass_pipeline(&self, subpass_layout: &SubpassPipelineLayout<B>, device: &B::Device) -> Result<elements::SubpassPipeline<B>, Error>;
+	fn build_subpass_pipeline(&self, subpass_layout: &SubpassPipelineLayout<B>, device: Rc<&B::Device>) -> Result<elements::SubpassPipeline<B>, Error>;
 }
 
 impl<B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<B> {
-	fn build_descriptor_set_layout<D>(&self, device: &B::Device) -> Result<D, Error> where D: pso::DescriptorSetLayout {
+	fn build_descriptor_set_layout<D>(&self, device: Rc<&B::Device>) -> Result<D, Error> where D: pso::DescriptorSetLayout {
 		//Generate the descriptor set layout from
 		//provided bindings.
 		//(device.create_*())
@@ -55,7 +57,7 @@ impl<B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<B> {
 		Ok(())
 	}
 
-	fn build_render_pass(&self, render_pass_layout: &RenderPassLayout, device: &B::Device) -> Result<elements::Pass<B>, Error> {
+	fn build_render_pass(&self, render_pass_layout: &RenderPassLayout, device: Rc<&B::Device>) -> Result<elements::Pass<B>, Error> {
 		//First check that the layout is valid.
 		let _layout_valid = render_pass_layout.layout_valid()?;
 
@@ -82,7 +84,7 @@ impl<B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<B> {
 		Ok(render_pass)
 	}
 
-	fn build_subpass_pipeline(&self, subpass_layout: &SubpassPipelineLayout<B>,device: &B::Device) -> Result<elements::SubpassPipeline<B>, Error> {
+	fn build_subpass_pipeline(&self, subpass_layout: &SubpassPipelineLayout<B>,device: Rc<&B::Device>) -> Result<elements::SubpassPipeline<B>, Error> {
 		//Subpass pipeline is placed in this
 		//double block so the shader modules are unloaded
 		//the moment they don't need to be used.
