@@ -57,7 +57,7 @@ impl<B> SubpassPipeline<B> where B: hal::Backend {
 	}
 }
 
-impl<B> Drop for RenderPipeline<B> where B: hal::Backend {
+impl<B> Drop for SubpassPipeline<B> where B: hal::Backend {
 	fn drop(&mut self) {
 		debug_assert!(self.resources_destroyed, "MemoryBuffer went out of scope without having its memory destroyed");
 	}

@@ -23,7 +23,7 @@ pub mod device;
 pub use self::device::{DeviceController, DeviceControllerBuilder, DeviceInfo, Viewport, DeviceResource};
 
 pub mod render_pipeline;
-pub use self::render_pipeline::{RenderPipeline, DefaultPipelineBuilder, RenderPipelineBuilder};
+pub use self::render_pipeline::{Pipeline, DefaultPipelineBuilder, RenderPipelineBuilder};
 
 mod descriptor_pool;
 pub use self::descriptor_pool::DescriptorPool;

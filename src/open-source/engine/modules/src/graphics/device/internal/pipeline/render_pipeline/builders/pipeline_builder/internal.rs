@@ -25,7 +25,7 @@ pub trait PipelineBuilderInternal<B: hal::Backend> {
 	 * looking, might move this directly into
 	 * PipelineBuilder::build()
 	 */
-	fn build_descriptor_set_layout<D>(&self, device: Rc<&B::Device>) -> Result<D, Error> where D: pso::DescriptorSetLayout;
+	fn build_descriptor_set_layout<D>(&self, device: Rc<&B::Device>) -> Result<D, Error> where D: B::DescriptorSetLayout;
 
 	/**
 	 * Builds a render pass

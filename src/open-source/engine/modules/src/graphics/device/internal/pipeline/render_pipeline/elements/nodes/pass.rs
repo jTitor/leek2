@@ -1,8 +1,7 @@
 /*!
  * Defines the RenderPass struct.
  */
-use gfx_hal as hal;
-use gfx_hal::RenderPass;
+use gfx_hal::{self as hal, Backend};
 
 /**
  * Encapsulates a top-level rendering pass.

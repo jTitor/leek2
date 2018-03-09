@@ -5,7 +5,7 @@ mod default_pipeline_builder;
 pub use self::default_pipeline_builder::DefaultPipelineBuilder;
 
 mod pipeline_builder;
-pub use self::pipeline_builder::PipelineBuilder;
+pub use self::pipeline_builder::{PipelineBuilder, SubpassPipelineLayout, SubpassPipelineLayoutRequiredInfo, RenderPassLayout};
 
 mod destroy_on_drop;
 use self::destroy_on_drop::{DestroyOnDrop, DestroyIterOnDrop};

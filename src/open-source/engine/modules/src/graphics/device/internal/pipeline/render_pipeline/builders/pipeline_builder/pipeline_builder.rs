@@ -3,9 +3,10 @@
  */
 use super::{PipelineBuilderInternal, RenderPassLayout, SubpassPipelineLayout};
 use super::super::{DestroyIterOnDrop, DestroyOnDrop};
-use graphics::device::internal::pipeline::Pipeline;
+use graphics::device::internal::render_pipeline::Pipeline;
 
 use std::marker::PhantomData;
+use std::rc::Rc;
 
 use failure::Error;
 use gfx_hal::{self as hal, pso};
@@ -16,7 +17,7 @@ use gfx_hal::{self as hal, pso};
 #[derive(Default)]
 pub struct PipelineBuilder<B: hal::Backend> {
 	pub render_pass_layouts: Vec<RenderPassLayout>,
-	pub subpass_pipeline_layouts: Vec<SubpassPipelineLayout>,
+	pub subpass_pipeline_layouts: Vec<SubpassPipelineLayout<B>>,
 	_backend_type: PhantomData<B>
 }
 
@@ -39,21 +40,21 @@ impl<B: hal::Backend> PipelineBuilder<B> {
 		unimplemented!();
 
 		//Generate each render pass:
-		let render_passes = DestroyIterOnDrop::new(Vec::<Pass>::new(), device_rc);
+		let render_passes = DestroyIterOnDrop::new(Vec::<elements::Pass<B>>::new(), device_rc);
 		for render_pass_layout in self.render_pass_layouts {
 			let render_pass = self.build_render_pass(render_pass_layout, device_rc)?;
 
-			render_passes.resource_iter().add(render_pass);
+			render_passes.resource_iter().push(render_pass);
 		}
 
-		let subpass_pipelines = DestroyIterOnDrop::new(Vec::<Subpass>::new(), device_rc);
+		let subpass_pipelines = DestroyIterOnDrop::new(Vec::<elements::SubpassPipeline<B>>::new(), device_rc);
 		//Generate each subpass pipeline:
 		for subpass_pipeline_layout in self.subpass_pipeline_layouts {
 			let subpass_pipeline = self.build_subpass_pipeline(subpass_pipeline_layout, device_rc)?;
 			
 			//Add the subpass pipeline to the
 			//final pipeline's vec.
-			subpass_pipelines.resource_iter().add(subpass_pipeline);
+			subpass_pipelines.resource_iter().push(subpass_pipeline);
 		}
 
 		//Create external-facing descriptors

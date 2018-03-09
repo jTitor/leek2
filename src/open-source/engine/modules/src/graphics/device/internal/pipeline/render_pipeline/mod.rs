@@ -34,7 +34,7 @@ mod pipeline;
 pub use self::pipeline::Pipeline;
 
 mod builders;
-pub use self::builders::{DefaultPipelineBuilder, RenderPipelineBuilder};
+pub use self::builders::{DefaultPipelineBuilder, PipelineBuilder};
 
 pub mod elements;
 

@@ -9,8 +9,16 @@ use gfx_hal::{self as hal, pso};
 
 pub struct SubpassPipelineLayoutRequiredInfo<B: hal::Backend> {
 	vertex_shader_entry: layout::ShaderEntryPoint<B>,
-	//Used to make the Subpass node. 
-	render_pass: Rc<&elements::Pass>,
+	//Used to make the Subpass node.
+	
+	/**
+	 * Index into the builder's render_passes
+	 * Vec that points to this subpass' rendering pass.
+	 */
+	render_pass_index: usize,
+	/**
+	 * TODO
+	 */
 	subpass_index: u32
 }
 
@@ -46,15 +54,14 @@ pub struct SubpassPipelineLayout<B: hal::Backend> {
 	 * Describes how this subpass will rasterize its
 	 * rendered triangles.
 	 */
-	pub rasterization_type: pso::Rasterizer,
-	pub pipeline_description: layout::GraphicsPipelineDescription
+	pub rasterization_type: pso::Rasterizer
 }
 
 impl<B: hal::Backend> SubpassPipelineLayout<B> {
 	pub fn new(required_info: SubpassPipelineLayoutRequiredInfo<B>) -> SubpassPipelineLayout<B> {
 		SubpassPipelineLayout::<B> {
 			required_info: required_info,
-			Default::default()
+			..Default::default()
 		}
 	}
 }
