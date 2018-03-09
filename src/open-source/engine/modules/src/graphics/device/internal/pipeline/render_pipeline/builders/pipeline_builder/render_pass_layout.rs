@@ -1,7 +1,7 @@
 /*!
  * Defines the RenderPassLayout struct.
  */
-use gfx_hal::{self as hal, image as i, pass, pso}
+use gfx_hal::{self as hal, image as i, pass, pso};
 
 use failure::Error;
 

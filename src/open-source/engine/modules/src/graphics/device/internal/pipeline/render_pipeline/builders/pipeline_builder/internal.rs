@@ -79,7 +79,7 @@ impl<B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<B> {
 			//And actually create the render pass here.
 			//device.create_render_pass(&[attachment], &[subpass_desc], &[dependency])
 			unimplemented!();
-		}
+		};
 
 		Ok(render_pass)
 	}

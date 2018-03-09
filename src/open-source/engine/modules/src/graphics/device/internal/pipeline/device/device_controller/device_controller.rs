@@ -2,7 +2,8 @@
  * Defines the DeviceController struct.
  */
 use super::DeviceResourceLists;
-use graphics::device::internal::pipeline::{DeviceResource, MemoryBuffer, Image, Sampler, RenderPipeline, RenderTarget};
+use graphics::device::internal::pipeline::{DeviceResource, MemoryBuffer, RenderPipeline};
+use graphics::device::internal::pipeline::render_pipeline::{Image, Sampler, RenderTarget};
 
 use gfx_hal as hal;
 use gfx_hal::{Device, Swapchain, Graphics};

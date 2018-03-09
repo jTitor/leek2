@@ -23,10 +23,18 @@ pub trait DefaultPipelineBuilderInternal<B: hal::Backend> {
 
 impl<B: hal::Backend> DefaultPipelineBuilderInternal for DefaultPipelineBuilder<B> {
 	fn create_render_pass_layouts(&self, device: Rc<&B::Device>) -> Result<Vec<RenderPassLayout>, Error> {
+		let mut result = Vec::<RenderPassLayout>::new();
+
 		unimplemented!();
+
+		Ok(result)
 	}
 
 	fn create_subpass_pipeline_layouts(&self, device: Rc<&B::Device>) -> Result<Vec<SubpassPipelineLayout<B>>, Error> {
+		let mut result = Vec::<SubpassPipelineLayout<B>>::new();
+
 		unimplemented!();
+
+		Ok(result)
 	}
 }

@@ -9,7 +9,7 @@ use super::super::RenderPipelineBuilder;
 use std::marker::PhantomData;
 use std::rc::Rc;
 
-use gfx_hal as hal;
+use gfx_hal::{self as hal, format as f};
 use failure::Error;
 
 /**
