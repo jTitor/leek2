@@ -4,12 +4,14 @@
 use super::DefaultPipelineBuilder;
 use super::super::{RenderPassLayout, SubpassPipelineLayout, SubpassPipelineLayoutRequiredInfo};
 use graphics::device::internal::pipeline::render_pipeline::{layout, elements};
+use graphics::device::internal::pipeline::render_pipeline::layout::PipelineBlendDescription;
 use graphics::device::internal::pipeline::render_pipeline::layout::ShaderEntryPoint;
 
 use std::mem;
 use std::rc::Rc;
 
 use gfx_hal::{Device, DescriptorPool, self as hal, pso, pass, format as f, image as i};
+use gfx_hal::pso::{ColorMask, BlendState};
 use failure::Error;
 
 /**
@@ -33,9 +35,6 @@ impl<B: hal::Backend> DefaultPipelineBuilderInternal<B> for DefaultPipelineBuild
 
 		//This just has one renderpass.
 		let mut render_pass = RenderPassLayout::new();
-		//TODO: adapter provides this,
-		//figure out where to put this
-		let surface_format = ;
 		
 		render_pass.attachments.push(elements::Attachment {
 			format: Some(surface_format),
@@ -136,10 +135,10 @@ impl<B: hal::Backend> DefaultPipelineBuilderInternal<B> for DefaultPipelineBuild
 		
 		//How do we blend new values?
 		subpass.blending_target_descriptions.push(
-			layout::PipelineBlendDescription {
+			pso::ColorBlendDesc (
 				pso::ColorMask::ALL,
 				pso::BlendState::ALPHA,
-			}
+			)
 		);
 		//What's the buffer layout for
 		//vertex data?

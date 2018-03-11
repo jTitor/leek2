@@ -16,7 +16,7 @@ const ELEMENTS_PER_QUEUE: usize = 16;
 /**
  * Handles creation of a DeviceController.
  */
-pub struct DeviceControllerBuilder<'a, B: hal::Backend> {
+pub struct DeviceControllerBuilder<B: hal::Backend> {
 	_backend_type: PhantomData<B>
 }
 impl<'a, B: hal::Backend> DeviceControllerBuilder<'a, B> {

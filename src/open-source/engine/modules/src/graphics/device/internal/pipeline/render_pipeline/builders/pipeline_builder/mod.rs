@@ -6,7 +6,7 @@ mod pipeline_builder;
 pub use self::pipeline_builder::PipelineBuilder;
 
 mod internal;
-use self::internal::PipelineBuilderInternal;
+use self::internal::*;
 
 mod subpass_pipeline_layout;
 pub use self::subpass_pipeline_layout:: {SubpassPipelineLayout, SubpassPipelineLayoutRequiredInfo};

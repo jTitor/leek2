@@ -18,11 +18,13 @@ pub struct DeviceInfo {
 	 */
 	surface_format: f::Format,
 	/**
-	 * TODO
+	 * The types of graphics/CPU memory available
+	 * to the device for buffer/texture allocations.
 	 */
 	memory_types: Vec<hal::MemoryType>,
 	/**
-	 * TODO
+	 * Minimum and maximum values for resource allocations
+	 * on the device, such as the maximum texture size.
 	 */
 	limits: hal::Limits
 }
@@ -48,7 +50,7 @@ impl DeviceInfo {
 						.find(|format| {
 							format.base_format().1 == f::ChannelType::Srgb
 						})
-				}.unwrap_or_else(|| { return Error; })
+				}.unwrap_or_else(|| { return DeviceInfoError::NoFormatAvailable; })
 			);
 
 		//and memory/physical properties.
@@ -67,4 +69,10 @@ impl DeviceInfo {
 			limits: limits
 		})
 	}
+}
+
+#[derive(Debug, Fail)]
+pub enum DeviceInfoError {
+	#[fail(display = "Couldn't find a valid surface format for the current adapter")]
+	NoFormatAvailable
 }

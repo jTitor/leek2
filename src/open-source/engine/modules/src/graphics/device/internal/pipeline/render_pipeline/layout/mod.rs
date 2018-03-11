@@ -23,3 +23,6 @@ pub use self::attribute::*;
 
 mod subpass;
 pub use self::subpass::*;
+
+mod descriptors;
+pub use self::descriptors::*;
