@@ -1,7 +1,7 @@
 /*!
  * Defines the RenderPassLayout struct.
  */
-use gfx_hal::{self as hal, image as i, pass, pso};
+use gfx_hal::{pass};
 
 use failure::Error;
 
@@ -10,14 +10,14 @@ use failure::Error;
  * a PipelineBuilder.
  */
 #[derive(Debug)]
-pub struct RenderPassLayout {
+pub struct RenderPassLayout<'a> {
 	pub attachments: Vec<pass::Attachment>,
-	pub subpass_descriptions: Vec<pass::SubpassDesc>,
+	pub subpass_descriptions: Vec<pass::SubpassDesc<'a>>,
 	pub dependencies: Vec<pass::SubpassDependency>
 }
 
-impl RenderPassLayout {
-	pub fn new() -> RenderPassLayout {
+impl<'a> RenderPassLayout<'a> {
+	pub fn new() -> RenderPassLayout<'a> {
 		RenderPassLayout::default()
 	}
 

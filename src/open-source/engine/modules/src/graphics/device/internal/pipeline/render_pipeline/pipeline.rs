@@ -5,6 +5,8 @@ use super::super::DescriptorPool;
 use super::elements;
 use graphics::device::internal::pipeline::DeviceResource;
 
+use std::rc::Weak;
+
 use failure::Error;
 use gfx_hal as hal;
 use gfx_hal::Device;
@@ -13,14 +15,14 @@ use gfx_hal::command;
 /**
  * Contains the entire rendering pipeline.
  */
-pub struct Pipeline<B: hal::Backend> {
+pub struct Pipeline<'a, B: hal::Backend> {
 	descriptor_pool: DescriptorPool<B>,
 	render_passes: Vec<elements::Pass<B>>,
-	subpass_pipelines: Vec<elements::SubpassPipeline<B>>,
+	subpass_pipelines: Vec<elements::SubpassPipeline<'a, B>>,
 	resources_destroyed: bool
 }
 
-impl<B: hal::Backend> Pipeline<B> {
+impl<'a, B: hal::Backend> Pipeline<'a, B> {
 	/**
 	 * Generates a submission given a command buffer.
 	 */
@@ -35,13 +37,13 @@ impl<B: hal::Backend> Pipeline<B> {
 	}
 }
 
-impl<B: hal::Backend> Drop for Pipeline<B> {
+impl<'a, B: hal::Backend> Drop for Pipeline<'a, B> {
 	fn drop(&mut self) {
 		debug_assert!(self.resources_destroyed, "MemoryBuffer went out of scope without having its memory destroyed");
 	}
 }
 
-impl<B: hal::Backend> DeviceResource<B> for Pipeline<B> {
+impl<'a, B: hal::Backend> DeviceResource<B> for Pipeline<'a, B> {
 	fn get_resource(device: &mut B::Device) -> Weak<&Self> {
 		unimplemented!();
 	}

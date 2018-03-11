@@ -2,13 +2,12 @@
  * Defines the DeviceController struct.
  */
 use super::DeviceResourceLists;
-use graphics::device::internal::pipeline::{DeviceResource, MemoryBuffer, RenderPipeline};
+use graphics::device::internal::pipeline::{DeviceResource, MemoryBuffer, Pipeline};
 use graphics::device::internal::pipeline::render_pipeline::elements::{Image, Sampler, RenderTarget};
 
-use gfx_hal as hal;
+use gfx_hal::{self as hal, command, pool, pso};
 use gfx_hal::{Device, Swapchain, Graphics};
 use gfx_hal::pool::RawCommandPool;
-use gfx_hal::{command, pool, pso};
 use gfx_hal::command::{CommandBuffer, Submit, Primary};
 use gfx_hal::pso::PipelineStage;
 use gfx_hal::queue::Submission;
@@ -18,8 +17,8 @@ use gfx_hal::queue::capability as capability;
  * Provides implementation-independent
  * access to the device's draw calls.
  */
-pub struct DeviceController<B: hal::Backend> {
-	resource_lists: DeviceResourceLists<B>,
+pub struct DeviceController<'a, B: hal::Backend> {
+	resource_lists: DeviceResourceLists<'a, B>,
 
 	device: B::Device,
 	command_pool: pool::CommandPool<B, hal::Graphics>,
@@ -42,7 +41,7 @@ pub struct DeviceController<B: hal::Backend> {
 	resources_destroyed: bool
 }
 
-impl<'a, B: hal::Backend> DeviceController<B> {
+impl<'a, B: hal::Backend> DeviceController<'a, B> {
 	/**
 	 * Readies the device for a draw submission.
 	 */
@@ -102,7 +101,7 @@ impl<'a, B: hal::Backend> DeviceController<B> {
 	/**
 	 * Performs rendering with the given pipeline.
 	 */
-	pub fn render_with_pipeline(&mut self, pipeline: &RenderPipeline<B>) {
+	pub fn render_with_pipeline(&mut self, pipeline: &Pipeline<B>) {
 		self.begin_frame();
 		//Ask the pipeline for a submission given a command buffer.
 		let mut cmd_buffer = self.command_pool.acquire_command_buffer(false);
@@ -110,7 +109,7 @@ impl<'a, B: hal::Backend> DeviceController<B> {
 		self.end_frame();
 	}
 
-	fn REMOVE_submit(&mut self, pipeline: &RenderPipeline<B>, render_pass: &B::RenderPass, framebuffers: &Vec<B::Framebuffer>, vertex_buffer: &B::Buffer, desc_set: &B::DescriptorSet) {
+	fn REMOVE_submit(&mut self, pipeline: &Pipeline<B>, render_pass: &B::RenderPass, framebuffers: &Vec<B::Framebuffer>, vertex_buffer: &B::Buffer, desc_set: &B::DescriptorSet) {
 		//The submission used to draw the
 		//demo scene.
 		//TODO_rust: figure out how to *actually*
@@ -165,7 +164,7 @@ impl<'a, B: hal::Backend> DeviceController<B> {
 		self.device.destroy_fence(self.frame_fence);
 		self.device.destroy_semaphore(self.frame_semaphore);
 
-		RenderPipeline::<B>::destroy_all_resources(&mut self.device, &mut self.resource_lists.pipelines);
+		Pipeline::<B>::destroy_all_resources(&mut self.device, &mut self.resource_lists.pipelines);
 
 		// for framebuffer in self.resource_lists.framebuffers {
 		// 	device.destroy_framebuffer(framebuffer);
@@ -180,7 +179,7 @@ impl<'a, B: hal::Backend> DeviceController<B> {
 	}
 }
 
-impl<B> Drop for DeviceController<B> where B: hal::Backend {
+impl<'a, B> Drop for DeviceController<'a, B> where B: hal::Backend {
 	fn drop(&mut self) {
 		debug_assert!(self.resources_destroyed, "DeviceController went out of scope without destroy_resources() being called");
 	}

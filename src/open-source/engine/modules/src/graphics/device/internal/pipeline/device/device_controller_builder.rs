@@ -16,11 +16,11 @@ const ELEMENTS_PER_QUEUE: usize = 16;
 /**
  * Handles creation of a DeviceController.
  */
-pub struct DeviceControllerBuilder<B: hal::Backend> {
+pub struct DeviceControllerBuilder<'a, B: hal::Backend> {
 	_backend_type: PhantomData<B>
 }
-impl<B: hal::Backend> DeviceControllerBuilder<B> {
-	pub fn example(adapter: &hal::Adapter<B>, surface: &mut B::Surface, surface_format: f::Format) -> Result<DeviceController<B>, Error> {
+impl<'a, B: hal::Backend> DeviceControllerBuilder<'a, B> {
+	pub fn example(adapter: &hal::Adapter<B>, surface: &mut B::Surface, surface_format: f::Format) -> Result<DeviceController<'a, B>, Error> {
 		let (device, mut queue_group) =
 			adapter.open_with::<_, hal::Graphics>(1, |family| {
 				surface.supports_queue_family(family)

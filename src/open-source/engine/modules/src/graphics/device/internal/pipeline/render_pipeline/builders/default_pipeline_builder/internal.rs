@@ -3,8 +3,8 @@
  */
 use super::DefaultPipelineBuilder;
 use super::super::{RenderPassLayout, SubpassPipelineLayout, SubpassPipelineLayoutRequiredInfo};
-use graphics::device::internal::pipeline::{layout, elements};
-use layout::ShaderEntryPoint;
+use graphics::device::internal::pipeline::render_pipeline::{layout, elements};
+use graphics::device::internal::pipeline::render_pipeline::layout::ShaderEntryPoint;
 
 use std::mem;
 use std::rc::Rc;
@@ -24,10 +24,10 @@ pub trait DefaultPipelineBuilderInternal<B: hal::Backend> {
 
 	fn create_subpass_required_info(&self, entry_point_name: &str, vs_module_bytes: &[u8]) -> SubpassPipelineLayoutRequiredInfo<B>;
 
-	fn configure_subpass_pipeline_layout(&self, required_info: SubpassPipelineLayoutRequiredInfo<B>, entry_point_name: &str, fs_module_bytes: &[u8]) -> SubpassPipelineLayout<B>
+	fn configure_subpass_pipeline_layout(&self, required_info: SubpassPipelineLayoutRequiredInfo<B>, entry_point_name: &str, fs_module_bytes: &[u8]) -> SubpassPipelineLayout<B>;
 }
 
-impl<B: hal::Backend> DefaultPipelineBuilderInternal for DefaultPipelineBuilder<B> {
+impl<B: hal::Backend> DefaultPipelineBuilderInternal<B> for DefaultPipelineBuilder<B> {
 	fn create_render_pass_layouts(&self, device: Rc<&B::Device>, surface_format: f::Format) -> Result<Vec<RenderPassLayout>, Error> {
 		let mut result = Vec::<RenderPassLayout>::new();
 
@@ -144,7 +144,7 @@ impl<B: hal::Backend> DefaultPipelineBuilderInternal for DefaultPipelineBuilder<
 		//What's the buffer layout for
 		//vertex data?
 		subpass.vertex_buffer_descriptions.push(
-			layout::VertexBufferDescription {
+			layout::BufferDescription {
 				stride: mem::size_of::<Vertex>() as u32,
 				rate: 0,
 			}

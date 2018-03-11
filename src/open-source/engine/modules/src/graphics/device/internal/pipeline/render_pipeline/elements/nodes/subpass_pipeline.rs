@@ -18,7 +18,7 @@ use gfx_hal::Device;
  * A DeviceController uses this pipeline to decide what
  * draw calls must be executed."
  */
-pub struct SubpassPipeline<B: hal::Backend> {
+pub struct SubpassPipeline<'a, B: hal::Backend> {
 	//The exact backend doesn't matter,
 	//so much as how data is submitted to it.
 
@@ -35,7 +35,7 @@ pub struct SubpassPipeline<B: hal::Backend> {
 	 * The subpass this subpass pipeline
 	 * belongs to.
 	 */
-	subpass: Subpass,
+	subpass: Subpass<'a, B>,
 	/**
 	 * The actual gfx_hal pipeline.
 	 */
@@ -49,7 +49,7 @@ pub struct SubpassPipeline<B: hal::Backend> {
 	resources_destroyed: bool
 }
 
-impl<B> SubpassPipeline<B> where B: hal::Backend {
+impl<'a, B> SubpassPipeline<'a, B> where B: hal::Backend {
 	pub fn mark_destroyed(&mut self) {
 		debug_assert!(!self.resources_destroyed, "resources appear to have already been destroyed once");
 
@@ -57,13 +57,13 @@ impl<B> SubpassPipeline<B> where B: hal::Backend {
 	}
 }
 
-impl<B> Drop for SubpassPipeline<B> where B: hal::Backend {
+impl<'a, B> Drop for SubpassPipeline<'a, B> where B: hal::Backend {
 	fn drop(&mut self) {
 		debug_assert!(self.resources_destroyed, "MemoryBuffer went out of scope without having its memory destroyed");
 	}
 }
 
-impl<B: hal::Backend> DeviceResource<B> for SubpassPipeline<B> {
+impl<'a, B: hal::Backend> DeviceResource<B> for SubpassPipeline<'a, B> {
 	fn get_resource(device: &mut B::Device) -> Weak<&Self> {
 		unimplemented!();
 	}

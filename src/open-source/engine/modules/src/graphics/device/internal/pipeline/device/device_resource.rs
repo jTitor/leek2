@@ -26,7 +26,7 @@ pub trait DeviceResource<B: hal::Backend> where Self: Sized {
 	 * Destroys a single resource if
 	 * it is owned by the device.
 	 */
-	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error>;
+	fn destroy_resource_static(device: &mut B::Device, resource: &mut Self) -> Result<(), Error>;
 
 	//Member methods...
 

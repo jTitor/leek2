@@ -3,12 +3,12 @@
  */
 use graphics::device::internal::pipeline::render_pipeline::{elements, layout};
 
-use std::rc::Rc;
+use std::ops::Range;
 
 use gfx_hal::{self as hal, pso};
 
-pub struct SubpassPipelineLayoutRequiredInfo<B: hal::Backend> {
-	vertex_shader_entry: layout::ShaderEntryPoint<B>,
+pub struct SubpassPipelineLayoutRequiredInfo<'a, B: hal::Backend> {
+	vertex_shader_entry: layout::ShaderEntryPoint<'a, B>,
 	//Used to make the Subpass node.
 	
 	/**
@@ -27,19 +27,19 @@ pub struct SubpassPipelineLayoutRequiredInfo<B: hal::Backend> {
  * a PipelineBuilder.
  */
 #[derive(Default)]
-pub struct SubpassPipelineLayout<B: hal::Backend> {
-	pub required_info: SubpassPipelineLayoutRequiredInfo<B>,
+pub struct SubpassPipelineLayout<'a, B: hal::Backend> {
+	pub required_info: SubpassPipelineLayoutRequiredInfo<'a, B>,
 
 	//The shader entry points...
-	pub hull_shader_entry: Option<layout::ShaderEntryPoint<B>>,
-	pub domain_shader_entry: Option<layout::ShaderEntryPoint<B>>,
-	pub geometry_shader_entry: Option<layout::ShaderEntryPoint<B>>,
-	pub fragment_shader_entry: Option<layout::ShaderEntryPoint<B>>,
+	pub hull_shader_entry: Option<layout::ShaderEntryPoint<'a, B>>,
+	pub domain_shader_entry: Option<layout::ShaderEntryPoint<'a, B>>,
+	pub geometry_shader_entry: Option<layout::ShaderEntryPoint<'a, B>>,
+	pub fragment_shader_entry: Option<layout::ShaderEntryPoint<'a, B>>,
 	
 	//Used to make the PipelineLayout struct.
 	//If None, the set_layout will also be None.
 	pub set_layout_bindings: Option<Vec<pso::DescriptorSetLayoutBinding>>,
-	pub push_block_constants: Vec<(pso::ShaderStageFlags, Range<u32, u32>)>,
+	pub push_block_constants: Vec<(pso::ShaderStageFlags, Range<u32>)>,
 
 	pub blending_target_descriptions: Vec<pso::ColorBlendDesc>,
 	pub vertex_buffer_descriptions: Vec<pso::VertexBufferDesc>,
@@ -57,8 +57,8 @@ pub struct SubpassPipelineLayout<B: hal::Backend> {
 	pub rasterization_type: pso::Rasterizer
 }
 
-impl<B: hal::Backend> SubpassPipelineLayout<B> {
-	pub fn new(required_info: SubpassPipelineLayoutRequiredInfo<B>) -> SubpassPipelineLayout<B> {
+impl<'a, B: hal::Backend> SubpassPipelineLayout<'a, B> {
+	pub fn new(required_info: SubpassPipelineLayoutRequiredInfo<B>) -> SubpassPipelineLayout<'a, B> {
 		SubpassPipelineLayout::<B> {
 			required_info: required_info,
 			..Default::default()

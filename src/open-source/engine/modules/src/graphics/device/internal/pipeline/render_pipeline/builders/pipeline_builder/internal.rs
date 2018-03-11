@@ -9,8 +9,7 @@ use graphics::device::internal::pipeline::render_pipeline::{elements, layout};
 use std::rc::Rc;
 
 use failure::Error;
-use gfx_hal as hal;
-use gfx_hal::pso;
+use gfx_hal::{Backend, self as hal, pso};
 
 /**
  * Implements internal methods of PipelineBuilder.
@@ -20,12 +19,8 @@ pub trait PipelineBuilderInternal<B: hal::Backend> {
 	 * Builds the descriptor set layout
 	 * used to generate the final pipeline's
 	 * descriptor set.
-	 * 
-	 * TODO: The return value is really gross
-	 * looking, might move this directly into
-	 * PipelineBuilder::build()
 	 */
-	fn build_descriptor_set_layout<D>(&self, device: Rc<&B::Device>) -> Result<D, Error> where D: B::DescriptorSetLayout;
+	fn build_descriptor_set_layout(&self, device: Rc<&B::Device>) -> Result<B::DescriptorSetLayout, Error>;
 
 	/**
 	 * Builds a render pass
@@ -40,8 +35,8 @@ pub trait PipelineBuilderInternal<B: hal::Backend> {
 	fn build_subpass_pipeline(&self, subpass_layout: &SubpassPipelineLayout<B>, device: Rc<&B::Device>) -> Result<elements::SubpassPipeline<B>, Error>;
 }
 
-impl<B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<B> {
-	fn build_descriptor_set_layout<D>(&self, device: Rc<&B::Device>) -> Result<D, Error> where D: pso::DescriptorSetLayout {
+impl<'a, B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<'a, B> {
+	fn build_descriptor_set_layout(&self, device: Rc<&B::Device>) -> Result<B::DescriptorSetLayout, Error> {
 		//Generate the descriptor set layout from
 		//provided bindings.
 		//(device.create_*())
@@ -84,7 +79,7 @@ impl<B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<B> {
 		Ok(render_pass)
 	}
 
-	fn build_subpass_pipeline(&self, subpass_layout: &SubpassPipelineLayout<B>,device: Rc<&B::Device>) -> Result<elements::SubpassPipeline<B>, Error> {
+	fn build_subpass_pipeline(&self, subpass_layout: &SubpassPipelineLayout<B>, device: Rc<&B::Device>) -> Result<elements::SubpassPipeline<B>, Error> {
 		//Subpass pipeline is placed in this
 		//double block so the shader modules are unloaded
 		//the moment they don't need to be used.

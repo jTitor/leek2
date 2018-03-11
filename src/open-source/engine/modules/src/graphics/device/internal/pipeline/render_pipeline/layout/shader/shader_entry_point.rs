@@ -26,5 +26,5 @@ pub struct ShaderEntryPoint<'a, B: hal::Backend> {
 	 * This is mostly used for specifying
 	 * constant values for the shader.
 	 */
-	pub specialization: &'a [Specialization],
+	pub specialization: &'a [pso::Specialization],
 }

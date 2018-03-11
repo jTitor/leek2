@@ -3,7 +3,7 @@
  */
 use super::{PipelineBuilderInternal, RenderPassLayout, SubpassPipelineLayout};
 use super::super::{DestroyIterOnDrop, DestroyOnDrop};
-use graphics::device::internal::render_pipeline::Pipeline;
+use graphics::device::internal::pipeline::render_pipeline::{Pipeline, elements, layout};
 
 use std::marker::PhantomData;
 use std::rc::Rc;
@@ -15,14 +15,14 @@ use gfx_hal::{self as hal, pso};
  * Basic builder struct for a render pipeline.
  */
 #[derive(Default)]
-pub struct PipelineBuilder<B: hal::Backend> {
-	pub render_pass_layouts: Vec<RenderPassLayout>,
-	pub subpass_pipeline_layouts: Vec<SubpassPipelineLayout<B>>,
+pub struct PipelineBuilder<'a, B: hal::Backend> {
+	pub render_pass_layouts: Vec<RenderPassLayout<'a>>,
+	pub subpass_pipeline_layouts: Vec<SubpassPipelineLayout<'a, B>>,
 	_backend_type: PhantomData<B>
 }
 
-impl<B: hal::Backend> PipelineBuilder<B> {
-	fn new() -> PipelineBuilder<B> { Self::default() }
+impl<'a, B: hal::Backend> PipelineBuilder<'a, B> {
+	fn new() -> PipelineBuilder<'a, B> { Self::default() }
 
 	/**
 	 * Builds the RenderPipeline if possible.
@@ -63,10 +63,10 @@ impl<B: hal::Backend> PipelineBuilder<B> {
 		// this describes how many descriptors
 		// can be allocated at any given time
 		// and in how many sets of the given layout.
-		//let mut desc_pool = device.create_descriptor_pool(1, &[pso::DescriptorRangeDesc, ...]);
-		unimplemented!();
-		let mut descriptor_pool = DestroyOnDrop::<DescriptorPool<B>>::new(, device_rc);
-		let desc_set = descriptor_pool.resource().allocate_set(&descriptor_set_layout);
+		let mut descriptor_pool_raw = device.create_descriptor_pool(1, &[pso::DescriptorRangeDesc, ...]);
+		let mut descriptor_pool = DestroyOnDrop::<DescriptorPool<B>>::new(descriptor_pool_raw, device_rc);
+
+		let desc_set = descriptor_pool.resource_mut().allocate_set(&descriptor_set_layout);
 
 		//Unwrap the pipeline assets, 
 		//and the full pipeline is ready.
