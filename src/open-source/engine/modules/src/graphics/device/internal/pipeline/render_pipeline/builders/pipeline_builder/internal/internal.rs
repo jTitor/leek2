@@ -3,6 +3,7 @@
  */
 use super::{PipelineBuilder, RenderPassLayout,
 	SubpassPipelineLayout};
+use super::ShaderLoad;
 
 use graphics::device::internal::pipeline::render_pipeline::{elements, layout};
 
@@ -33,7 +34,7 @@ impl<'a, B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<'a, B> 
 		//First check that the layout is valid.
 		let _layout_valid = render_pass_layout.layout_valid()?;
 
-		let render_pass = {
+		let render_pass_result = {
 			//Describe attachments here.
 			//attachment = ...
 			unimplemented!();
@@ -51,9 +52,11 @@ impl<'a, B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<'a, B> 
 			//And actually create the render pass here.
 			//device.create_render_pass(&[attachment], &[subpass_desc], &[dependency])
 			unimplemented!();
+
+			Ok()
 		};
 
-		Ok(render_pass)
+		render_pass_result
 	}
 
 	fn build_subpass_pipeline(&self, subpass_layout: &SubpassPipelineLayout<B>, device: Rc<&B::Device>) -> Result<elements::SubpassPipeline<B>, Error> {
@@ -77,35 +80,13 @@ impl<'a, B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<'a, B> 
 			subpass_layout.push_block_constants.as_slice(),
 		);
 
-		//Pipeline layout is generated from
-		//descriptor set layout and push block array.
-		//device.create_descriptor_set_layout(&[...])
-		unimplemented!();
-
 		//Load the actual shader files here.
-		unimplemented!();
-		// let vs_module = device
-		// 	.create_shader_module(include_bytes!("data/vert.spv"))
-		// 	.unwrap();
-		// let fs_module = device
-		// 	.create_shader_module(include_bytes!("data/frag.spv"))
-		// 	.unwrap();
-		//Convert the shader entry points
-		//to loaded shaders here.
-		unimplemented!();
-		//const ENTRY_NAME: &str = "TODO";
+		let shader_map = self.init_shader_map(device, subpass_layout)?;
 
-		let subpass_pipeline = {
-			//Specify the entry points
-			//for the shader types:
-			//let (vs_entry, fs_entry) = (ShaderEntryPoint::<B>, ...);
-
-			unimplemented!();
-
+		let subpass_pipeline_result = {
 			//Specify all the entry points used by this
 			//render subpass.
-			//let shader_entries = GraphicsShaderSet { ... };
-			unimplemented!();
+			let shader_set = self.shader_map_to_shader_set(shader_map)?;
 
 			//Specify the pipeline's subpass
 			//and connect it to the current render pass
@@ -153,21 +134,21 @@ impl<'a, B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<'a, B> 
 			//here.
 			let pipeline_impl = device.create_graphics_pipeline(&pipeline_desc);
 
-			SubpassPipeline::<B> {
+			Ok(SubpassPipeline::<B> {
 				set_layout: set_layout,
 				pipeline_layout: pipeline_layout,
 				subpass: Subpass<'a, B>,
 				pipeline_impl: pipeline_impl,
 				resources_destroyed: false
-			}
+			})
 		};
 
 		//The PSO is built, so we don't need the
 		//shader modules anymore
 		//device.destroy_shader_module(vs_module);
 		//device.destroy_shader_module(fs_module);
-		unimplemented!();
+		self.unload_shader_map(device, shader_map);
 
-		Ok(subpass_pipeline)
+		subpass_pipeline_result
 	}
 }

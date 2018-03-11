@@ -9,7 +9,9 @@ use graphics::device::internal::pipeline::render_pipeline::layout;
 use std::collections::HashMap;
 
 use failure::Error;
-use gfx_hal::{self as hal, pso, Backend};
+use gfx_hal::{self as hal, pso,
+Backend, Device, ShaderEntryPoint};
+use gfx_hal::pso::GraphicsShaderSet;
 
 enum ShaderEntryType {
 	Vertex,
@@ -26,20 +28,45 @@ enum ShaderEntryType {
 pub trait ShaderLoad<B: hal::Backend> {
 	fn load_shader_entry_point(&self, entry_point: Option<layout::ShaderEntryPoint<B>>) -> Result<Option<B::ShaderEntryPoint>, Error>;
 
-	fn init_shader_list(&self, subpass_layout: SubpassPipelineLayout<B>) -> pso::GraphicsShaderSet;
+	fn init_shader_map(&self, device: &B::Device, subpass_layout: SubpassPipelineLayout<B>) -> Result<HashMap<ShaderEntryType, B::ShaderEntryPoint>, Error>;
+
+	fn unload_shader_map(&self, device: &B::Device, shader_map: &HashMap<ShaderEntryType, B::ShaderEntryPoint>);
+
+	fn shader_map_to_shader_set(&self shader_map: &HashMap<ShaderEntryType, B::ShaderEntryPoint>) -> pso::GraphicsShaderSet<B>;
 }
 
 impl<B: hal::Backend> ShaderLoad<B> for PipelineBuilder<B> {
 	fn load_shader_entry_point(&self, entry_point: Option<layout::ShaderEntryPoint<B>>) -> Result<Option<B::ShaderEntryPoint>, Error> {
-		unimplemented!();
-		//If this is none, just return none.
-		//Otherwise, load the bytes, pack that into
-		//a backend SEP, and return.
+		match entry_point {
+			//If this is none, just return none.
+			None => { return Ok(None); },
+			Some(raw_entry_point) => {
+				//Otherwise, load the bytes,
+				// let vs_module = device
+				// 	.create_shader_module(include_bytes!("data/vert.spv"))
+				// 	.unwrap();
+				// let fs_module = device
+				// 	.create_shader_module(include_bytes!("data/frag.spv"))
+				// 	.unwrap();
+				let loaded_module = unimplemented!();
+				
+				//pack that into
+				//a backend SEP,
+				let result = pso::EntryPoint::<back::Backend> {
+					entry: raw_entry_point.entry,
+					module: &loaded_module,
+					specialization: raw_entry_point.specialization,
+				};
 
-		Ok()
+				//and return.
+				return Ok(result);
+			}
+		}
+
+		unreachable!();
 	}
 
-	fn init_shader_entry_list(&self, subpass_layout: SubpassPipelineLayout<B>) -> Result<HashMap<ShaderEntryType, B::ShaderEntryPoint>, Error> {
+	fn init_shader_map(&self, device: &B::Device, subpass_layout: SubpassPipelineLayout<B>) -> Result<HashMap<ShaderEntryType, B::ShaderEntryPoint>, Error> {
 		//Try to load all of the shaders.
 		let shaders = [(Some(subpass_layout.required_info.vertex_shader_entry), ShaderEntryType::Vertex),
 		(subpass_layout.fragment_shader_entry, ShaderEntryType::Fragment),
@@ -67,11 +94,40 @@ impl<B: hal::Backend> ShaderLoad<B> for PipelineBuilder<B> {
 		match result {
 			Ok(_) => {},
 			Err(_) => {
-				unimplemented!();
+				self.unload_shader_map(result_map);
 			}
 		}
 
 		//Now return our result.
 		result
+	}
+
+	fn unload_shader_map(&self, device: &B::Device, shader_map: &HashMap<ShaderEntryType, B::ShaderEntryPoint>) {
+		for (key, val) in shader_map {
+			device.destroy_shader_module(val.module);
+		}
+	}
+
+	fn shader_map_to_shader_set(&self shader_map: &HashMap<ShaderEntryType, B::ShaderEntryPoint>) -> Result<pso::GraphicsShaderSet<B>, Error> {
+		//Vertex entry point must exist...
+		if let Some(vertex_entry) = unimplemented!() {
+			//...but otherwise everything
+			//else is a direct mapping
+
+			return Ok(pso::GraphicsShaderSet::<B> {
+				vertex: vertex_entry,
+				hull: shader_map.get(ShaderEntryType::Hull),
+				domain: shader_map.get(ShaderEntryType::Domain),
+				geometry: shader_map.get(ShaderEntryType::Geometry),
+				fragment: shader_map.get(ShaderEntryType::Fragment)
+			});
+		}
+		else {
+			assert_debug!(false, "Vertex entry point missing from shader list");
+
+			return Error;
+		}
+
+		unreachable!();
 	}
 }
