@@ -1,8 +1,8 @@
 /*!
  * Defines internal methods of PipelineBuilder.
  */
-use internal;
+mod internal;
 pub use self::internal::PipelineBuilderInternal;
 
-use shader;
+mod shader;
 pub use self::shader::ShaderLoad;

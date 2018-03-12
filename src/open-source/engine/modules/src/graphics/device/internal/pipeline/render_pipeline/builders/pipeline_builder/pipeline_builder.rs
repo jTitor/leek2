@@ -3,7 +3,7 @@
  */
 use super::{PipelineBuilderInternal, RenderPassLayout, SubpassPipelineLayout};
 use super::super::{DestroyIterOnDrop, DestroyOnDrop};
-use graphics::device::internal::pipeline::render_pipeline::{Pipeline, elements, layout};
+use graphics::device::internal::pipeline::render_pipeline::{DescriptorPool, Pipeline, elements, layout};
 
 use std::cmp;
 use std::marker::PhantomData;
@@ -86,11 +86,13 @@ impl<'a, B: hal::Backend> PipelineBuilder<'a, B> {
 		let mut descriptor_pool_raw = device.create_descriptor_pool(clamped_max_num_descriptor_sets, self.descriptor_ranges.as_slice());
 		let mut descriptor_pool = DestroyOnDrop::<DescriptorPool<B>>::new(descriptor_pool_raw, device_rc);
 
+		//TODO: this is really more of a per-subpass
+		//step
 		let desc_set = descriptor_pool.resource_mut().allocate_set(&descriptor_set_layout);
 
 		//Unwrap the pipeline assets, 
 		//and the full pipeline is ready.
-		Ok(elements::Pipeline::<B> {
+		Ok(Pipeline::<B> {
 			descriptor_pool: descriptor_pool.unwrap(),
 			render_passes: render_passes.unwrap(),
 			subpass_pipelines: subpass_pipelines.unwrap(),

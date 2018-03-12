@@ -24,6 +24,3 @@ pub use self::device::{DeviceController, DeviceControllerBuilder, DeviceInfo, Vi
 
 pub mod render_pipeline;
 pub use self::render_pipeline::{Pipeline, DefaultPipelineBuilder, PipelineBuilder};
-
-mod descriptor_pool;
-pub use self::descriptor_pool::DescriptorPool;

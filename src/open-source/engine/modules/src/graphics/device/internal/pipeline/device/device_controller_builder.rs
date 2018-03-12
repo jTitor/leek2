@@ -19,7 +19,7 @@ const ELEMENTS_PER_QUEUE: usize = 16;
 pub struct DeviceControllerBuilder<B: hal::Backend> {
 	_backend_type: PhantomData<B>
 }
-impl<'a, B: hal::Backend> DeviceControllerBuilder<'a, B> {
+impl<'a, B: hal::Backend> DeviceControllerBuilder<B> {
 	pub fn example(adapter: &hal::Adapter<B>, surface: &mut B::Surface, surface_format: f::Format) -> Result<DeviceController<'a, B>, Error> {
 		let (device, mut queue_group) =
 			adapter.open_with::<_, hal::Graphics>(1, |family| {

@@ -1,9 +1,9 @@
 /*!
  * Defines internal methods of PipelineBuilder.
  */
-use super::{PipelineBuilder, RenderPassLayout,
-	SubpassPipelineLayout};
 use super::ShaderLoad;
+use super::super::{PipelineBuilder, RenderPassLayout,
+	SubpassPipelineLayout};
 
 use graphics::device::internal::pipeline::render_pipeline::{elements, layout};
 

@@ -39,3 +39,6 @@ pub use self::builders::{DefaultPipelineBuilder, PipelineBuilder};
 pub mod elements;
 
 pub mod layout;
+
+mod descriptor_pool;
+pub use self::descriptor_pool::DescriptorPool;
