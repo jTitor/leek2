@@ -20,7 +20,7 @@ pub struct DestroyOnDrop<B: hal::Backend, T: DeviceResource<B>> {
 }
 
 impl<B: hal::Backend, T: DeviceResource<B>> DestroyOnDrop<B, T> {
-	fn new(resource: T, device: &Rc<B::Device>) -> DestroyOnDro<B, T> {
+	fn new(resource: T, device: &Rc<B::Device>) -> DestroyOnDrop<B, T> {
 		DestroyOnDrop::<B, T> {
 			device: Rc::clone(device),
 			resource: resource

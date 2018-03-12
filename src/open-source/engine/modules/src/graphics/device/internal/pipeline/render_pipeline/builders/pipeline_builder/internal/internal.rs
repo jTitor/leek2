@@ -145,8 +145,6 @@ impl<'a, B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<'a, B> 
 
 		//The PSO is built, so we don't need the
 		//shader modules anymore
-		//device.destroy_shader_module(vs_module);
-		//device.destroy_shader_module(fs_module);
 		self.unload_shader_map(device, shader_map);
 
 		subpass_pipeline_result

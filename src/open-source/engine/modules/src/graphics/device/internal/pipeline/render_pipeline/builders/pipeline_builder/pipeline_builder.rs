@@ -59,21 +59,6 @@ impl<'a, B: hal::Backend> PipelineBuilder<'a, B> {
 		let clamped_max_num_descriptor_sets = cmp::max(self.max_num_descriptor_sets, 1);
 		let device_rc = Rc::new(device);
 
-		//Perform all the necessary calls to
-		//generate the pipeline's individual elements:
-		
-		//Generate the descriptor set layout.
-		//let descriptor_set_layout = self.build_descriptor_set_layout(device_rc)?;
-
-		//Create the pipeline layout.
-		// let pipeline_layout = device.create_pipeline_layout(
-		// 	Some(&set_layout),
-		// 	&[
-		// 		(pso::ShaderStageFlags::VERTEX, 0..8),
-		// 	],
-		// );
-		//unimplemented!();
-
 		//Generate each render pass:
 		let render_passes = DestroyIterOnDrop::new(Vec::<elements::Pass<B>>::new(), device_rc);
 		for render_pass_layout in self.render_pass_layouts {
