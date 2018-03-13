@@ -1,6 +1,8 @@
 /*!
  * Defines the ShaderEntryPoint struct.
  */
+use std::marker::PhantomData;
+
 use gfx_hal::{self as hal, pso};
 
 /**
@@ -27,4 +29,7 @@ pub struct ShaderEntryPoint<'a, B: hal::Backend> {
 	 * constant values for the shader.
 	 */
 	pub specialization: &'a [pso::Specialization],
+
+	
+	_backend_type: PhantomData<B>
 }

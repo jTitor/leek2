@@ -3,6 +3,7 @@
  */
 use graphics::device::internal::pipeline::render_pipeline::{elements, layout};
 
+use std::marker::PhantomData;
 use std::ops::Range;
 
 use gfx_hal::{self as hal, pso};
@@ -19,7 +20,9 @@ pub struct SubpassPipelineLayoutRequiredInfo<'a, B: hal::Backend> {
 	/**
 	 * TODO
 	 */
-	subpass_index: u32
+	subpass_index: u32,
+	
+	_backend_type: PhantomData<B>
 }
 
 /**
@@ -54,7 +57,9 @@ pub struct SubpassPipelineLayout<'a, B: hal::Backend> {
 	 * Describes how this subpass will rasterize its
 	 * rendered triangles.
 	 */
-	pub rasterization_type: pso::Rasterizer
+	pub rasterization_type: pso::Rasterizer,
+	
+	_backend_type: PhantomData<B>
 }
 
 impl<'a, B: hal::Backend> SubpassPipelineLayout<'a, B> {

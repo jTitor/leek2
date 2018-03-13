@@ -50,14 +50,6 @@ impl<B: hal::Backend> DeviceResource<B> for MemoryBuffer<B> {
 		Weak::<&Self>::new()
 	}
 
-	fn destroy_all_resources(device: &mut B::Device, resource_list: &Vec<Self>) -> Result<(), Error> {
-		// for buffer in self.resource_lists.buffers {
-		// 	self.device.destroy_buffer(buffer);
-		// }
-
-		unimplemented!()
-	}
-
 	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error> {
 		device.destroy_buffer(resource.buffer_binding);
 		device.free_memory(resource.buffer_memory);

@@ -68,17 +68,6 @@ impl<'a, B: hal::Backend> DeviceResource<B> for SubpassPipeline<'a, B> {
 		unimplemented!();
 	}
 
-	fn destroy_all_resources(device: &mut B::Device, resource_list: &Vec<Self>) -> Result<(), Error> {
-		// for pipeline in self.resource_lists.pipelines {
-		// 	self.device.destroy_pipeline_layout(unimplemented!());
-		// 	self.device.destroy_render_pass(unimplemented!());
-		// 	self.device.destroy_graphics_pipeline(pipeline);
-		// }
-		unimplemented!();
-
-		Ok(())
-	}
-
 	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error> {
 		unimplemented!();
 		device.destroy_descriptor_set_layout(resource.set_layout);

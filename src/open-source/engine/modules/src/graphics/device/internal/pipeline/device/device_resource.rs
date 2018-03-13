@@ -10,18 +10,25 @@ use gfx_hal as hal;
  * Trait for resources managed
  * by a device controller.
  */
-pub trait DeviceResource<B: hal::Backend> where Self: Sized {
+pub trait DeviceResource<B: hal::Backend> {// where Self: Sized {
 	//TODO: Device create/destroy calls don't
 	//require mutability, update this
 	/**
 	 * Gets a new instance of the given resource.
 	 */
 	fn get_resource(device: &mut B::Device) -> Weak<&Self>;
+
 	/**
-	 * Destroys all of the resources
-	 * of this type owned by the device.
+	 * Destroys all resources in the collection.
 	 */
-	fn destroy_all_resources(device: &mut B::Device, resource_list: &Vec<Self>) -> Result<(), Error>;
+	fn destroy_resource_collection<T: IntoIterator>(collection: &mut T, device: &mut B::Device) -> Result<(), Error> 
+	where T::Item: DeviceResource<B> {
+		for resource in collection {
+			resource.destroy_resource(device)?;
+		}
+
+		Ok(())
+	}
 	
 	//Member methods.
 	/**
@@ -29,17 +36,6 @@ pub trait DeviceResource<B: hal::Backend> where Self: Sized {
 	 * it is owned by the device.
 	 */
 	fn destroy_resource(&mut self, device: &mut B::Device) -> Result<(), Error>;
-
-	/**
-	 * Destroys all resources in the collection.
-	 */
-	fn destroy_resource_collection<T: IntoIterator>(collection: &mut T, device: &mut B::Device) where T::Item == Self -> Result<(), Error> {
-		for resource in collection {
-			resource.destroy_resource(device)?;
-		}
-
-		Ok(())
-	}
 
 	/**
 	 * If true, the resource does not need

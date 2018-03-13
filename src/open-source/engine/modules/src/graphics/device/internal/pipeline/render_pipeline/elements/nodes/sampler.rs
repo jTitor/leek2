@@ -58,16 +58,7 @@ impl<B: hal::Backend> DeviceResource<B> for Sampler<B> {
 	fn get_resource(device: &mut B::Device) -> Weak<&Self> {
 		unimplemented!()
 	}
-
-	fn destroy_all_resources(device: &mut B::Device, resource_list: &Vec<Self>) -> Result<(), Error> {
-		// for sampler in self.resource_lists.samplers {
-		// 	self.device.destroy_sampler(sampler);
-		// }
-		unimplemented!();
-
-		Ok(())
-	}
-
+	
 	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error> {
 		device.destroy_sampler(resource.sampler);
 		unimplemented!();

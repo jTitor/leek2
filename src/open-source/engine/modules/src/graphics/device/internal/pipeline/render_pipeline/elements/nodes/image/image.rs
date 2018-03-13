@@ -84,15 +84,6 @@ impl<B: hal::Backend> DeviceResource<B> for Image<B> {
 		unimplemented!()
 	}
 
-	fn destroy_all_resources(device: &mut B::Device, resource_list: &Vec<Self>) -> Result<(), Error> {
-		// for image in self.resource_lists.images {
-		// 	unimplemented!()
-		// }
-		unimplemented!();
-
-		Ok(())
-	}
-
 	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error> {
 		//TODO_rust: should be part of the write_buffer() call instead?
 		// self.device.destroy_buffer(resource.image_upload_buffer);

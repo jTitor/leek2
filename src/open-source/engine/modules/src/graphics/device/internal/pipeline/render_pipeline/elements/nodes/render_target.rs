@@ -48,19 +48,6 @@ impl<B: hal::Backend> DeviceResource<B> for RenderTarget<B> {
 		unimplemented!()
 	}
 
-	fn destroy_all_resources(device: &mut B::Device, resource_list: &Vec<Self>) -> Result<(), Error> {
-		// for render_target in self.resource_lists.render_targets {
-		// 	device.destroy_image_view(render_target);
-		// 	//TODO: In the example, the RTs
-		// 	//have a backing image; RTs should have
-		// 	//a separate image list?
-		// 	//device.destroy_image(image);
-		// }
-		unimplemented!();
-
-		Ok(())
-	}
-
 	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error> {
 		for framebuffer in resource.framebuffers {
 			device.destroy_framebuffer(framebuffer);

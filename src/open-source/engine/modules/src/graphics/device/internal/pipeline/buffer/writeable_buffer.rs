@@ -52,13 +52,6 @@ impl<B: hal::Backend, ElementT: Copy> DeviceResource<B> for WriteableBuffer<B, E
 		//Return a blank ref
 		Weak::<&Self>::new()
 	}
-
-	fn destroy_all_resources(device: &mut B::Device, resource_list: &Vec<Self>) -> Result<(), Error> {
-		//TODO: Unwrap and destroy the
-		//internal buffer
-		unimplemented!()
-	}
-
 	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error> {
 		//TODO: Unwrap and destroy the
 		//internal buffer

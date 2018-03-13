@@ -96,7 +96,7 @@ impl<'a, B: hal::Backend> PipelineBuilder<'a, B> {
 
 		//If there was any error,
 		//unload all of the resources
-		if let Err<_> = result {
+		if let Err(_) = result {
 			DestroyOnDrop::destroy_resource_collection(render_passes, device);
 			DestroyOnDrop::destroy_resource_collection(subpass_pipelines, device);
 			descriptor_pool.destroy_resource(device);
