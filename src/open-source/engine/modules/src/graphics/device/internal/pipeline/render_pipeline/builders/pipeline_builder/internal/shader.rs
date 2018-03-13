@@ -35,7 +35,7 @@ pub trait ShaderLoad<B: hal::Backend> {
 	fn shader_map_to_shader_set(&self, shader_map: &HashMap<ShaderEntryType, pso::EntryPoint<B>>) -> pso::GraphicsShaderSet<B>;
 }
 
-impl<B: hal::Backend> ShaderLoad<B> for PipelineBuilder<B> {
+impl<'a, B: hal::Backend> ShaderLoad<B> for PipelineBuilder<'a, B> {
 	fn load_shader_entry_point(&self, entry_point: Option<layout::ShaderEntryPoint<B>>) -> Result<Option<pso::EntryPoint<B>>, Error> {
 		match entry_point {
 			//If this is none, just return none.
