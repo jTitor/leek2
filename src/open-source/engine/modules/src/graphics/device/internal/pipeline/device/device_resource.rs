@@ -22,13 +22,24 @@ pub trait DeviceResource<B: hal::Backend> where Self: Sized {
 	 * of this type owned by the device.
 	 */
 	fn destroy_all_resources(device: &mut B::Device, resource_list: &Vec<Self>) -> Result<(), Error>;
+	
+	//Member methods.
 	/**
 	 * Destroys a single resource if
 	 * it is owned by the device.
 	 */
-	fn destroy_resource_static(device: &mut B::Device, resource: &mut Self) -> Result<(), Error>;
+	fn destroy_resource(&mut self, device: &mut B::Device) -> Result<(), Error>;
 
-	//Member methods...
+	/**
+	 * Destroys all resources in the collection.
+	 */
+	fn destroy_resource_collection<T: IntoIterator>(collection: &mut T, device: &mut B::Device) where T::Item == Self -> Result<(), Error> {
+		for resource in collection {
+			resource.destroy_resource(device)?;
+		}
+
+		Ok(())
+	}
 
 	/**
 	 * If true, the resource does not need
@@ -37,9 +48,4 @@ pub trait DeviceResource<B: hal::Backend> where Self: Sized {
 	 * already been destroyed.
 	 */
 	fn resources_destroyed(&self) -> bool;
-
-	//TODO: really awkward, fix this
-	fn destroy_resource(&mut self, device: &mut B::Device) -> Result<(), Error> {
-		Self::destroy_resource(device, self);
-	}
 }

@@ -10,8 +10,8 @@ use std::collections::HashMap;
 
 use failure::Error;
 use gfx_hal::{self as hal, pso,
-Backend, Device, EntryPoint};
-use gfx_hal::pso::GraphicsShaderSet;
+Backend, Device};
+use gfx_hal::pso::{GraphicsShaderSet, EntryPoint};
 
 enum ShaderEntryType {
 	Vertex,

@@ -1,8 +1,7 @@
 /*!
  * Defines the Pipeline struct.
  */
-use super::super::DescriptorPool;
-use super::elements;
+use super::{DescriptorPool, elements};
 use graphics::device::internal::pipeline::DeviceResource;
 
 use std::rc::Weak;

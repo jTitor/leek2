@@ -4,6 +4,7 @@
 use super::ShaderLoad;
 use super::super::{PipelineBuilder, RenderPassLayout,
 	SubpassPipelineLayout};
+use super::super::super::DestroyIterOnDrop;
 
 use graphics::device::internal::pipeline::render_pipeline::{elements, layout};
 
@@ -26,40 +27,25 @@ pub trait PipelineBuilderInternal<B: hal::Backend> {
 	 * Builds a subpass pipeline
 	 * with the given device.
 	 */
-	fn build_subpass_pipeline(&self, subpass_layout: &SubpassPipelineLayout<B>, device: Rc<&B::Device>) -> Result<elements::SubpassPipeline<B>, Error>;
+	fn build_subpass_pipeline(&self, subpass_layout: &SubpassPipelineLayout<B>, device: Rc<&B::Device>, render_passes: &Vec::<elements::Pass<B>>) -> Result<elements::SubpassPipeline<B>, Error>;
 }
 
 impl<'a, B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<'a, B> {
 	fn build_render_pass(&self, render_pass_layout: &RenderPassLayout, device: Rc<&B::Device>) -> Result<elements::Pass<B>, Error> {
-		//First check that the layout is valid.
-		let _layout_valid = render_pass_layout.layout_valid()?;
+		//First check that the layout is valid...
+		render_pass_layout.layout_valid()?;
 
-		let render_pass_result = {
-			//Describe attachments here.
-			//attachment = ...
-			unimplemented!();
-
-			//List the what attachments each subpass
-			//has access to.
-			//subpass_desc = ...
-			unimplemented!();
-
-			//Link the subpass to this render pass,
-			//link them together as needed
-			//let dependency = ...
-			unimplemented!();
-
-			//And actually create the render pass here.
-			//device.create_render_pass(&[attachment], &[subpass_desc], &[dependency])
-			unimplemented!();
-
-			Ok()
-		};
-
-		render_pass_result
+		//And actually create the render pass here.
+		Ok(
+			device.create_render_pass(
+				render_pass_layout.attachments.as_slice(),
+				render_pass_layout.subpass_descriptions.as_slice(),
+				render_pass_layout.dependencies.as_slice()
+			)
+		)
 	}
 
-	fn build_subpass_pipeline(&self, subpass_layout: &SubpassPipelineLayout<B>, device: Rc<&B::Device>) -> Result<elements::SubpassPipeline<B>, Error> {
+	fn build_subpass_pipeline(&self, subpass_layout: &SubpassPipelineLayout<B>, device: Rc<&B::Device>, render_passes: &Vec::<elements::Pass<B>>) -> Result<elements::SubpassPipeline<B>, Error> {
 		//Subpass pipeline is placed in this
 		//double block so the shader modules are unloaded
 		//the moment they don't need to be used.
@@ -67,6 +53,7 @@ impl<'a, B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<'a, B> 
 		//Generate the subpass' descriptor set layout
 		//from provided bindings if it exists.
 		let mut set_layout: Option<&B::DescriptorSetLayout> = None;
+		
 		if let Some(set_layout_binding_vec) = subpass_layout.set_layout_bindings {
 			set_layout = device.create_descriptor_set_layout(set_layout_binding_vec.as_slice()
 			);
@@ -75,7 +62,7 @@ impl<'a, B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<'a, B> 
 		//Next, the pipeline layout.
 		//This comes from the
 		//descriptor set layout and push block array.
-		device.create_pipeline_layout(
+		let pipeline_layout = device.create_pipeline_layout(
 			set_layout,
 			subpass_layout.push_block_constants.as_slice(),
 		);
@@ -94,13 +81,22 @@ impl<'a, B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<'a, B> 
 			//indexing into builder's renderpass
 			//list
 			//(subpass_layout.required_info.render_pass_index)
-			let render_pass = ;
+			let render_pass_raw = render_passes.get(subpass_layout.required_info.render_pass_index);
+
+			if render_pass == None {
+				return Error;
+			}
+
+			let render_pass = render_pass_raw.unwrap();
+
 			let subpass = pass::Subpass { index: subpass_layout.required_info.subpass_index, main_pass: &render_pass };
-			unimplemented!();
 
 			//Create the pipeline description!
-			let mut pipeline_desc = pso::GraphicsPipelineDesc::<B>::new(...);
-			unimplemented!();
+			let mut pipeline_desc = pso::GraphicsPipelineDesc::<B>::new(shaders: shader_set,
+			primitive: subpass_layout.primitive_type,
+			rasterizer: subpass_layout.rasterization_type,
+			layout: &pipeline_layout,
+			subpass: subpass);
 
 			//That gives the basic behavior of
 			//the pipeline, but now we need
@@ -137,7 +133,7 @@ impl<'a, B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<'a, B> 
 			Ok(SubpassPipeline::<B> {
 				set_layout: set_layout,
 				pipeline_layout: pipeline_layout,
-				subpass: Subpass<'a, B>,
+				subpass: subpass,
 				pipeline_impl: pipeline_impl,
 				resources_destroyed: false
 			})

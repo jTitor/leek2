@@ -59,44 +59,49 @@ impl<'a, B: hal::Backend> PipelineBuilder<'a, B> {
 		let clamped_max_num_descriptor_sets = cmp::max(self.max_num_descriptor_sets, 1);
 		let device_rc = Rc::new(device);
 
-		//Generate each render pass:
-		let render_passes = DestroyIterOnDrop::new(Vec::<elements::Pass<B>>::new(), device_rc);
-		for render_pass_layout in self.render_pass_layouts {
-			let render_pass = self.build_render_pass(render_pass_layout, device_rc)?;
+		let render_passes = Vec::<elements::Pass<B>>::new();
+		let subpass_pipelines = Vec::<elements::SubpassPipeline<B>>::new();
+		let mut descriptor_pool = device.create_descriptor_pool(clamped_max_num_descriptor_sets, self.descriptor_ranges.as_slice());
 
-			render_passes.resource_iter().push(render_pass);
+		let result = {
+			//Generate each render pass:
+			for render_pass_layout in self.render_pass_layouts {
+				let render_pass = self.build_render_pass(render_pass_layout, device_rc)?;
+
+				render_passes.resource_iter().push(render_pass);
+			}
+
+			//Generate each subpass pipeline:
+			for subpass_pipeline_layout in self.subpass_pipeline_layouts {
+				let subpass_pipeline = self.build_subpass_pipeline(subpass_pipeline_layout, device_rc, &render_passes)?;
+				
+				//Add the subpass pipeline to the
+				//final pipeline's vec.
+				subpass_pipelines.resource_iter().push(subpass_pipeline);
+			}
+
+			//TODO: this is really more of a per-subpass
+			//step
+			let desc_set = descriptor_pool.resource_mut().allocate_set(&descriptor_set_layout);
+
+			//Unwrap the pipeline assets, 
+			//and the full pipeline is ready.
+			Ok(Pipeline::<B> {
+				descriptor_pool: descriptor_pool,
+				render_passes: render_passes,
+				subpass_pipelines: subpass_pipelines,
+				resources_destroyed: false
+			})
+		};
+
+		//If there was any error,
+		//unload all of the resources
+		if let Err<_> = result {
+			DestroyOnDrop::destroy_resource_collection(render_passes, device);
+			DestroyOnDrop::destroy_resource_collection(subpass_pipelines, device);
+			descriptor_pool.destroy_resource(device);
 		}
 
-		let subpass_pipelines = DestroyIterOnDrop::new(Vec::<elements::SubpassPipeline<B>>::new(), device_rc);
-		//Generate each subpass pipeline:
-		for subpass_pipeline_layout in self.subpass_pipeline_layouts {
-			let subpass_pipeline = self.build_subpass_pipeline(subpass_pipeline_layout, device_rc)?;
-			
-			//Add the subpass pipeline to the
-			//final pipeline's vec.
-			subpass_pipelines.resource_iter().push(subpass_pipeline);
-		}
-
-		//Create external-facing descriptors
-		//the render calls can bind to.
-		// Descriptor pool -
-		// this describes how many descriptors
-		// can be allocated at any given time
-		// and in how many sets of the given layout.
-		let mut descriptor_pool_raw = device.create_descriptor_pool(clamped_max_num_descriptor_sets, self.descriptor_ranges.as_slice());
-		let mut descriptor_pool = DestroyOnDrop::<DescriptorPool<B>>::new(descriptor_pool_raw, device_rc);
-
-		//TODO: this is really more of a per-subpass
-		//step
-		let desc_set = descriptor_pool.resource_mut().allocate_set(&descriptor_set_layout);
-
-		//Unwrap the pipeline assets, 
-		//and the full pipeline is ready.
-		Ok(Pipeline::<B> {
-			descriptor_pool: descriptor_pool.unwrap(),
-			render_passes: render_passes.unwrap(),
-			subpass_pipelines: subpass_pipelines.unwrap(),
-			resources_destroyed: false
-		})
+		result
 	}
 }
