@@ -55,15 +55,15 @@ impl<B: hal::Backend> Drop for Sampler<B> {
 }
 
 impl<B: hal::Backend> DeviceResource<B> for Sampler<B> {
-	fn get_resource(device: &mut B::Device) -> Weak<&Self> {
+	fn get_resource(device: &B::Device) -> Weak<&Self> {
 		unimplemented!()
 	}
 	
-	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error> {
-		device.destroy_sampler(resource.sampler);
+	fn destroy_resource(&mut self, device: &B::Device) -> Result<(), Error> {
+		device.destroy_sampler(self.sampler);
 		unimplemented!();
 
-		resource.mark_destroyed();
+		self.mark_destroyed();
 
 		Ok(())
 	}

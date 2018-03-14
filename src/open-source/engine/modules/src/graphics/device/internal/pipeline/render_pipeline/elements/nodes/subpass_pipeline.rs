@@ -64,17 +64,17 @@ impl<'a, B> Drop for SubpassPipeline<'a, B> where B: hal::Backend {
 }
 
 impl<'a, B: hal::Backend> DeviceResource<B> for SubpassPipeline<'a, B> {
-	fn get_resource(device: &mut B::Device) -> Weak<&Self> {
+	fn get_resource(device: &B::Device) -> Weak<&Self> {
 		unimplemented!();
 	}
 
-	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error> {
+	fn destroy_resource(&mut self, device: &B::Device) -> Result<(), Error> {
 		unimplemented!();
-		device.destroy_descriptor_set_layout(resource.set_layout);
-		device.destroy_pipeline_layout(resource.pipeline_layout);
-		device.destroy_graphics_pipeline(resource.pipeline_impl);
+		device.destroy_descriptor_set_layout(self.set_layout);
+		device.destroy_pipeline_layout(self.pipeline_layout);
+		device.destroy_graphics_pipeline(self.pipeline_impl);
 
-		resource.mark_destroyed();
+		self.mark_destroyed();
 	}
 
 	fn resources_destroyed(&self) -> bool {

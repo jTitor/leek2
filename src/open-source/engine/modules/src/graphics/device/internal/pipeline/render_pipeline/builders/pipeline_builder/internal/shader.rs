@@ -32,7 +32,7 @@ pub trait ShaderLoad<B: hal::Backend> {
 
 	fn unload_shader_map(&self, device: &B::Device, shader_map: &HashMap<ShaderEntryType, pso::EntryPoint<B>>);
 
-	fn shader_map_to_shader_set(&self, shader_map: &HashMap<ShaderEntryType, pso::EntryPoint<B>>) -> pso::GraphicsShaderSet<B>;
+	fn shader_map_to_shader_set(&self, shader_map: &HashMap<ShaderEntryType, pso::EntryPoint<B>>) -> Result<pso::GraphicsShaderSet<B>, Error>;
 }
 
 impl<'a, B: hal::Backend> ShaderLoad<B> for PipelineBuilder<'a, B> {

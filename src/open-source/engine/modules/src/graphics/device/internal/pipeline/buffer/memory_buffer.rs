@@ -43,19 +43,19 @@ impl<B: hal::Backend> Drop for MemoryBuffer<B> {
 }
 
 impl<B: hal::Backend> DeviceResource<B> for MemoryBuffer<B> {
-	fn get_resource(device: &mut B::Device) -> Weak<&Self> {
+	fn get_resource(device: &B::Device) -> Weak<&Self> {
 		debug_assert!(false, "Can't directly get_resource() for MemoryBuffer; get_resource() on MemoryBufferBuilder instead and then call MemoryBufferBuilder::build()");
 
 		//Return a blank ref
 		Weak::<&Self>::new()
 	}
 
-	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error> {
-		device.destroy_buffer(resource.buffer_binding);
-		device.free_memory(resource.buffer_memory);
+	fn destroy_resource(&mut self, device: &B::Device) -> Result<(), Error> {
+		device.destroy_buffer(self.buffer_binding);
+		device.free_memory(self.buffer_memory);
 		unimplemented!();
 
-		resource.mark_destroyed();
+		self.mark_destroyed();
 	}
 
 	fn resources_destroyed(&self) -> bool {

@@ -80,22 +80,22 @@ impl<B: hal::Backend> Drop for Image<B> {
 }
 
 impl<B: hal::Backend> DeviceResource<B> for Image<B> {
-	fn get_resource(device: &mut B::Device) -> Weak<&Self> {
+	fn get_resource(device: &B::Device) -> Weak<&Self> {
 		unimplemented!()
 	}
 
-	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error> {
+	fn destroy_resource(&mut self, device: &B::Device) -> Result<(), Error> {
 		//TODO_rust: should be part of the write_buffer() call instead?
-		// self.device.destroy_buffer(resource.image_upload_buffer);
+		// self.device.destroy_buffer(self.image_upload_buffer);
 
-		device.destroy_image(resource.image_binding);
+		device.destroy_image(self.image_binding);
 
-		device.destroy_image_view(resource.image_render_view);
+		device.destroy_image_view(self.image_render_view);
 
-		device.free_memory(resource.image_memory);
+		device.free_memory(self.image_memory);
 		unimplemented!();
 
-		resource.mark_destroyed();
+		self.mark_destroyed();
 
 		Ok(())
 	}

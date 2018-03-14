@@ -44,22 +44,22 @@ impl<B: hal::Backend> Drop for RenderTarget<B> {
 }
 
 impl<B: hal::Backend> DeviceResource<B> for RenderTarget<B> {
-	fn get_resource(device: &mut B::Device) -> Weak<&Self> {
+	fn get_resource(device: &B::Device) -> Weak<&Self> {
 		unimplemented!()
 	}
 
-	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error> {
-		for framebuffer in resource.framebuffers {
+	fn destroy_resource(&mut self, device: &B::Device) -> Result<(), Error> {
+		for framebuffer in self.framebuffers {
 			device.destroy_framebuffer(framebuffer);
 		}
 
-		for (image, rtv) in resource.frame_images {
+		for (image, rtv) in self.frame_images {
 			device.destroy_image_view(rtv);
 			device.destroy_image(image);
 		}
 		unimplemented!();
 
-		resource.mark_destroyed();
+		self.mark_destroyed();
 
 		Ok(())
 	}
