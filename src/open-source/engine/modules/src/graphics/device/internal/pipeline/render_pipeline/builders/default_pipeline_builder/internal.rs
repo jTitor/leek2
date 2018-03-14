@@ -12,13 +12,14 @@ use std::rc::Rc;
 
 use gfx_hal::{Device, DescriptorPool, self as hal, pso, pass, format as f, image as i};
 use gfx_hal::pso::{ColorMask, BlendState};
+use gfx_hal::pass::SubpassDependency;
 use failure::Error;
 
 /**
  * Defines internal operations of a DefaultPipelineBuilder.
  */
 pub trait DefaultPipelineBuilderInternal<B: hal::Backend> {
-	fn create_render_pass_layouts(&self, device: Rc<&B::Device>) -> Result<Vec<RenderPassLayout>, Error>;
+	fn create_render_pass_layouts(&self, device: Rc<&B::Device>, surface_format: f::Format) -> Result<Vec<RenderPassLayout>, Error>;
 
 	fn create_subpass_pipeline_layouts(&self, device: Rc<&B::Device>) -> Result<Vec<SubpassPipelineLayout<B>>, Error>;
 
@@ -74,11 +75,10 @@ impl<B: hal::Backend> DefaultPipelineBuilderInternal<B> for DefaultPipelineBuild
 		let fs_module_bytes = &[0u8];
 
 		let mut subpass_required = self.create_subpass_required_info(ENTRY_POINT_NAME,
-		vs_module_bytes,
-		fs_module_bytes);
+		vs_module_bytes);
 
 		//Now make the actual subpass pipeline layout.
-		let mut subpass = self.configure_subpass_pipeline_layout(subpass_required);
+		let mut subpass = self.configure_subpass_pipeline_layout(subpass_required, ENTRY_POINT_NAME, fs_module_bytes);
 
 		//Layout setup complete,
 		//push it into the result vec.
@@ -103,14 +103,16 @@ impl<B: hal::Backend> DefaultPipelineBuilderInternal<B> for DefaultPipelineBuild
 					id: 0,
 					value: pso::Constant::F32(0.8),
 				}
-			]
+			],
+			..Default::default()
 		};
 
 		//...and put them in the subpass layout.
 		SubpassPipelineLayoutRequiredInfo::<B> {
 			vertex_shader_entry: vertex_shader,
 			render_pass_index: 0,
-			subpass_index: 0
+			subpass_index: 0,
+			..Default::default()
 		}
 	}
 
@@ -120,7 +122,8 @@ impl<B: hal::Backend> DefaultPipelineBuilderInternal<B> for DefaultPipelineBuild
 		let frag_shader = ShaderEntryPoint::<B> {
 			entry: entry_point_name,
 			module: fs_module_bytes,
-			specialization: &[]
+			specialization: &[],
+			..Default::default()
 		};
 
 		subpass.fragment_shader_entry = Some(frag_shader);

@@ -19,8 +19,9 @@ pub trait DeviceResource<B: hal::Backend> {
 	/**
 	 * Destroys all resources in the collection.
 	 */
-	fn destroy_resource_collection<T: IntoIterator>(collection: &mut T, device: &B::Device) -> Result<(), Error> 
-	where T::Item: DeviceResource<B> {
+	fn destroy_resource_collection<T>(collection: &mut T, device: &B::Device) -> Result<(), Error> 
+	where T: IntoIterator,
+	T::Item: DeviceResource<B> {
 		for resource in collection {
 			resource.destroy_resource(device)?;
 		}

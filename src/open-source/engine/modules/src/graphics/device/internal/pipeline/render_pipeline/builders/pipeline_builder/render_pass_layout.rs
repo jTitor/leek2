@@ -9,7 +9,7 @@ use failure::Error;
  * Defines the structure of a Pass for
  * a PipelineBuilder.
  */
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct RenderPassLayout<'a> {
 	pub attachments: Vec<pass::Attachment>,
 	pub subpass_descriptions: Vec<pass::SubpassDesc<'a>>,

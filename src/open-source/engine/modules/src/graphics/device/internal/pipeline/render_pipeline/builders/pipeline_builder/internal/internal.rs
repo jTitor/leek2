@@ -1,7 +1,7 @@
 /*!
  * Defines internal methods of PipelineBuilder.
  */
-use super::ShaderLoad;
+use super::{ShaderLoad, SubpassPipelineBuildError};
 use super::super::{PipelineBuilder, RenderPassLayout,
 	SubpassPipelineLayout};
 use super::super::super::DestroyIterOnDrop;
@@ -11,7 +11,8 @@ use graphics::device::internal::pipeline::render_pipeline::{elements, layout};
 use std::rc::Rc;
 
 use failure::Error;
-use gfx_hal::{Backend, self as hal, pass, pso};
+use gfx_hal::{Backend, DescriptorPool, Device,
+self as hal, pass, pso};
 
 /**
  * Implements top-level internal methods of PipelineBuilder.
@@ -27,7 +28,7 @@ pub trait PipelineBuilderInternal<B: hal::Backend> {
 	 * Builds a subpass pipeline
 	 * with the given device.
 	 */
-	fn build_subpass_pipeline(&self, subpass_layout: &SubpassPipelineLayout<B>, device: Rc<&B::Device>, render_passes: &Vec<elements::Pass<B>>) -> Result<elements::SubpassPipeline<B>, Error>;
+	fn build_subpass_pipeline(&self, subpass_layout: &SubpassPipelineLayout<B>, device: Rc<&B::Device>, render_passes: &Vec<elements::Pass<B>>, descriptor_pool: &mut B::DescriptorPool) -> Result<elements::SubpassPipeline<B>, Error>;
 }
 
 impl<'a, B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<'a, B> {
@@ -45,7 +46,7 @@ impl<'a, B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<'a, B> 
 		)
 	}
 
-	fn build_subpass_pipeline(&self, subpass_layout: &SubpassPipelineLayout<B>, device: Rc<&B::Device>, render_passes: &Vec<elements::Pass<B>>) -> Result<elements::SubpassPipeline<B>, Error> {
+	fn build_subpass_pipeline(&self, subpass_layout: &SubpassPipelineLayout<B>, device: Rc<&B::Device>, render_passes: &Vec<elements::Pass<B>>, descriptor_pool: &mut B::DescriptorPool) -> Result<elements::SubpassPipeline<B>, Error> {
 		//Subpass pipeline is placed in this
 		//double block so the shader modules are unloaded
 		//the moment they don't need to be used.
@@ -55,8 +56,8 @@ impl<'a, B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<'a, B> 
 		let mut set_layout: Option<&B::DescriptorSetLayout> = None;
 		
 		if let Some(set_layout_binding_vec) = subpass_layout.set_layout_bindings {
-			set_layout = device.create_descriptor_set_layout(set_layout_binding_vec.as_slice()
-			);
+			set_layout = Some(device.create_descriptor_set_layout(set_layout_binding_vec.as_slice()
+			));
 		}
 
 		//Next, the pipeline layout.
@@ -73,7 +74,7 @@ impl<'a, B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<'a, B> 
 		let subpass_pipeline_result = {
 			//Specify all the entry points used by this
 			//render subpass.
-			let shader_set = self.shader_map_to_shader_set(shader_map)?;
+			let shader_set = self.shader_map_to_shader_set(&shader_map)?;
 
 			//Specify the pipeline's subpass
 			//and connect it to the current render pass
@@ -83,13 +84,13 @@ impl<'a, B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<'a, B> 
 			//(subpass_layout.required_info.render_pass_index)
 			let render_pass_raw = render_passes.get(subpass_layout.required_info.render_pass_index);
 
-			if render_pass_raw == None {
-				return Error;
+			if let None = render_pass_raw {
+				return Err(SubpassPipelineBuildError::RenderPassIndexOutOfRange);
 			}
 
 			let render_pass = render_pass_raw.unwrap();
 
-			let subpass = pass::Subpass { index: subpass_layout.required_info.subpass_index, main_pass: &render_pass };
+			let subpass = pass::Subpass { index: subpass_layout.required_info.subpass_index, main_pass: render_pass };
 
 			//Create the pipeline description!
 			let mut pipeline_desc = pso::GraphicsPipelineDesc::<B>::new(
@@ -127,12 +128,17 @@ impl<'a, B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<'a, B> 
 				pipeline_desc.attributes.push(attribute_desc);
 			}
 
+			//Also allocate this subpass'
+			//descriptor set now.
+			let descriptor_set = descriptor_pool.allocate_set(&descriptor_set_layout);
+
 			//Generate the final pipeline state object (PSO)
 			//here.
-			let pipeline_impl = device.create_graphics_pipeline(&pipeline_desc);
+			let pipeline_impl = device.create_graphics_pipeline(&pipeline_desc)?;
 
 			Ok(elements::SubpassPipeline::<B> {
 				set_layout: set_layout,
+				descriptor_set: descriptor_set,
 				pipeline_layout: pipeline_layout,
 				subpass: subpass,
 				pipeline_impl: pipeline_impl,

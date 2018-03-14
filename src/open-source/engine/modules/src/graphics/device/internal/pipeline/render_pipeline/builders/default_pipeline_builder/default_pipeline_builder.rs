@@ -23,19 +23,19 @@ pub struct DefaultPipelineBuilder<B: hal::Backend> {
 }
 
 impl<B: hal::Backend> DefaultPipelineBuilder<B> {
-	pub fn new() -> DefaultPipelineBuilder<B> { Default::default() }
+	pub fn new() -> DefaultPipelineBuilder<B> { DefaultPipelineBuilder { ..Default::default() } }
 
-	pub fn build(&self, device: &mut B::Device, surface_format: f::Format) -> Result<Pipeline<B>, Error> {
+	pub fn build(&self, device: &B::Device, surface_format: f::Format) -> Result<Pipeline<B>, Error> {
 		let device_rc = Rc::new(device);
 
 		let mut pipeline_builder = PipelineBuilder::<B>::new();
 
 		//The pipeline builder will handle everything;
 		//generate our desired pipeline layout...
-		pipeline_builder.render_pass_layouts = self.create_render_pass_layouts(device_rc)?;
+		pipeline_builder.render_pass_layouts = self.create_render_pass_layouts(device_rc, surface_format)?;
 		pipeline_builder.subpass_pipeline_layouts = self.create_subpass_pipeline_layouts(device_rc)?;
 
 		//...and let the builder rip
-		pipeline_builder.build(device_rc)
+		pipeline_builder.build(&device_rc)
 	}
 }

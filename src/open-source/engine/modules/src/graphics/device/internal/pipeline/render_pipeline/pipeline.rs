@@ -18,7 +18,7 @@ pub struct Pipeline<'a, B: hal::Backend> {
 	descriptor_pool: DescriptorPool<B>,
 	render_passes: Vec<elements::Pass<B>>,
 	subpass_pipelines: Vec<elements::SubpassPipeline<'a, B>>,
-	resources_destroyed: bool
+	resources_destroyed_val: bool
 }
 
 impl<'a, B: hal::Backend> Pipeline<'a, B> {
@@ -30,15 +30,15 @@ impl<'a, B: hal::Backend> Pipeline<'a, B> {
 	}
 
 	pub fn mark_destroyed(&mut self) {
-		debug_assert!(!self.resources_destroyed, "resources appear to have already been destroyed once");
+		debug_assert!(!self.resources_destroyed_val, "resources appear to have already been destroyed once");
 
-		self.resources_destroyed = true;
+		self.resources_destroyed_val = true;
 	}
 }
 
 impl<'a, B: hal::Backend> Drop for Pipeline<'a, B> {
 	fn drop(&mut self) {
-		debug_assert!(self.resources_destroyed, "MemoryBuffer went out of scope without having its memory destroyed");
+		debug_assert!(self.resources_destroyed_val, "MemoryBuffer went out of scope without having its memory destroyed");
 	}
 }
 
@@ -66,6 +66,6 @@ impl<'a, B: hal::Backend> DeviceResource<B> for Pipeline<'a, B> {
 	}
 
 	fn resources_destroyed(&self) -> bool {
-		self.resources_destroyed;
+		self.resources_destroyed_val
 	}
 }

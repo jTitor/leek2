@@ -55,7 +55,7 @@ impl<'a, B: hal::Backend> DeviceControllerBuilder<B> {
 			//TODO_rust: make this an option
 			frame_wait_timeout_ms: !0,
 			frame_can_begin: true,
-			resources_destroyed: false
+			resources_destroyed_val: false
 		})
 	}
 }

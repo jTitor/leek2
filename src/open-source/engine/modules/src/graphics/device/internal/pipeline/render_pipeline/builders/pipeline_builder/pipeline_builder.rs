@@ -3,6 +3,7 @@
  */
 use super::{PipelineBuilderInternal, RenderPassLayout, SubpassPipelineLayout};
 use super::super::{DestroyIterOnDrop, DestroyOnDrop};
+use graphics::device::internal::pipeline::DeviceResource;
 use graphics::device::internal::pipeline::render_pipeline::{DescriptorPool, Pipeline, elements, layout};
 
 use std::cmp;
@@ -10,7 +11,7 @@ use std::marker::PhantomData;
 use std::rc::Rc;
 
 use failure::Error;
-use gfx_hal::{self as hal, pso};
+use gfx_hal::{self as hal, pso, Backend, Device};
 
 /**
  * Basic builder struct for a render pipeline.
@@ -45,12 +46,12 @@ pub struct PipelineBuilder<'a, B: hal::Backend> {
 	 * during the build() call a value of 0
 	 * acts the same as a value of 1.
 	 */
-	pub max_num_descriptor_sets: u32,
+	pub max_num_descriptor_sets: usize,
 	_backend_type: PhantomData<B>
 }
 
 impl<'a, B: hal::Backend> PipelineBuilder<'a, B> {
-	fn new() -> PipelineBuilder<'a, B> { Self::default() }
+	pub fn new() -> PipelineBuilder<'a, B> { PipelineBuilder::<B> { ..Device::default() } }
 
 	/**
 	 * Builds the RenderPipeline if possible.
@@ -66,23 +67,19 @@ impl<'a, B: hal::Backend> PipelineBuilder<'a, B> {
 		let result = {
 			//Generate each render pass:
 			for render_pass_layout in self.render_pass_layouts {
-				let render_pass = self.build_render_pass(render_pass_layout, device_rc)?;
+				let render_pass = self.build_render_pass(&render_pass_layout, device_rc)?;
 
-				render_passes.resource_iter().push(render_pass);
+				render_passes.push(render_pass);
 			}
 
 			//Generate each subpass pipeline:
 			for subpass_pipeline_layout in self.subpass_pipeline_layouts {
-				let subpass_pipeline = self.build_subpass_pipeline(subpass_pipeline_layout, device_rc, &render_passes)?;
+				let subpass_pipeline = self.build_subpass_pipeline(&subpass_pipeline_layout, device_rc, &render_passes, &mut descriptor_pool)?;
 				
 				//Add the subpass pipeline to the
 				//final pipeline's vec.
-				subpass_pipelines.resource_iter().push(subpass_pipeline);
+				subpass_pipelines.push(subpass_pipeline);
 			}
-
-			//TODO: this is really more of a per-subpass
-			//step
-			let desc_set = descriptor_pool.resource_mut().allocate_set(&descriptor_set_layout);
 
 			//Unwrap the pipeline assets, 
 			//and the full pipeline is ready.
@@ -90,15 +87,15 @@ impl<'a, B: hal::Backend> PipelineBuilder<'a, B> {
 				descriptor_pool: descriptor_pool,
 				render_passes: render_passes,
 				subpass_pipelines: subpass_pipelines,
-				resources_destroyed: false
+				resources_destroyed_val: false
 			})
 		};
 
 		//If there was any error,
 		//unload all of the resources
 		if let Err(_) = result {
-			DestroyOnDrop::destroy_resource_collection(render_passes, device);
-			DestroyOnDrop::destroy_resource_collection(subpass_pipelines, device);
+			DeviceResource::destroy_resource_collection(render_passes, device);
+			DeviceResource::destroy_resource_collection(subpass_pipelines, device);
 			descriptor_pool.destroy_resource(device);
 		}
 

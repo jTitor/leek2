@@ -50,7 +50,7 @@ impl DeviceInfo {
 						.find(|format| {
 							format.base_format().1 == f::ChannelType::Srgb
 						})
-				}.unwrap_or_else(|| { return DeviceInfoError::NoFormatAvailable; })
+				}.unwrap_or_else(|| { return Err(DeviceInfoError::NoFormatAvailable); })
 			);
 
 		//and memory/physical properties.

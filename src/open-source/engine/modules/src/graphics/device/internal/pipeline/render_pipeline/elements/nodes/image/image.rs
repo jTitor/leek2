@@ -32,15 +32,15 @@ pub struct Image<B: hal::Backend> {
 	 * DeviceController's buffer list.
 	 */
 	image_device_id: usize,
-	resources_destroyed: bool
+	resources_destroyed_val: bool
 }
 
 impl<B: hal::Backend> Image<B> {
 	pub fn mark_destroyed(&mut self) {
-		debug_assert!(!self.resources_destroyed,
+		debug_assert!(!self.resources_destroyed_val,
 			"Image already marked as destroyed");
 
-		self.resources_destroyed = true;
+		self.resources_destroyed_val = true;
 	}
 
 	fn from_file(file_name: String) -> Result<Image<B>, Error> {
@@ -75,7 +75,7 @@ impl<B: hal::Backend> Image<B> {
 
 impl<B: hal::Backend> Drop for Image<B> {
 	fn drop(&mut self) {
-		debug_assert!(self.resources_destroyed, "Image went out of scope without having its memory destroyed");
+		debug_assert!(self.resources_destroyed_val, "Image went out of scope without having its memory destroyed");
 	}
 }
 
@@ -101,6 +101,6 @@ impl<B: hal::Backend> DeviceResource<B> for Image<B> {
 	}
 
 	fn resources_destroyed(&self) -> bool {
-		self.resources_destroyed;
+		self.resources_destroyed_val
 	}
 }

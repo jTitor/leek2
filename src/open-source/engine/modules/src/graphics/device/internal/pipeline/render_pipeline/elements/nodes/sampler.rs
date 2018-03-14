@@ -20,7 +20,7 @@ pub struct Sampler<B: hal::Backend> {
 	 * DeviceController's buffer list.
 	 */
 	sampler_device_id: usize,
-	resources_destroyed: bool
+	resources_destroyed_val: bool
 }
 
 impl<B: hal::Backend> Sampler<B> {
@@ -41,16 +41,16 @@ impl<B: hal::Backend> Sampler<B> {
 	}
 
 	pub fn mark_destroyed(&mut self) {
-		debug_assert!(!self.resources_destroyed,
+		debug_assert!(!self.resources_destroyed_val,
 			"Sampler already marked as destroyed");
 
-		self.resources_destroyed = true;
+		self.resources_destroyed_val = true;
 	}
 }
 
 impl<B: hal::Backend> Drop for Sampler<B> {
 	fn drop(&mut self) {
-		debug_assert!(self.resources_destroyed, "MemoryBuffer went out of scope without having its memory destroyed");
+		debug_assert!(self.resources_destroyed_val, "MemoryBuffer went out of scope without having its memory destroyed");
 	}
 }
 
@@ -69,6 +69,6 @@ impl<B: hal::Backend> DeviceResource<B> for Sampler<B> {
 	}
 
 	fn resources_destroyed(&self) -> bool {
-		self.resources_destroyed;
+		self.resources_destroyed_val
 	}
 }

@@ -94,7 +94,7 @@ impl<B> BufferBuilder<B> where B: hal::Backend {
 			buffer_binding: buffer_object,
 			buffer_device_id: u64,
 			buffer_len: buffer_req.size as u64,
-			resources_destroyed: false
+			resources_destroyed_val: false
 		});
 	}
 }

@@ -25,20 +25,20 @@ pub struct MemoryBuffer<B: hal::Backend> {
 	 */
 	buffer_device_id: u64,
 	pub buffer_len: u64,
-	resources_destroyed: bool
+	resources_destroyed_val: bool
 }
 
 impl<B: hal::Backend> MemoryBuffer<B> {
 	fn mark_destroyed(&mut self) {
 		debug_assert!(!self.resources_destroyed, "MemoryBuffer already marked as destroyed");
 		
-		self.resources_destroyed = true;
+		self.resources_destroyed_val = true;
 	}
 }
 
 impl<B: hal::Backend> Drop for MemoryBuffer<B> {
 	fn drop(&mut self) {
-		debug_assert!(self.resources_destroyed, "MemoryBuffer went out of scope without having its memory destroyed");
+		debug_assert!(self.resources_destroyed_val, "MemoryBuffer went out of scope without having its memory destroyed");
 	}
 }
 
@@ -59,6 +59,6 @@ impl<B: hal::Backend> DeviceResource<B> for MemoryBuffer<B> {
 	}
 
 	fn resources_destroyed(&self) -> bool {
-		self.resources_destroyed;
+		self.resources_destroyed_val
 	}
 }

@@ -8,19 +8,20 @@ use std::ops::Range;
 
 use gfx_hal::{self as hal, pso};
 
+#[derive(Debug, Default)]
 pub struct SubpassPipelineLayoutRequiredInfo<'a, B: hal::Backend> {
-	vertex_shader_entry: layout::ShaderEntryPoint<'a, B>,
+	pub vertex_shader_entry: layout::ShaderEntryPoint<'a, B>,
 	//Used to make the Subpass node.
 	
 	/**
 	 * Index into the builder's render_passes
 	 * Vec that points to this subpass' rendering pass.
 	 */
-	render_pass_index: usize,
+	pub render_pass_index: usize,
 	/**
 	 * TODO
 	 */
-	subpass_index: u32,
+	pub subpass_index: usize,
 	
 	_backend_type: PhantomData<B>
 }
