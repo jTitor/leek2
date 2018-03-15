@@ -87,7 +87,8 @@ I::Item: DeviceResource<B> {
 	fn new(resource_iter: I, device: &Rc<B::Device>) -> DestroyIterOnDrop<B, I> {
 		DestroyIterOnDrop::<B, I> {
 			device: Rc::clone(device),
-			resource_iter_val: resource_iter
+			resource_iter_val: resource_iter,
+			was_unwrapped: false,
 		}
 	}
 

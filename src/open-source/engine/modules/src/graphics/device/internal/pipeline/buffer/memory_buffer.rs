@@ -30,7 +30,7 @@ pub struct MemoryBuffer<B: hal::Backend> {
 
 impl<B: hal::Backend> MemoryBuffer<B> {
 	fn mark_destroyed(&mut self) {
-		debug_assert!(!self.resources_destroyed, "MemoryBuffer already marked as destroyed");
+		debug_assert!(!self.resources_destroyed_val, "MemoryBuffer already marked as destroyed");
 		
 		self.resources_destroyed_val = true;
 	}

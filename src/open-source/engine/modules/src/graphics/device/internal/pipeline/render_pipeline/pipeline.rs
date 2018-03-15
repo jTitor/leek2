@@ -54,12 +54,12 @@ impl<'a, B: hal::Backend> DeviceResource<B> for Pipeline<'a, B> {
 		//Destroy all of the pipelines first,
 		//since they depend on the render passes.
 		for subpass_pipeline in self.subpass_pipelines {
-			subpass_pipeline.destroy_resource(device, subpass_pipeline);
+			subpass_pipeline.destroy_resource(device);
 		}
 
 		//Destroy the render passes.
 		for render_pass in self.render_passes {
-			device.destroy_render_pass(self.render_pass);
+			device.destroy_render_pass(render_pass);
 		}
 
 		self.mark_destroyed();

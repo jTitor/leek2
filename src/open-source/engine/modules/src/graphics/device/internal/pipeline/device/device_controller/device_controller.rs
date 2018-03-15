@@ -38,7 +38,7 @@ pub struct DeviceController<'a, B: hal::Backend> {
 
 	frame_can_begin: bool,
 
-	resources_destroyed: bool
+	resources_destroyed_val: bool
 }
 
 impl<'a, B: hal::Backend> DeviceController<'a, B> {

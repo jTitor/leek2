@@ -22,7 +22,7 @@ pub trait DeviceResource<B: hal::Backend> {
 	fn destroy_resource_collection<T>(collection: &mut T, device: &B::Device) -> Result<(), Error> 
 	where T: IntoIterator,
 	T::Item: DeviceResource<B> {
-		for resource in collection {
+		for resource in collection.into_iter() {
 			resource.destroy_resource(device)?;
 		}
 

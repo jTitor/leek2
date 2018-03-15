@@ -8,6 +8,7 @@ use graphics::device::internal::pipeline::PipelineBuilder;
 use graphics::device::internal::pipeline::render_pipeline::layout;
 
 use std::collections::HashMap;
+use std::rc::Rc;
 
 use failure::Error;
 use gfx_hal::{self as hal, pso,
@@ -28,23 +29,23 @@ enum ShaderEntryType {
  * related to shader loading and unloading.
  */
 type UnloadedShaderHashKey = ShaderEntryType;
-type UnloadedShaderHashValue<'a, B: hal::Backend> = Option<layout::ShaderEntryPoint<'a, B>>;
+type UnloadedShaderHashValue<'a, B: hal::Backend> = layout::ShaderEntryPoint<'a, B>;
 type UnloadedShaderHashMap<'a, B: hal::Backend> = HashMap<UnloadedShaderHashKey, UnloadedShaderHashValue<'a, B>>;
 type LoadedShaderHashKey = ShaderEntryType;
-type LoadedShaderHashValue<'a, B: hal::Backend> = Option<pso::EntryPoint<'a, B>>;
+type LoadedShaderHashValue<'a, B: hal::Backend> = pso::EntryPoint<'a, B>;
 type LoadedShaderHashMap<'a, B: hal::Backend> = HashMap<LoadedShaderHashKey, LoadedShaderHashValue<'a, B>>;
 pub trait ShaderLoad<B: hal::Backend> {
 	fn load_shader_entry_point(&self, entry_point: UnloadedShaderHashValue<B>) -> Result<LoadedShaderHashValue<B>, Error>;
 
-	fn init_shader_map(&self, device: &B::Device, subpass_layout: SubpassPipelineLayout<B>) -> Result<LoadedShaderHashMap<B>, Error>;
+	fn init_shader_map(&self, device: Rc<&B::Device>, subpass_layout: SubpassPipelineLayout<B>) -> Result<LoadedShaderHashMap<B>, Error>;
 
-	fn unload_shader_map(&self, device: &B::Device, shader_map: &LoadedShaderHashMap<B>);
+	fn unload_shader_map(&self, device: Rc<&B::Device>, shader_map: &LoadedShaderHashMap<B>);
 
 	fn shader_map_to_shader_set(&self, shader_map: &LoadedShaderHashMap<B>) -> Result<pso::GraphicsShaderSet<B>, Error>;
 }
 
 impl<'a, B: hal::Backend> ShaderLoad<B> for PipelineBuilder<'a, B> {
-	fn load_shader_entry_point(&self, entry_point: UnloadedShaderHashValue<B>) -> Result<LoadedShaderHashValue<B>, Error> {
+	fn load_shader_entry_point(&self, entry_point: Option<UnloadedShaderHashValue<B>>) -> Result<Option<LoadedShaderHashValue<B>>, Error> {
 		match entry_point {
 			None => {
 				//If this is none, just return none.
@@ -76,7 +77,7 @@ impl<'a, B: hal::Backend> ShaderLoad<B> for PipelineBuilder<'a, B> {
 		unreachable!();
 	}
 
-	fn init_shader_map(&self, device: &B::Device, subpass_layout: SubpassPipelineLayout<B>) -> Result<LoadedShaderHashMap<B>, Error> {
+	fn init_shader_map(&self, device: Rc<&B::Device>, subpass_layout: SubpassPipelineLayout<B>) -> Result<LoadedShaderHashMap<B>, Error> {
 		//Try to load all of the shaders.
 		let shaders = [(Some(subpass_layout.required_info.vertex_shader_entry), ShaderEntryType::Vertex),
 		(subpass_layout.fragment_shader_entry, ShaderEntryType::Fragment),
@@ -92,7 +93,11 @@ impl<'a, B: hal::Backend> ShaderLoad<B> for PipelineBuilder<'a, B> {
 			for &(shader_option, shader_enum) in &shaders {
 				let loaded_shader = self.load_shader_entry_point(shader_option.clone())?;
 
-				result_map.insert(*shader_enum, loaded_shader);
+				//Put any shaders that actually exist
+				//in our result set
+				if let Some(shader) = shader_option {
+					result_map.insert(shader_enum, shader);
+				}
 			}
 
 			Ok(result_map)
@@ -108,7 +113,7 @@ impl<'a, B: hal::Backend> ShaderLoad<B> for PipelineBuilder<'a, B> {
 		result
 	}
 
-	fn unload_shader_map(&self, device: &B::Device, shader_map: &LoadedShaderHashMap<B>) {
+	fn unload_shader_map(&self, device: Rc<&B::Device>, shader_map: &LoadedShaderHashMap<B>) {
 		for (key, val) in shader_map {
 			device.destroy_shader_module(val.module);
 		}
@@ -131,7 +136,7 @@ impl<'a, B: hal::Backend> ShaderLoad<B> for PipelineBuilder<'a, B> {
 		else {
 			debug_assert!(false, "Vertex entry point missing from shader list");
 
-			return Err(SubpassPipelineBuildError::VertexShaderEntryPointNotFound);
+			return Err(SubpassPipelineBuildError::VertexShaderEntryPointNotFound.into());
 		}
 
 		unreachable!();

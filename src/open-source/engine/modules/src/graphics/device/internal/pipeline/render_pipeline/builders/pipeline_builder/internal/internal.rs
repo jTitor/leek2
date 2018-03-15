@@ -53,7 +53,7 @@ impl<'a, B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<'a, B> 
 
 		//Generate the subpass' descriptor set layout
 		//from provided bindings if it exists.
-		let mut set_layout: Option<&B::DescriptorSetLayout> = None;
+		let mut set_layout: Option<B::DescriptorSetLayout> = None;
 		
 		if let Some(set_layout_binding_vec) = subpass_layout.set_layout_bindings {
 			set_layout = Some(device.create_descriptor_set_layout(set_layout_binding_vec.as_slice()
@@ -85,7 +85,7 @@ impl<'a, B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<'a, B> 
 			let render_pass_raw = render_passes.get(subpass_layout.required_info.render_pass_index);
 
 			if let None = render_pass_raw {
-				return Err(SubpassPipelineBuildError::RenderPassIndexOutOfRange);
+				return Err(SubpassPipelineBuildError::RenderPassIndexOutOfRange.into());
 			}
 
 			let render_pass = render_pass_raw.unwrap();
