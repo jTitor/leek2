@@ -35,7 +35,7 @@ type LoadedShaderHashKey = ShaderEntryType;
 type LoadedShaderHashValue<'a, B: hal::Backend> = pso::EntryPoint<'a, B>;
 type LoadedShaderHashMap<'a, B: hal::Backend> = HashMap<LoadedShaderHashKey, LoadedShaderHashValue<'a, B>>;
 pub trait ShaderLoad<B: hal::Backend> {
-	fn load_shader_entry_point(&self, entry_point: UnloadedShaderHashValue<B>) -> Result<LoadedShaderHashValue<B>, Error>;
+	fn load_shader_entry_point(&self, entry_point: Option<UnloadedShaderHashValue<B>>) -> Result<Option<LoadedShaderHashValue<B>>, Error>;
 
 	fn init_shader_map(&self, device: Rc<&B::Device>, subpass_layout: SubpassPipelineLayout<B>) -> Result<LoadedShaderHashMap<B>, Error>;
 
@@ -96,7 +96,7 @@ impl<'a, B: hal::Backend> ShaderLoad<B> for PipelineBuilder<'a, B> {
 				//Put any shaders that actually exist
 				//in our result set
 				if let Some(shader) = shader_option {
-					result_map.insert(shader_enum, shader);
+					result_map.insert(shader_enum, &shader);
 				}
 			}
 
@@ -106,7 +106,7 @@ impl<'a, B: hal::Backend> ShaderLoad<B> for PipelineBuilder<'a, B> {
 		//If we failed, unload all
 		//the elements in the result map.
 		if let Err(_) = result {
-			self.unload_shader_map(result_map);
+			self.unload_shader_map(device, result_map);
 		}
 
 		//Now return our result.

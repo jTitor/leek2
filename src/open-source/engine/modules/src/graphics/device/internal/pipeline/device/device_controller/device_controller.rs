@@ -175,12 +175,12 @@ impl<'a, B: hal::Backend> DeviceController<'a, B> {
 		RenderTarget::<B>::destroy_resource_collection(&mut self.resource_lists.render_targets, &self.device);
 
 		unimplemented!();
-		self.resources_destroyed = true;
+		self.resources_destroyed_val = true;
 	}
 }
 
 impl<'a, B> Drop for DeviceController<'a, B> where B: hal::Backend {
 	fn drop(&mut self) {
-		debug_assert!(self.resources_destroyed, "DeviceController went out of scope without destroy_resources() being called");
+		debug_assert!(self.resources_destroyed_val, "DeviceController went out of scope without destroy_resources() being called");
 	}
 }

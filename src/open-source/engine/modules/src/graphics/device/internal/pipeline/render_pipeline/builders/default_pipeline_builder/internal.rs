@@ -51,7 +51,7 @@ impl<B: hal::Backend> DefaultPipelineBuilderInternal<B> for DefaultPipelineBuild
 			preserves: &[],
 		});
 
-		render_pass.dependencies.push(elements::SubpassDependency {
+		render_pass.dependencies.push(pass::SubpassDependency {
 			passes: pass::SubpassRef::External .. pass::SubpassRef::Pass(0),
 			stages: pso::PipelineStage::COLOR_ATTACHMENT_OUTPUT .. pso::PipelineStage::COLOR_ATTACHMENT_OUTPUT,
 			accesses: i::Access::empty() .. (i::Access::COLOR_ATTACHMENT_READ | i::Access::COLOR_ATTACHMENT_WRITE),
