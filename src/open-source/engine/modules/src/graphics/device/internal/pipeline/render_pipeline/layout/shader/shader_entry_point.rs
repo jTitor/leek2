@@ -11,7 +11,7 @@ use gfx_hal::{self as hal, pso};
  * and the values of all constants
  * used by that shader module.
  */
-#[derive(Debug, Copy)]
+#[derive(Debug, Copy, Clone)]
 pub struct ShaderEntryPoint<'a, B: hal::Backend> {
 	/** Name of the shader's entry point function. */
 	pub entry: &'a str,
