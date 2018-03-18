@@ -16,7 +16,6 @@ use gfx_hal::{self as hal, pso, Backend, Device};
 /**
  * Basic builder struct for a render pipeline.
  */
-#[derive(Default)]
 pub struct PipelineBuilder<'a, B: hal::Backend> {
 	/**
 	 * A list of layouts describing all render passes
@@ -50,8 +49,14 @@ pub struct PipelineBuilder<'a, B: hal::Backend> {
 	_backend_type: PhantomData<B>
 }
 
+impl<'a, B: hal::Backend> Default for PipelineBuilder<'a, B> {
+	fn default() -> Self {
+		PipelineBuilder::<B> { ..Default::default() }
+	}
+}
+
 impl<'a, B: hal::Backend> PipelineBuilder<'a, B> {
-	pub fn new() -> PipelineBuilder<'a, B> { PipelineBuilder::<B> { ..Device::default() } }
+	pub fn new() -> PipelineBuilder<'a, B> { Default::default() }
 
 	/**
 	 * Builds the RenderPipeline if possible.
@@ -62,7 +67,7 @@ impl<'a, B: hal::Backend> PipelineBuilder<'a, B> {
 
 		let render_passes = Vec::<elements::Pass<B>>::new();
 		let subpass_pipelines = Vec::<elements::SubpassPipeline<B>>::new();
-		let mut descriptor_pool = device.create_descriptor_pool(clamped_max_num_descriptor_sets, self.descriptor_ranges.as_slice());
+		let mut descriptor_pool = DescriptorPool::<B>::new(device.create_descriptor_pool(clamped_max_num_descriptor_sets, self.descriptor_ranges.as_slice()));
 
 		let result = {
 			//Generate each render pass:
@@ -94,8 +99,8 @@ impl<'a, B: hal::Backend> PipelineBuilder<'a, B> {
 		//If there was any error,
 		//unload all of the resources
 		if let Err(_) = result {
-			DeviceResource::destroy_resource_collection(render_passes, device);
-			DeviceResource::destroy_resource_collection(subpass_pipelines, device);
+			DeviceResource::destroy_resource_collection(&mut render_passes, device);
+			DeviceResource::destroy_resource_collection(&mut subpass_pipelines, device);
 			descriptor_pool.destroy_resource(device);
 		}
 

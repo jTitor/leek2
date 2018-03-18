@@ -23,7 +23,7 @@ pub struct DefaultPipelineBuilder<B: hal::Backend> {
 }
 
 impl<B: hal::Backend> DefaultPipelineBuilder<B> {
-	pub fn new() -> DefaultPipelineBuilder<B> { DefaultPipelineBuilder { ..Default::default() } }
+	pub fn new() -> DefaultPipelineBuilder<B> { DefaultPipelineBuilder { _backend_type: PhantomData } }
 
 	pub fn build(&self, device: &B::Device, surface_format: f::Format) -> Result<Pipeline<B>, Error> {
 		let device_rc = Rc::new(device);

@@ -13,6 +13,9 @@ use gfx_hal::{self as hal, pso};
  */
 #[derive(Debug, Default, Copy, Clone)]
 pub struct ShaderEntryPoint<'a, B: hal::Backend> {
+	//TODO: make all of these templates
+	//where T: Into<&whatever>
+
 	/** Name of the shader's entry point function. */
 	pub entry: &'a str,
 	/**
@@ -32,4 +35,15 @@ pub struct ShaderEntryPoint<'a, B: hal::Backend> {
 
 	
 	_backend_type: PhantomData<B>
+}
+
+impl<'a, B: hal::Backend> ShaderEntryPoint<'a, B> {
+	pub fn new(entry: &'a str, module: &'a [u8], specialization: &'a [pso::Specialization]) -> Self {
+		Self {
+			entry: entry,
+			module: module,
+			specialization: specialization,
+			_backend_type: PhantomData
+		}
+	}
 }

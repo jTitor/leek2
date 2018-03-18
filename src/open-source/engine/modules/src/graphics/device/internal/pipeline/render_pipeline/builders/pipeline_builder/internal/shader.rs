@@ -106,7 +106,7 @@ impl<'a, B: hal::Backend> ShaderLoad<B> for PipelineBuilder<'a, B> {
 		//If we failed, unload all
 		//the elements in the result map.
 		if let Err(_) = result {
-			self.unload_shader_map(device, result_map);
+			self.unload_shader_map(device, &result_map);
 		}
 
 		//Now return our result.
@@ -115,7 +115,7 @@ impl<'a, B: hal::Backend> ShaderLoad<B> for PipelineBuilder<'a, B> {
 
 	fn unload_shader_map(&self, device: Rc<&B::Device>, shader_map: &LoadedShaderHashMap<B>) {
 		for (key, val) in shader_map {
-			device.destroy_shader_module(val.module);
+			device.destroy_shader_module(*val.module);
 		}
 	}
 

@@ -93,38 +93,33 @@ impl<B: hal::Backend> DefaultPipelineBuilderInternal<B> for DefaultPipelineBuild
 
 	fn create_subpass_required_info(&self, entry_point_name: &str, vs_module_bytes: &[u8]) -> SubpassPipelineLayoutRequiredInfo<B> {
 		unimplemented!();
-		let vertex_shader = ShaderEntryPoint::<B> {
-			entry: entry_point_name,
-			module: vs_module_bytes,
-			specialization: &[
+		let vertex_shader = ShaderEntryPoint::<B>::new(
+			entry_point_name,
+			vs_module_bytes,
+			&[
 				pso::Specialization {
 					//Z coordinate of vertices
 					//at constant 0.
 					id: 0,
 					value: pso::Constant::F32(0.8),
 				}
-			],
-			..Default::default()
-		};
+			]
+		);
 
 		//...and put them in the subpass layout.
-		SubpassPipelineLayoutRequiredInfo::<B> {
-			vertex_shader_entry: vertex_shader,
-			render_pass_index: 0,
-			subpass_index: 0,
-			..Default::default()
-		}
+		SubpassPipelineLayoutRequiredInfo::<B>::new(vertex_shader, 0, 0)
 	}
 
 	fn configure_subpass_pipeline_layout(&self, required_info: SubpassPipelineLayoutRequiredInfo<B>, entry_point_name: &str, fs_module_bytes: &[u8]) -> SubpassPipelineLayout<B> {
-		let mut subpass = SubpassPipelineLayout::<B>::new(required_info);
+		//Setup initial values.
+		let mut subpass = SubpassPipelineLayout::<B>::new(required_info,
+		//The shaders take triangle lists
+		//as submitted primitives
+		hal::Primitive::TriangleList,
+		//and rasterize primitives as filled fragments.
+		pso::Rasterizer::FILL);
 
-		let frag_shader = ShaderEntryPoint::<B> {
-			entry: entry_point_name,
-			module: fs_module_bytes,
-			specialization: &[],
-			..Default::default()
-		};
+		let frag_shader = ShaderEntryPoint::<B>::new(entry_point_name, fs_module_bytes, &[]);
 
 		subpass.fragment_shader_entry = Some(frag_shader);
 		unimplemented!();
@@ -185,12 +180,6 @@ impl<B: hal::Backend> DefaultPipelineBuilderInternal<B> for DefaultPipelineBuild
 				},
 			}
 		);
-
-		//The shaders take triangle lists
-		//as submitted primitives
-		subpass.primitive_type = hal::Primitive::TriangleList;
-		//and rasterize primitives as filled fragments.
-		subpass.rasterization_type = pso::Rasterizer::FILL;
 
 		subpass
 	}

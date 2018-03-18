@@ -86,6 +86,8 @@ impl<'a, B: hal::Backend> DeviceResource<B> for SubpassPipeline<'a, B> {
 		//it here
 
 		self.mark_destroyed();
+
+		Ok(())
 	}
 
 	fn resources_destroyed(&self) -> bool {

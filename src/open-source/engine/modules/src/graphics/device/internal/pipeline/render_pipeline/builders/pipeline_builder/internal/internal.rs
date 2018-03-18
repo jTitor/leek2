@@ -38,10 +38,12 @@ impl<'a, B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<'a, B> 
 
 		//And actually create the render pass here.
 		Ok(
-			device.create_render_pass(
-				render_pass_layout.attachments.as_slice(),
-				render_pass_layout.subpass_descriptions.as_slice(),
-				render_pass_layout.dependencies.as_slice()
+			elements::Pass::<B>::new(
+				device.create_render_pass(
+					render_pass_layout.attachments.as_slice(),
+					render_pass_layout.subpass_descriptions.as_slice(),
+					render_pass_layout.dependencies.as_slice()
+				)
 			)
 		)
 	}
@@ -69,7 +71,7 @@ impl<'a, B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<'a, B> 
 		);
 
 		//Load the actual shader files here.
-		let shader_map = self.init_shader_map(device, subpass_layout)?;
+		let shader_map = self.init_shader_map(device, *subpass_layout)?;
 
 		let subpass_pipeline_result = {
 			//Specify all the entry points used by this
@@ -90,7 +92,7 @@ impl<'a, B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<'a, B> 
 
 			let render_pass = render_pass_raw.unwrap();
 
-			let subpass = pass::Subpass { index: subpass_layout.required_info.subpass_index, main_pass: render_pass };
+			let subpass = pass::Subpass { index: subpass_layout.required_info.subpass_index, main_pass: render_pass.render_pass_impl.clone() };
 
 			//Create the pipeline description!
 			let mut pipeline_desc = pso::GraphicsPipelineDesc::<B>::new(
@@ -142,13 +144,13 @@ impl<'a, B: hal::Backend> PipelineBuilderInternal<B> for PipelineBuilder<'a, B> 
 				pipeline_layout: pipeline_layout,
 				subpass: subpass,
 				pipeline_impl: pipeline_impl,
-				resources_destroyed: false
+				resources_destroyed_val: false
 			})
 		};
 
 		//The PSO is built, so we don't need the
 		//shader modules anymore
-		self.unload_shader_map(device, shader_map);
+		self.unload_shader_map(device, &shader_map);
 
 		subpass_pipeline_result
 	}

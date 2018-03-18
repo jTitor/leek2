@@ -59,7 +59,7 @@ impl<B: hal::Backend, T: DeviceResource<B>> Drop for DestroyOnDrop<B, T> {
 	fn drop(&mut self) {
 		if !self.was_unwrapped &&
 		!self.resource_val.resources_destroyed() {
-			self.resource_val.destroy_resource(self.device);
+			self.resource_val.destroy_resource(&self.device);
 		}
 	}
 }

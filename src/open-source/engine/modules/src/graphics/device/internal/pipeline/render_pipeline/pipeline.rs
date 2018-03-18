@@ -59,7 +59,7 @@ impl<'a, B: hal::Backend> DeviceResource<B> for Pipeline<'a, B> {
 
 		//Destroy the render passes.
 		for render_pass in self.render_passes {
-			device.destroy_render_pass(render_pass);
+			device.destroy_render_pass(render_pass.render_pass_impl);
 		}
 
 		self.mark_destroyed();
