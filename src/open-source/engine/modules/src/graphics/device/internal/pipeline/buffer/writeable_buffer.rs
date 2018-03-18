@@ -46,19 +46,20 @@ impl<B: hal::Backend, ElementT: Copy> From<WriteableBuffer<B, ElementT>> for Mem
 }
 
 impl<B: hal::Backend, ElementT: Copy> DeviceResource<B> for WriteableBuffer<B, ElementT> {
-	fn get_resource(device: &mut B::Device) -> Weak<&Self> {
+	fn get_resource(device: &B::Device) -> Weak<&Self> {
 		debug_assert!(false, "Can't directly get_resource() for WriteableBuffer; get_resource() on MemoryBufferBuilder instead and then call MemoryBuffer::into_writeable_buffer() instead");
 
 		//Return a blank ref
 		Weak::<&Self>::new()
 	}
-	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error> {
+	fn destroy_resource(&mut self, device: &B::Device) -> Result<(), Error> {
 		//TODO: Unwrap and destroy the
 		//internal buffer
 		unimplemented!()
 	}
 
 	fn resources_destroyed(&self) -> bool {
-		self.resources_destroyed;
+		unimplemented!();
+		//self.resources_destroyed_val;
 	}
 }

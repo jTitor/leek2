@@ -9,7 +9,7 @@ use failure::Error;
  * Defines the structure of a Pass for
  * a PipelineBuilder.
  */
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct RenderPassLayout<'a> {
 	pub attachments: Vec<pass::Attachment>,
 	pub subpass_descriptions: Vec<pass::SubpassDesc<'a>>,
@@ -23,13 +23,13 @@ impl<'a> RenderPassLayout<'a> {
 
 	pub fn layout_valid(&self) -> Result<(), Error> {
 		if self.attachments.len() < 1 {
-			return RenderPassLayoutError::NotEnoughAttachments;
+			return Err(RenderPassLayoutError::NotEnoughAttachments.into());
 		}
 		if self.subpass_descriptions.len() < 1 {
-			return RenderPassLayoutError::NotEnoughSubpassDescriptions;
+			return Err(RenderPassLayoutError::NotEnoughSubpassDescriptions.into());
 		}
 		if self.dependencies.len() < 1 {
-			return RenderPassLayoutError::NotEnoughDependencies;
+			return Err(RenderPassLayoutError::NotEnoughDependencies.into());
 		}
 		
 		Ok(())

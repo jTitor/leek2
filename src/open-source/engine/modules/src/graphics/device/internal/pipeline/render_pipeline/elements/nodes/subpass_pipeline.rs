@@ -28,6 +28,11 @@ pub struct SubpassPipeline<'a, B: hal::Backend> {
 	 */
 	set_layout: B::DescriptorSetLayout,
 	/**
+	 * An instance of the descriptor set
+	 * described by ```set_layout```.
+	 */
+	descriptor_set: B::DescriptorSet,
+	/**
 	 * Specifies the pipeline's layout.
 	 */
 	pipeline_layout: B::PipelineLayout,
@@ -46,38 +51,46 @@ pub struct SubpassPipeline<'a, B: hal::Backend> {
 	 */
 	// submission_callback: ?,
 
-	resources_destroyed: bool
+	resources_destroyed_val: bool
 }
 
 impl<'a, B> SubpassPipeline<'a, B> where B: hal::Backend {
 	pub fn mark_destroyed(&mut self) {
-		debug_assert!(!self.resources_destroyed, "resources appear to have already been destroyed once");
+		debug_assert!(!self.resources_destroyed_val, "resources appear to have already been destroyed once");
 
-		self.resources_destroyed = true;
+		self.resources_destroyed_val = true;
 	}
 }
 
 impl<'a, B> Drop for SubpassPipeline<'a, B> where B: hal::Backend {
 	fn drop(&mut self) {
-		debug_assert!(self.resources_destroyed, "MemoryBuffer went out of scope without having its memory destroyed");
+		debug_assert!(self.resources_destroyed_val, "MemoryBuffer went out of scope without having its memory destroyed");
 	}
 }
 
 impl<'a, B: hal::Backend> DeviceResource<B> for SubpassPipeline<'a, B> {
-	fn get_resource(device: &mut B::Device) -> Weak<&Self> {
+	fn get_resource(device: &B::Device) -> Weak<&Self> {
 		unimplemented!();
 	}
 
-	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error> {
+	fn destroy_resource(&mut self, device: &B::Device) -> Result<(), Error> {
 		unimplemented!();
-		device.destroy_descriptor_set_layout(resource.set_layout);
-		device.destroy_pipeline_layout(resource.pipeline_layout);
-		device.destroy_graphics_pipeline(resource.pipeline_impl);
+		device.destroy_descriptor_set_layout(self.set_layout);
+		device.destroy_pipeline_layout(self.pipeline_layout);
+		device.destroy_graphics_pipeline(self.pipeline_impl);
 
-		resource.mark_destroyed();
+		//The descriptor set instance
+		//will be freed when the
+		//descriptor pool is destroyed,
+		//so there's no need (or way) to destroy
+		//it here
+
+		self.mark_destroyed();
+
+		Ok(())
 	}
 
 	fn resources_destroyed(&self) -> bool {
-		self.resources_destroyed;
+		self.resources_destroyed_val
 	}
 }

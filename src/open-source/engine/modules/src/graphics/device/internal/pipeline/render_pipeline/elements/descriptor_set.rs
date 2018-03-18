@@ -16,7 +16,7 @@ pub struct DescriptorSet<B: hal::Backend> {
 }
 
 impl<B: hal::Backend> DescriptorSet<B> {
-	pub fn connect<C>(&mut self, device: &C, sampler: &B::Sampler, image_srv: &B::ImageView, desc_set: &B::DescriptorSet) where C: d::Device<B> {
+	pub fn connect<C>(&mut self, device: &C, sampler: &B::Sampler, image_srv: &B::ImageView, desc_set: &B::DescriptorSet) where C: d::Device<B> + hal::Device<B> {
 		//TODO_rust: generalize from demo code
 		device.write_descriptor_sets::<_, Range<_>>(vec![
 			pso::DescriptorSetWrite {

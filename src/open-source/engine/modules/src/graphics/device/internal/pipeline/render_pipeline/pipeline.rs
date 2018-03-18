@@ -18,7 +18,7 @@ pub struct Pipeline<'a, B: hal::Backend> {
 	descriptor_pool: DescriptorPool<B>,
 	render_passes: Vec<elements::Pass<B>>,
 	subpass_pipelines: Vec<elements::SubpassPipeline<'a, B>>,
-	resources_destroyed: bool
+	resources_destroyed_val: bool
 }
 
 impl<'a, B: hal::Backend> Pipeline<'a, B> {
@@ -30,42 +30,42 @@ impl<'a, B: hal::Backend> Pipeline<'a, B> {
 	}
 
 	pub fn mark_destroyed(&mut self) {
-		debug_assert!(!self.resources_destroyed, "resources appear to have already been destroyed once");
+		debug_assert!(!self.resources_destroyed_val, "resources appear to have already been destroyed once");
 
-		self.resources_destroyed = true;
+		self.resources_destroyed_val = true;
 	}
 }
 
 impl<'a, B: hal::Backend> Drop for Pipeline<'a, B> {
 	fn drop(&mut self) {
-		debug_assert!(self.resources_destroyed, "MemoryBuffer went out of scope without having its memory destroyed");
+		debug_assert!(self.resources_destroyed_val, "MemoryBuffer went out of scope without having its memory destroyed");
 	}
 }
 
 impl<'a, B: hal::Backend> DeviceResource<B> for Pipeline<'a, B> {
-	fn get_resource(device: &mut B::Device) -> Weak<&Self> {
+	fn get_resource(device: &B::Device) -> Weak<&Self> {
 		unimplemented!();
 	}
 
-	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error> {
+	fn destroy_resource(&mut self, device: &B::Device) -> Result<(), Error> {
 		unimplemented!();
-		device.destroy_descriptor_pool(resource.descriptor_pool);
+		device.destroy_descriptor_pool(self.descriptor_pool);
 		
 		//Destroy all of the pipelines first,
 		//since they depend on the render passes.
-		for subpass_pipeline in resource.subpass_pipelines {
-			DeviceResource::<elements::SubpassPipeline<B>>::destroy_resource(device, subpass_pipeline);
+		for subpass_pipeline in self.subpass_pipelines {
+			subpass_pipeline.destroy_resource(device);
 		}
 
 		//Destroy the render passes.
-		for render_pass in resource.render_passes {
-			device.destroy_render_pass(resource.render_pass);
+		for render_pass in self.render_passes {
+			device.destroy_render_pass(render_pass.render_pass_impl);
 		}
 
-		resource.mark_destroyed();
+		self.mark_destroyed();
 	}
 
 	fn resources_destroyed(&self) -> bool {
-		self.resources_destroyed;
+		self.resources_destroyed_val
 	}
 }

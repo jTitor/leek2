@@ -8,28 +8,41 @@ use std::ops::Range;
 
 use gfx_hal::{self as hal, pso};
 
+#[derive(Debug, Default)]
 pub struct SubpassPipelineLayoutRequiredInfo<'a, B: hal::Backend> {
-	vertex_shader_entry: layout::ShaderEntryPoint<'a, B>,
+	pub vertex_shader_entry: layout::ShaderEntryPoint<'a, B>,
 	//Used to make the Subpass node.
 	
 	/**
 	 * Index into the builder's render_passes
 	 * Vec that points to this subpass' rendering pass.
 	 */
-	render_pass_index: usize,
+	pub render_pass_index: usize,
 	/**
 	 * TODO
 	 */
-	subpass_index: u32,
+	pub subpass_index: usize,
 	
 	_backend_type: PhantomData<B>
+}
+
+impl<'a, B: hal::Backend> SubpassPipelineLayoutRequiredInfo<'a, B> {
+	pub fn new(vertex_shader_entry: layout::ShaderEntryPoint<'a, B>,
+	render_pass_index: usize,
+	subpass_index: usize) -> Self {
+		Self {
+			vertex_shader_entry: vertex_shader_entry,
+			render_pass_index: render_pass_index,
+			subpass_index: subpass_index,
+			_backend_type: PhantomData
+		}
+	}
 }
 
 /**
  * Defines the structure of a SubpassPipeline for
  * a PipelineBuilder.
  */
-#[derive(Default)]
 pub struct SubpassPipelineLayout<'a, B: hal::Backend> {
 	pub required_info: SubpassPipelineLayoutRequiredInfo<'a, B>,
 
@@ -63,9 +76,14 @@ pub struct SubpassPipelineLayout<'a, B: hal::Backend> {
 }
 
 impl<'a, B: hal::Backend> SubpassPipelineLayout<'a, B> {
-	pub fn new(required_info: SubpassPipelineLayoutRequiredInfo<B>) -> SubpassPipelineLayout<'a, B> {
+	pub fn new(required_info: SubpassPipelineLayoutRequiredInfo<B>,
+	primitive_type: hal::Primitive,
+	rasterization_type: pso::Rasterizer) -> SubpassPipelineLayout<'a, B> {
 		SubpassPipelineLayout::<B> {
 			required_info: required_info,
+			primitive_type: primitive_type,
+			rasterization_type: rasterization_type,
+			_backend_type: PhantomData,
 			..Default::default()
 		}
 	}

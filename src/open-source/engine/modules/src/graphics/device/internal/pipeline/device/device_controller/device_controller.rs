@@ -38,7 +38,7 @@ pub struct DeviceController<'a, B: hal::Backend> {
 
 	frame_can_begin: bool,
 
-	resources_destroyed: bool
+	resources_destroyed_val: bool
 }
 
 impl<'a, B: hal::Backend> DeviceController<'a, B> {
@@ -155,16 +155,16 @@ impl<'a, B: hal::Backend> DeviceController<'a, B> {
 
 		//Destroy all the unpacked framebuffers.
 		//Destroy all the resources!
-		MemoryBuffer::<B>::destroy_all_resources(&mut self.device, &mut self.resource_lists.buffers);
+		MemoryBuffer::<B>::destroy_resource_collection(&mut self.resource_lists.buffers, &self.device);
 		
-		Image::<B>::destroy_all_resources(&mut self.device, &mut self.resource_lists.images);
+		Image::<B>::destroy_resource_collection(&mut self.resource_lists.images, &self.device);
 
-		Sampler::<B>::destroy_all_resources(&mut self.device, &mut self.resource_lists.samplers);
+		Sampler::<B>::destroy_resource_collection(&mut self.resource_lists.samplers, &self.device);
 
 		self.device.destroy_fence(self.frame_fence);
 		self.device.destroy_semaphore(self.frame_semaphore);
 
-		Pipeline::<B>::destroy_all_resources(&mut self.device, &mut self.resource_lists.pipelines);
+		Pipeline::<B>::destroy_resource_collection(&mut self.resource_lists.pipelines, &self.device);
 
 		// for framebuffer in self.resource_lists.framebuffers {
 		// 	device.destroy_framebuffer(framebuffer);
@@ -172,15 +172,15 @@ impl<'a, B: hal::Backend> DeviceController<'a, B> {
 		//self.device.destroy_framebuffer(self.backbuffer);
 		// self.destroy_all_resources<?<B>>();
 
-		RenderTarget::<B>::destroy_all_resources(&mut self.device, &mut self.resource_lists.render_targets);
+		RenderTarget::<B>::destroy_resource_collection(&mut self.resource_lists.render_targets, &self.device);
 
 		unimplemented!();
-		self.resources_destroyed = true;
+		self.resources_destroyed_val = true;
 	}
 }
 
 impl<'a, B> Drop for DeviceController<'a, B> where B: hal::Backend {
 	fn drop(&mut self) {
-		debug_assert!(self.resources_destroyed, "DeviceController went out of scope without destroy_resources() being called");
+		debug_assert!(self.resources_destroyed_val, "DeviceController went out of scope without destroy_resources() being called");
 	}
 }

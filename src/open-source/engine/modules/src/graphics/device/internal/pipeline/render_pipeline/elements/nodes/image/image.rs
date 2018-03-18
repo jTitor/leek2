@@ -32,15 +32,15 @@ pub struct Image<B: hal::Backend> {
 	 * DeviceController's buffer list.
 	 */
 	image_device_id: usize,
-	resources_destroyed: bool
+	resources_destroyed_val: bool
 }
 
 impl<B: hal::Backend> Image<B> {
 	pub fn mark_destroyed(&mut self) {
-		debug_assert!(!self.resources_destroyed,
+		debug_assert!(!self.resources_destroyed_val,
 			"Image already marked as destroyed");
 
-		self.resources_destroyed = true;
+		self.resources_destroyed_val = true;
 	}
 
 	fn from_file(file_name: String) -> Result<Image<B>, Error> {
@@ -75,32 +75,32 @@ impl<B: hal::Backend> Image<B> {
 
 impl<B: hal::Backend> Drop for Image<B> {
 	fn drop(&mut self) {
-		debug_assert!(self.resources_destroyed, "Image went out of scope without having its memory destroyed");
+		debug_assert!(self.resources_destroyed_val, "Image went out of scope without having its memory destroyed");
 	}
 }
 
 impl<B: hal::Backend> DeviceResource<B> for Image<B> {
-	fn get_resource(device: &mut B::Device) -> Weak<&Self> {
+	fn get_resource(device: &B::Device) -> Weak<&Self> {
 		unimplemented!()
 	}
 
-	fn destroy_resource(device: &mut B::Device, resource: &mut Self) -> Result<(), Error> {
+	fn destroy_resource(&mut self, device: &B::Device) -> Result<(), Error> {
 		//TODO_rust: should be part of the write_buffer() call instead?
-		// self.device.destroy_buffer(resource.image_upload_buffer);
+		// self.device.destroy_buffer(self.image_upload_buffer);
 
-		device.destroy_image(resource.image_binding);
+		device.destroy_image(self.image_binding);
 
-		device.destroy_image_view(resource.image_render_view);
+		device.destroy_image_view(self.image_render_view);
 
-		device.free_memory(resource.image_memory);
+		device.free_memory(self.image_memory);
 		unimplemented!();
 
-		resource.mark_destroyed();
+		self.mark_destroyed();
 
 		Ok(())
 	}
 
 	fn resources_destroyed(&self) -> bool {
-		self.resources_destroyed;
+		self.resources_destroyed_val
 	}
 }

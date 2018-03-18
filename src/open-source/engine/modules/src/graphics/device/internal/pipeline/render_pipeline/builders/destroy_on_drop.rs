@@ -15,7 +15,7 @@ use gfx_hal as hal;
  */
 pub struct DestroyOnDrop<B: hal::Backend, T: DeviceResource<B>> {
 	device: Rc<B::Device>,
-	resource: T,
+	resource_val: T,
 	was_unwrapped: bool
 }
 
@@ -23,7 +23,8 @@ impl<B: hal::Backend, T: DeviceResource<B>> DestroyOnDrop<B, T> {
 	fn new(resource: T, device: &Rc<B::Device>) -> DestroyOnDrop<B, T> {
 		DestroyOnDrop::<B, T> {
 			device: Rc::clone(device),
-			resource: resource
+			resource_val: resource,
+			was_unwrapped: false
 		}
 	}
 
@@ -31,14 +32,14 @@ impl<B: hal::Backend, T: DeviceResource<B>> DestroyOnDrop<B, T> {
 	 * Provides access to the internal resource.
 	 */
 	fn resource(&self) -> &T {
-		&self.resource
+		&self.resource_val
 	}
 
 	/**
 	 * Provides mutable access to the internal resource.
 	 */
 	fn resource_mut(&self) -> &mut T {
-		&mut self.resource
+		&mut self.resource_val
 	}
 
 	/**
@@ -50,15 +51,15 @@ impl<B: hal::Backend, T: DeviceResource<B>> DestroyOnDrop<B, T> {
 	fn unwrap(&self) -> T {
 		self.was_unwrapped = true;
 
-		self.resource
+		self.resource_val
 	}
 }
 
 impl<B: hal::Backend, T: DeviceResource<B>> Drop for DestroyOnDrop<B, T> {
 	fn drop(&mut self) {
 		if !self.was_unwrapped &&
-		!self.resource.resources_destroyed() {
-			self.resource.destroy_resource(self.device);
+		!self.resource_val.resources_destroyed() {
+			self.resource_val.destroy_resource(&self.device);
 		}
 	}
 }
@@ -75,7 +76,7 @@ B: hal::Backend,
 I: IntoIterator,
 I::Item: DeviceResource<B> {
 	device: Rc<B::Device>,
-	resource_iter: I,
+	resource_iter_val: I,
 	was_unwrapped: bool
 }
 
@@ -86,7 +87,8 @@ I::Item: DeviceResource<B> {
 	fn new(resource_iter: I, device: &Rc<B::Device>) -> DestroyIterOnDrop<B, I> {
 		DestroyIterOnDrop::<B, I> {
 			device: Rc::clone(device),
-			resource_iter: resource_iter
+			resource_iter_val: resource_iter,
+			was_unwrapped: false,
 		}
 	}
 
@@ -95,7 +97,7 @@ I::Item: DeviceResource<B> {
 	 * for iterable read operations.
 	 */
 	fn resource_iter(&self) -> &I {
-		&self.resource
+		&self.resource_iter_val
 	}
 
 	/**
@@ -104,7 +106,7 @@ I::Item: DeviceResource<B> {
 	 * iterable.
 	 */
 	fn resource_iter_mut(&self) -> &mut I {
-		&mut self.resource
+		&mut self.resource_iter_val
 	}
 
 	/**
@@ -116,7 +118,7 @@ I::Item: DeviceResource<B> {
 	fn unwrap(&self) -> I {
 		self.was_unwrapped = true;
 
-		self.resource_iter
+		self.resource_iter_val
 	}
 }
 
@@ -125,7 +127,7 @@ B: hal::Backend,
 I: IntoIterator,
 I::Item: DeviceResource<B> {
 	fn drop(&mut self) {
-		for resource in self.resource_iter {
+		for resource in self.resource_iter_val {
 			if !self.was_unwrapped && !resource.resources_destroyed() {
 				resource.destroy_resource(self.device);
 			}
